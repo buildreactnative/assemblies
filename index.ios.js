@@ -6,6 +6,7 @@
 import Colors from './application/styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Welcome from './application/welcome/welcome';
+import Dashboard from './application/dashboard/dashboard';
 import React, {
   AppRegistry,
   Component,
@@ -29,9 +30,19 @@ class assembly extends Component {
             name: 'Welcome'
           }}
           renderScene={(route, navigator) => {
-            return (
-              <Welcome navigator={navigator} title={route.title} />
-            )
+            switch(route.name) {
+              case 'Welcome':
+                return (
+                  <Welcome navigator={navigator} />
+                )
+                break;
+              case 'Dashboard':
+                return (
+                  <Dashboard navigator={navigator} />
+                )
+                break;
+            }
+
           }}
         />
       </View>

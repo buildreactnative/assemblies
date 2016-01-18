@@ -25,7 +25,13 @@ class Welcome extends Component {
           <Text style={styles.title}>assembly</Text>
           <Text style={styles.subTitle}>Where Developers Connect</Text>
         </View>
-        <TouchableOpacity style={styles.loginButton}>
+        <TouchableOpacity style={styles.loginButton}
+          onPress={()=> {
+            this.props.navigator.push({
+              name: 'Dashboard'
+            })
+          }}
+        >
           <Icon style={styles.icon} name="social-facebook" size={36} color={Colors.facebookBlue} />
           <Text style={styles.loginButtonText}>Login with Facebook</Text>
         </TouchableOpacity>
