@@ -7,6 +7,7 @@ import React, {
   StyleSheet,
   Text,
   View,
+  TabBarIOS,
   Image,
   TouchableOpacity,
   Dimensions,
@@ -16,11 +17,37 @@ import React, {
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class Dashboard extends Component {
+  constructor(){
+    super();
+    this.state = {
+      selectedTab: 'history'
+    }
+  }
+  _setTab(tabId){
+    this.setState({selectedTab: tabId})
+  }
   render() {
     return (
-      <View>
-        <Text>DASHBOARD</Text>
-      </View>
+      <TabBarIOS>
+        <TabBarIOS.Item
+          systemIcon="history"
+          onPress={()=>this._setTab('history')}
+          selected={this.state.selectedTab == 'history'}>
+          <View><Text>HISTORY</Text></View>
+        </TabBarIOS.Item>
+        <TabBarIOS.Item
+          systemIcon="bookmarks"
+          onPress={()=>this._setTab('bookmarks')}
+          selected={this.state.selectedTab == 'bookmarks'}>
+          <View><Text>BOOKMARKS</Text></View>
+        </TabBarIOS.Item>
+        <TabBarIOS.Item
+          systemIcon="more"
+          onPress={()=>this._setTab('more')}
+          selected={this.state.selectedTab == 'more'}>
+          <View><Text>MORE</Text></View>
+        </TabBarIOS.Item>
+      </TabBarIOS>
     );
   }
 }
