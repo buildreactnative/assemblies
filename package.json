@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "react-native": "^0.18.0",
-    "react-native-vector-icons": "^1.0.4"
+    "react-native-vector-icons": "^1.1.0"
   }
 }

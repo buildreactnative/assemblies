@@ -29,24 +29,20 @@ class Dashboard extends Component {
   render() {
     return (
       <TabBarIOS>
-        <TabBarIOS.Item
-          systemIcon="history"
-          onPress={()=>this._setTab('history')}
-          selected={this.state.selectedTab == 'history'}>
-          <View><Text>HISTORY</Text></View>
-        </TabBarIOS.Item>
-        <TabBarIOS.Item
-          systemIcon="bookmarks"
-          onPress={()=>this._setTab('bookmarks')}
-          selected={this.state.selectedTab == 'bookmarks'}>
-          <View><Text>BOOKMARKS</Text></View>
-        </TabBarIOS.Item>
-        <TabBarIOS.Item
-          systemIcon="more"
-          onPress={()=>this._setTab('more')}
-          selected={this.state.selectedTab == 'more'}>
-          <View><Text>MORE</Text></View>
-        </TabBarIOS.Item>
+        <Icon.TabBarItem
+          title="Messages"
+          iconName="android-chat"
+          selectedIconName="android-chat">
+          <View><Text>MESSAGES</Text></View>
+        </Icon.TabBarItem>
+        <Icon.TabBarItem
+          title="Groups"
+          iconName="ios-people"
+          selectedIconName="ios-people">
+
+          <View><Text>GROUPS</Text></View>
+        </Icon.TabBarItem>
+
       </TabBarIOS>
     );
   }
