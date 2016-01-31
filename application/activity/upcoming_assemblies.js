@@ -2,6 +2,7 @@ import Colors from '../styles/colors';
 import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
+import UpcomingAssembly from './upcoming_assembly';
 
 import React, {
   ScrollView,
@@ -24,6 +25,14 @@ const MAP_REGION = {
   longitudeDelta  : 0.01
 };
 
+const UPCOMING_ASSEMBLIES = [
+  {name: 'Hack Night', time: new Date(), group: 'Hacker Hours', going: 10,},
+  {name: 'Startup Pitch', time: new Date(), group: 'Geeks & Suits NYC', going: 10,},
+  {name: 'Intro to Node JS', time: new Date(), group: 'NY JavaScript', going: 20,},
+  {name: 'Admission Guidelines', time: new Date(), group: 'Dev Bootcamp', going: 10,},
+  {name: 'VC Night', time: new Date(), group: 'New York Startups', going: 10,},
+]
+
 class UpcomingAssemblies extends React.Component{
   render(){
     return (
@@ -35,10 +44,14 @@ class UpcomingAssemblies extends React.Component{
           annotations={[{latitude: MAP_REGION.latitude, longitude: MAP_REGION.longitude}]}
         />
         <View style={styles.notificationsContainer}>
-          <Text style={styles.bodyText}>Notifications</Text>
+          <Text style={styles.bodyText}>Today</Text>
           <View style={styles.break}></View>
           <ScrollView style={styles.notificationsHolder}>
-
+          {UPCOMING_ASSEMBLIES.map((assembly, idx) => {
+            return (
+              <UpcomingAssembly assembly={assembly} key={idx} />
+            )
+          })}
           </ScrollView>
         </View>
       </View>

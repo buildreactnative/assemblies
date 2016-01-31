@@ -37,7 +37,9 @@ class Dashboard extends Component {
   }
   _renderLoading(){
     return (
-      <ActivityIndicatorIOS animating={true}  style={[styles.centering, {height: 80}]} size="large"/>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
+        <ActivityIndicatorIOS animating={true}  style={[styles.centering, {height: 80}]} size="large"/>
+      </View>
     )
   }
   render() {
@@ -131,6 +133,7 @@ const styles = StyleSheet.create({
   centering: {
     alignItems: 'center',
     justifyContent: 'center',
+    height: deviceHeight,
   },
   card: {
     borderWidth: 1,
