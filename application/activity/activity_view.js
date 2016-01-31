@@ -20,7 +20,7 @@ class ActivityView extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      tab: 'upcoming',
+      tab: 'notifications',
     }
   }
   render(){
@@ -36,7 +36,8 @@ class ActivityView extends React.Component{
               this.state.tab == 'upcoming' ? styles.leftActiveTab : styles.leftInactiveTab]
             }
             onPress={()=>{this.setState({tab: 'upcoming'})}}>
-            <Text style={styles.tabText}>Nearby</Text>
+            <Text
+              style={this.state.tab == 'upcoming' ? styles.activeTabText : styles.inactiveTabText}>Nearby</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -44,7 +45,8 @@ class ActivityView extends React.Component{
               styles.selectTab,
               this.state.tab == 'notifications' ? styles.rightActiveTab : styles.rightInactiveTab]}
             onPress={()=>{this.setState({tab: 'notifications'})}}>
-            <Text style={styles.tabText}>Notifications</Text>
+            <Text
+              style={this.state.tab == 'notifications' ? styles.activeTabText : styles.inactiveTabText}>Notifications</Text>
           </TouchableOpacity>
         </View>
         {tabContent}
@@ -99,9 +101,14 @@ let styles = {
   rightInactiveTab: {
     backgroundColor: 'white',
   },
-  tabText: {
+  activeTabText: {
     textAlign: 'center',
-  }
+    color: 'white',
+  },
+  inactiveTabText: {
+    textAlign: 'center',
+    color: Colors.brandPrimary,
+  },
 }
 
 module.exports = ActivityView;

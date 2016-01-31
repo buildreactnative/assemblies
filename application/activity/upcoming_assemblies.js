@@ -13,6 +13,7 @@ import React, {
   TouchableOpacity,
   Dimensions,
   NativeModules,
+  MapView,
 } from 'react-native';
 
 class UpcomingAssemblies extends React.Component{
