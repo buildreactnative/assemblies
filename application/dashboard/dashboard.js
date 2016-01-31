@@ -39,8 +39,25 @@ class Dashboard extends Component {
           title="Groups"
           iconName="ios-people"
           selectedIconName="ios-people">
-
           <View><Text>GROUPS</Text></View>
+        </Icon.TabBarItem>
+        <Icon.TabBarItem
+          title="Calendar"
+          iconName="calendar"
+          selectedIconName="calendar">
+          <View><Text>CALENDAR</Text></View>
+        </Icon.TabBarItem>
+        <Icon.TabBarItem
+          title="Activity"
+          iconName="clipboard"
+          selectedIconName="clipboard">
+          <View><Text>DASHBOARD</Text></View>
+        </Icon.TabBarItem>
+        <Icon.TabBarItem
+          title="Profile"
+          iconName="gear-b"
+          selectedIconName="gear-b">
+          <View><Text>PROFILE</Text></View>
         </Icon.TabBarItem>
 
       </TabBarIOS>
