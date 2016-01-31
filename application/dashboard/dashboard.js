@@ -1,6 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
+import CalendarView from '../calendar/calendar_view';
 
 import React, {
   ScrollView,
@@ -85,7 +86,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <View><Text>CALENDAR</Text></View>
+          <CalendarView />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Activity"
