@@ -1,5 +1,6 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ActivityView from '../activity/activity_view';
 
 import React, {
   ScrollView,
@@ -20,7 +21,7 @@ class Dashboard extends Component {
   constructor(){
     super();
     this.state = {
-      selectedTab: 'history'
+      selectedTab: 'Activity'
     }
   }
   _setTab(tabId){
@@ -31,32 +32,67 @@ class Dashboard extends Component {
       <TabBarIOS>
         <Icon.TabBarItem
           title="Messages"
+          selected={this.state.selectedTab == 'Messages'}
           iconName="android-chat"
-          selectedIconName="android-chat">
+          selectedIconName="android-chat"
+          onPress={()=>{
+            this.setState({
+              selectedTab: 'Messages'
+            })
+          }}
+          >
           <View><Text>MESSAGES</Text></View>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Groups"
+          selected={this.state.selectedTab == 'Groups'}
           iconName="ios-people"
-          selectedIconName="ios-people">
+          selectedIconName="ios-people"
+          onPress={()=>{
+            this.setState({
+              selectedTab: 'Groups'
+            })
+          }}
+          >
           <View><Text>GROUPS</Text></View>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Calendar"
+          selected={this.state.selectedTab == 'Calendar'}
           iconName="calendar"
-          selectedIconName="calendar">
+          selectedIconName="calendar"
+          onPress={()=>{
+            this.setState({
+              selectedTab: 'Calendar'
+            })
+          }}
+          >
           <View><Text>CALENDAR</Text></View>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Activity"
+          selected={this.state.selectedTab == 'Activity'}
           iconName="clipboard"
-          selectedIconName="clipboard">
-          <View><Text>DASHBOARD</Text></View>
+          selectedIconName="clipboard"
+          onPress={()=>{
+            this.setState({
+              selectedTab: 'Activity'
+            })
+          }}
+          >
+          <ActivityView />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Profile"
-          iconName="gear-b"
-          selectedIconName="gear-b">
+          selected={this.state.selectedTab == 'Profile'}
+            iconName="gear-b"
+          selectedIconName="gear-b"
+          onPress={()=>{
+            this.setState({
+              selectedTab: 'Profile'
+            })
+          }}
+          >
           <View><Text>PROFILE</Text></View>
         </Icon.TabBarItem>
 
