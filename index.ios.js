@@ -26,6 +26,9 @@ class assembly extends Component {
     return (
       <View style={styles.container}>
         <Navigator
+          configureScene={() => {
+            return Navigator.SceneConfigs.FadeAndroid;
+          }}
           initialRoute={{
             name: 'Welcome'
           }}

@@ -13,6 +13,8 @@ import React, {
   TouchableOpacity,
   Dimensions,
   NativeModules,
+  InteractionManager,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
@@ -21,13 +23,27 @@ class Dashboard extends Component {
   constructor(){
     super();
     this.state = {
-      selectedTab: 'Activity'
+      selectedTab: 'Activity',
+      loading: true,
     }
   }
   _setTab(tabId){
     this.setState({selectedTab: tabId})
   }
+  componentDidMount(){
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({loading: false});
+    });
+  }
+  _renderLoading(){
+    return (
+      <ActivityIndicatorIOS animating={true}  style={[styles.centering, {height: 80}]} size="large"/>
+    )
+  }
   render() {
+    if (this.state.loading) {
+      return this._renderLoading();
+    }
     return (
       <TabBarIOS>
         <Icon.TabBarItem
@@ -111,6 +127,10 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: 'rgba(0,0,0,0.01)',
+  },
+  centering: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   card: {
     borderWidth: 1,
