@@ -12,6 +12,7 @@ let {
   Image,
   TextInput,
   TouchableHighlight,
+  TouchableOpacity,
   View,
   Navigator,
 } = React;
@@ -31,6 +32,7 @@ class Message extends React.Component{
   // }
   render(){
     let {message} = this.props;
+    console.log('MSG', message);
     return (
       <Animated.View
         style={{
@@ -44,10 +46,18 @@ class Message extends React.Component{
          }}
       >
         <View style={styles.container}>
-          <Image
-            style={styles.icon}
-            source={{uri: message.profileUrl}}
-          />
+          <TouchableOpacity onPress={()=>{
+            this.props.navigator.push({
+              name: 'Profile',
+              username: message.from,
+              avatar: message.profileUrl,
+            })
+          }}>
+            <Image
+              style={styles.icon}
+              source={{uri: message.profileUrl}}
+            />
+          </TouchableOpacity>
           <View style={styles.messageBox}>
             <View style={styles.row}>
               <Text style={styles.author}>{message.from}</Text>

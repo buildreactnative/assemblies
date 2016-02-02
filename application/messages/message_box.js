@@ -92,7 +92,7 @@ class MessageBox extends React.Component{
         <InvertibleScrollView ref="scroll">
           {messages.map((msg, idx) => {
             return (
-              <Message message={msg} key={idx} />
+              <Message message={msg} key={idx} navigator={this.props.navigator}/>
             )
           })}
         </InvertibleScrollView>

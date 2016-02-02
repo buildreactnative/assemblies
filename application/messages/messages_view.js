@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import MessagesList from './messages_list';
 import MessageBox from './message_box';
+import Profile from './profile';
 import _ from 'underscore';
 
 import React, {
@@ -66,6 +67,10 @@ class MessagesView extends React.Component{
             } else if (route.name == 'Message'){
               return (
                 <MessageBox message={route.message} navigator={navigator}/>
+              )
+            } else if (route.name == 'Profile') {
+              return (
+                <Profile navigator={navigator} username={route.username} avatar={route.avatar} />
               )
             }
           }}
