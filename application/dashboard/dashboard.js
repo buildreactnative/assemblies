@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
 import CalendarView from '../calendar/calendar_view';
 import MessagesView from '../messages/messages_view';
+import Profile from '../messages/profile';
 
 import React, {
   ScrollView,
@@ -74,7 +75,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <View><Text>GROUPS</Text></View>
+          <Profile />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Calendar"
