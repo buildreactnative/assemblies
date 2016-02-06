@@ -76,8 +76,12 @@ class Group extends React.Component{
         <View style={styles.break}></View>
         {group.members.map((member, idx) => {
           return (
-            <View key={idx}>
-              <Text>MEMBER</Text>
+            <View key={idx} style={styles.memberContainer}>
+              <Image source={{uri: member.avatar}} style={styles.avatar}/>
+              <View style={styles.memberInfo}>
+                <Text style={styles.h5}>{member.username}</Text>
+                <Text style={styles.h4}>Member</Text>
+              </View>
             </View>
           )
         })}
@@ -170,10 +174,27 @@ let styles = {
   },
   goingContainer: {
     flex: 0.8,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   goingText: {
     fontSize: 17,
     color: Colors.brandPrimary
+  },
+  memberContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  avatar: {
+    height: 70,
+    width: 70,
+    borderRadius: 35,
+  },
+  memberInfo: {
+    paddingLeft: 30,
   },
 }
 
