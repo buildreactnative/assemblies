@@ -9,6 +9,7 @@
     "moment": "^2.11.1",
     "react-native": "^0.18.0",
     "react-native-invertible-scroll-view": "^0.2.0",
+    "react-native-navbar": "^1.2.0",
     "react-native-vector-icons": "^1.1.0",
     "underscore": "^1.8.3"
   }

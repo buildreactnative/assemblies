@@ -4,6 +4,7 @@ import ActivityView from '../activity/activity_view';
 import CalendarView from '../calendar/calendar_view';
 import MessagesView from '../messages/messages_view';
 import Profile from '../messages/profile';
+import Settings from '../profile/settings';
 
 import React, {
   ScrollView,
@@ -75,7 +76,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <Profile />
+          <View><Text>GROUPS</Text></View>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Calendar"
@@ -114,7 +115,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <View><Text>PROFILE</Text></View>
+          <Settings />
         </Icon.TabBarItem>
 
       </TabBarIOS>

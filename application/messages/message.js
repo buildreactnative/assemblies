@@ -2,6 +2,7 @@
 import React from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
+import NavigationBar from 'react-native-navbar';
 
 let {
   AppRegistry,

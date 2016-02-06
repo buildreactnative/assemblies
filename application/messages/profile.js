@@ -2,6 +2,8 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import _ from 'underscore';
+import {profileFixture} from '../fixtures/users';
+import NavigationBar from 'react-native-navbar';
 
 import React, {
   ScrollView,
@@ -21,47 +23,43 @@ import React, {
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class Profile extends React.Component{
+  _renderBackButton(){
+    return (
+      <TouchableOpacity onPress={()=>{
+        this.props.navigator.pop();
+      }}>
+        <Icon name="ios-arrow-back" size={25} color="white" style={{paddingBottom: 3, paddingLeft: 20,}}/>
+      </TouchableOpacity>
+    )
+  }
   render(){
     let {username, avatar,} = this.props;
-    const PROFILE = {
-      username: 'Tom',
-      avatar: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400',
-      city: 'Long Beach',
-      state: 'NY',
-      technologies: [
-        'JavaScript', 'Python', 'Machine Learning', 'Perl'
-      ],
-      assemblies: [
-        {name: 'React Native NYC', background: Colors.brandPrimaryDark},
-        {name: 'Python Developers', background: Colors.brandPrimary},
-      ]
-    }
-    console.log('AVATAR', avatar);
+    let titleConfig = {title: `${username}'s Profile`, tintColor: 'white'};
+    let back = this._renderBackButton();
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton}>
-            <Icon name="ios-arrow-back" size={30} color='white'/>
-          </TouchableOpacity>
-          <Text style={styles.headerText}>{`${PROFILE.username}'s Profile`}</Text>
-        </View>
+        <NavigationBar
+          tintColor={Colors.brandPrimary}
+          title={titleConfig}
+          leftButton={back}
+        />
         <ScrollView style={styles.profileContainer}>
           <View style={{height: 120, alignItems: 'center'}}>
-            <Image source={{uri: PROFILE.avatar}} style={styles.avatar}/>
+            <Image source={{uri: avatar}} style={styles.avatar}/>
           </View>
-          <Text style={styles.username}>{PROFILE.username}</Text>
-          <Text style={styles.location}>{PROFILE.city}, {PROFILE.state}</Text>
+          <Text style={styles.username}>{username}</Text>
+          <Text style={styles.location}>{profileFixture.city}, {profileFixture.state}</Text>
           <View style={styles.newMessageContainer}>
             <Icon name="chatbubbles" size={40} style={styles.chatBubble} color={Colors.brandPrimary}/>
             <Text style={styles.sendMessageText}>Send a Message</Text>
           </View>
           <View style={styles.break}></View>
           <Text style={styles.technologies}>Technologies</Text>
-          <Text style={styles.technologyList}>{PROFILE.technologies.join(', ')}</Text>
+          <Text style={styles.technologyList}>{profileFixture.technologies.join(', ')}</Text>
           <Text style={styles.technologies}>Assemblies</Text>
           <View style={{flexDirection: 'row'}}>
 
-          {PROFILE.assemblies.map((assembly, idx) => {
+          {profileFixture.assemblies.map((assembly, idx) => {
             return (
               <View key={idx} style={{backgroundColor: assembly.background, height: 150, width: (deviceWidth / 2) - 20, padding: 20, margin: 10,}}>
                 <Text style={{color: 'white', margin: 20, fontSize: 20, fontWeight: '300'}}>{assembly.name}</Text>
@@ -80,6 +78,13 @@ let styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     paddingTop: 15,
+  },
+  backButton: {
+    position: 'absolute',
+    left: 20,
+  },
+  backButtonText: {
+    color: 'white',
   },
   avatar: {
     width: 120,
@@ -152,6 +157,7 @@ let styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
+    padding: 20,
   },
   headerText: {
     color: 'white',

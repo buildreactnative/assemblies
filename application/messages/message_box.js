@@ -3,6 +3,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import Message from './message';
+import {messageFixtures} from '../fixtures/messages';
+import NavigationBar from 'react-native-navbar';
 
 import React, {
   ScrollView,
@@ -26,20 +28,19 @@ import React, {
 
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-const CURRENT_USER_URL = 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400';
-
-const MESSAGES = [
-  {from: 'Tom', message: 'Hey', timestamp: new Date(), profileUrl: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400'},
-  {from: 'Tom', message: "What's up?", timestamp: new Date(), profileUrl: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400'},
-  {from: 'Tom', message: "What's good", timestamp: new Date(), profileUrl: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400'},
-]
-
 class MessageBox extends React.Component{
   constructor(props){
     super(props);
-    let messages = JSON.parse(JSON.stringify(MESSAGES));
+    let messages = JSON.parse(JSON.stringify(messageFixtures));
     let {message} = props;
-    messages.push({from: message.from, message: message.message, profileUrl: message.profileUrl, timestamp: message.sent})
+
+    messages.push({
+      from: message.from,
+      message: message.message,
+      profileUrl: message.profileUrl,
+      timestamp: message.sent
+    });
+    
     this.state = {
       loading: true,
       messages: messages,
@@ -71,24 +72,28 @@ class MessageBox extends React.Component{
       </View>
     )
   }
+  _renderBackButton(){
+    return (
+      <TouchableOpacity onPress={()=>{
+        this.props.navigator.pop();
+      }}>
+        <Icon name="ios-arrow-back" size={25} color="white" style={{paddingBottom: 3, paddingLeft: 20,}}/>
+      </TouchableOpacity>
+    )
+  }
   render(){
     let {message} = this.props;
-    let messages = JSON.parse(JSON.stringify(MESSAGES));
+    let messages = JSON.parse(JSON.stringify(messageFixtures));
     messages.push({from: message.from, message: message.message, profileUrl: message.profileUrl, timestamp: message.sent})
-
+    let titleConfig = {title: message.from, tintColor: 'white'}
+    let back = this._renderBackButton();
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={()=>{
-              this.props.navigator.pop();
-            }}
-          >
-            <Icon name="ios-arrow-back" size={30} color='white'/>
-          </TouchableOpacity>
-          <Text style={styles.headerText}>{message.from}</Text>
-        </View>
+        <NavigationBar
+          tintColor={Colors.brandPrimary}
+          title={titleConfig}
+          leftButton={back}
+        />
         <InvertibleScrollView ref="scroll">
           {messages.map((msg, idx) => {
             return (

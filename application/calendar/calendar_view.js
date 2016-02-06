@@ -2,6 +2,7 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import UpcomingAssembly from '../activity/upcoming_assembly';
+import NavigationBar from 'react-native-navbar';
 
 import React, {
   ScrollView,
@@ -242,11 +243,13 @@ class CalendarView extends React.Component{
     )
   }
   render(){
+    let titleConfig = {title: 'Calendar', tintColor: 'white'}
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Calendar</Text>
-        </View>
+        <NavigationBar
+          tintColor={Colors.brandPrimary}
+          title={titleConfig}
+        />
         <ListView
           style={styles.listView}
           initialListSize={7}

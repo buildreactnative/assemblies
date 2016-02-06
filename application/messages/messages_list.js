@@ -1,6 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
+import NavigationBar from 'react-native-navbar';
 
 import React, {
   ScrollView,
@@ -19,7 +20,7 @@ import React, {
 
 class MessagesList extends React.Component{
   _renderRow(rowData){
-    console.log('DATA', rowData);
+    // console.log('DATA', rowData);
     return (
       <TouchableOpacity onPress={()=>{
         this.props.navigator.push({
@@ -40,12 +41,24 @@ class MessagesList extends React.Component{
       </TouchableOpacity>
     )
   }
+  _renderBackButton(){
+    return (
+      <TouchableOpacity onPress={()=>{
+        this.props.navigator.pop();
+      }}>
+        <Icon name="ios-arrow-back" size={25} color="white" style={{paddingBottom: 3, paddingLeft: 20,}}/>
+      </TouchableOpacity>
+    )
+  }
   render(){
+    let titleConfig = {title: 'Messages', tintColor: 'white'};
+    let back = this._renderBackButton();
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Messages</Text>
-        </View>
+        <NavigationBar
+          tintColor={Colors.brandPrimary}
+          title={titleConfig}
+        />
         <ListView
           dataSource={this.props.dataSource}
           contentInset={{bottom: 49}}
