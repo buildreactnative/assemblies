@@ -1,8 +1,10 @@
 import Colors from '../styles/colors';
+let summary = 'Stumptown kickstarter microdosing, kale chips locavore leggings fanny pack mixtape meditation slow-carb kombucha pour-over pickled. Pabst ethical bushwick art party, quinoa chartreuse fanny pack four dollar toast mumblecore irony slow-carb squid. Mumblecore hashtag gentrify butcher ugh brunch, typewriter lo-fi chambray twee ethical. Organic gentrify hammock, messenger bag sriracha retro direct trade freegan mlkshk blog gastropub cronut crucifix.'
 const suggestedGroups = [
   {
     name: 'Morning Java',
     background: Colors.brandPrimaryDark,
+    summary: summary,
     backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
     members: [
@@ -30,7 +32,7 @@ const suggestedGroups = [
         name: 'Hack Night',
         start: new Date(),
         end: new Date(),
-        going: 32,
+        goingCount: 32,
         summary: 'Hack Night Summary',
         going: [
           {
@@ -67,6 +69,7 @@ const suggestedGroups = [
   },
   {
     name: 'Haskell & Hadoop',
+    summary: summary,
     background: Colors.brandPrimaryDark,
     backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
@@ -95,7 +98,7 @@ const suggestedGroups = [
         name: 'Hack Night',
         start: new Date(),
         end: new Date(),
-        going: 32,
+        goingCount: 32,
         summary: 'Hack Night Summary',
         going: [
           {
@@ -134,6 +137,7 @@ const suggestedGroups = [
 const groupsFixture = [
   {
     name: 'React Native NYC',
+    summary: summary,
     background: Colors.brandPrimaryDark,
     backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
@@ -162,7 +166,7 @@ const groupsFixture = [
         name: 'Hack Night',
         start: new Date(),
         end: new Date(),
-        going: 32,
+        goingCount: 32,
         summary: 'Hack Night Summary',
         going: [
           {
@@ -199,6 +203,7 @@ const groupsFixture = [
   },
   {
     name: 'Python Developers',
+    summary: summary,
     background: Colors.brandPrimary,
     backgroundImage: 'http://www.crainscleveland.com/apps/pbcsi.dll/storyimage/CC/20150104/SUB1/301049991/V2/0/V2-301049991.jpg?MaxW=880&v=201411210943',
     memberCount: 120,
@@ -227,7 +232,7 @@ const groupsFixture = [
         name: 'Hack Night',
         start: new Date(),
         end: new Date(),
-        going: 32,
+        goingCount: 32,
         summary: 'Hack Night Summary',
         going: [
           {
@@ -264,6 +269,7 @@ const groupsFixture = [
   },
   {
     name: 'Downtown Tech Breakfast',
+    summary: summary,
     background: Colors.brandPrimaryDark,
     backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
@@ -292,7 +298,7 @@ const groupsFixture = [
         name: 'Hack Night',
         start: new Date(),
         end: new Date(),
-        going: 32,
+        goingCount: 32,
         summary: 'Hack Night Summary',
         going: [
           {
@@ -329,6 +335,7 @@ const groupsFixture = [
   },
   {
     name: 'JavaScript NYC',
+    summary: summary,
     background: Colors.brandPrimaryDark,
     backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
@@ -357,7 +364,7 @@ const groupsFixture = [
         name: 'Hack Night',
         start: new Date(),
         end: new Date(),
-        going: 32,
+        goingCount: 32,
         summary: 'Hack Night Summary',
         going: [
           {
