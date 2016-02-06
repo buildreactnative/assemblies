@@ -1,6 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
+import moment from 'moment';
 import {truncate} from 'underscore.string';
 
 import React, {
@@ -50,15 +51,23 @@ class Group extends React.Component{
           </View>
         </Image>
         <Text style={styles.h2}>Summary</Text>
-        <Text style={styles.h4}>{truncate(group.summary, 140)}</Text>
+        <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(group.summary, 140)}</Text>
         <Text style={styles.h2}>Technologies</Text>
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
         <Text style={styles.h2}>Events</Text>
         <View style={styles.break}></View>
         {group.events.map((event, idx) => {
           return (
-            <View>
-              <Text>EVENT</Text>
+            <View key={idx} style={styles.eventContainer}>
+              <View style={styles.eventInfo}>
+                <Text style={styles.h5}>{event.name}</Text>
+                <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
+                <Text style={styles.h4}>{event.goingCount} Going</Text>
+              </View>
+              <View style={styles.goingContainer}>
+                <Text style={styles.goingText}>{"You're Going"}</Text>
+                <Icon name="checkmark-circled" size={30} color="green" />
+              </View>
             </View>
           )
         })}
@@ -67,7 +76,7 @@ class Group extends React.Component{
         <View style={styles.break}></View>
         {group.members.map((member, idx) => {
           return (
-            <View>
+            <View key={idx}>
               <Text>MEMBER</Text>
             </View>
           )
@@ -124,8 +133,6 @@ let styles = {
   h4: {
     fontSize: 18,
     fontWeight: '300',
-    paddingHorizontal: 20,
-    paddingVertical: 8,
   },
   h3: {
     fontSize: 18,
@@ -147,7 +154,27 @@ let styles = {
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
-
+  eventContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  eventInfo: {
+    flex: 1,
+  },
+  h5: {
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  goingContainer: {
+    flex: 0.8,
+  },
+  goingText: {
+    fontSize: 17,
+    color: Colors.brandPrimary
+  },
 }
 
 module.exports = Group;
