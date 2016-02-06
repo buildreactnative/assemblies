@@ -37,7 +37,11 @@ suggestedGroups.forEach((group, idx) => {
 class Groups extends React.Component{
   _renderAddButton(){
     return (
-      <TouchableOpacity style={styles.forwardButton}>
+      <TouchableOpacity style={styles.forwardButton} onPress={()=>{
+        this.props.navigator.push({
+          name: 'CreateGroup'
+        })
+      }}>
         <Icon name="ios-plus-outline" size={25} color="#ccc" />
       </TouchableOpacity>
     )
