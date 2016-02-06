@@ -1,6 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
+import {truncate} from 'underscore.string';
 
 import React, {
   ScrollView,
@@ -39,14 +40,39 @@ class Group extends React.Component{
         tintColor={Colors.brandPrimary}
         leftButton={backButton}
       />
+        <ScrollView style={styles.scrollView}>
         <Image source={{uri: group.backgroundImage}} style={styles.topImage}>
           <View style={styles.overlayBlur}>
             <Text style={styles.h1}>{group.name}</Text>
           </View>
           <View style={styles.bottomPanel}>
-            <Text style={styles.memberText}>{group.memberCount} member</Text>
+            <Text style={styles.memberText}>{group.memberCount} members</Text>
           </View>
         </Image>
+        <Text style={styles.h2}>Summary</Text>
+        <Text style={styles.h4}>{truncate(group.summary, 140)}</Text>
+        <Text style={styles.h2}>Technologies</Text>
+        <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
+        <Text style={styles.h2}>Events</Text>
+        <View style={styles.break}></View>
+        {group.events.map((event, idx) => {
+          return (
+            <View>
+              <Text>EVENT</Text>
+            </View>
+          )
+        })}
+        <View style={styles.break}></View>
+        <Text style={styles.h2}>Members</Text>
+        <View style={styles.break}></View>
+        {group.members.map((member, idx) => {
+          return (
+            <View>
+              <Text>MEMBER</Text>
+            </View>
+          )
+        })}
+        </ScrollView>
       </View>
     )
   }
@@ -59,6 +85,9 @@ let styles = {
     backgroundColor: 'transparent',
   },
   container: {
+    flex: 1,
+  },
+  scrollView: {
     flex: 1,
   },
   topImage: {
@@ -92,8 +121,32 @@ let styles = {
     fontSize: 18,
     fontWeight: '400',
   },
-
-
+  h4: {
+    fontSize: 18,
+    fontWeight: '300',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+  },
+  h3: {
+    fontSize: 18,
+    color: Colors.brandPrimary,
+    paddingHorizontal: 18,
+    paddingVertical: 5,
+    fontWeight: '500',
+  },
+  break: {
+    height: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+    marginHorizontal: 15,
+    marginVertical: 5,
+  },
+  h2: {
+    fontSize: 22,
+    fontWeight: '300',
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+  },
 
 }
 
