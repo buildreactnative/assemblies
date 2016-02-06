@@ -89,7 +89,7 @@ class CalendarView extends React.Component{
           style={styles.listView}
           initialListSize={7}
           ref="assemblyList"
-          contentInset={{bottom: 69}}
+          contentInset={{bottom: 49}}
           automaticallyAdjustContentInsets={false}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)}
@@ -105,14 +105,14 @@ let styles = {
     flex: 1,
   },
   sectionHeader: {
-    backgroundColor: Colors.brandPrimaryDark,
+    backgroundColor: Colors.inactive,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 12,
   },
   sectionHeaderText: {
-    color: 'white',
+    color: Colors.brandPrimaryDark,
     fontSize: 20,
   },
   header: {

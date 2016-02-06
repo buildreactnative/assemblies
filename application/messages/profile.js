@@ -4,6 +4,7 @@ import moment from 'moment';
 import _ from 'underscore';
 import {profileFixture} from '../fixtures/users';
 import NavigationBar from 'react-native-navbar';
+import GroupBox from '../groups/group_box';
 
 import React, {
   ScrollView,
@@ -36,6 +37,11 @@ class Profile extends React.Component{
     let {username, avatar,} = this.props;
     let titleConfig = {title: `${username}'s Profile`, tintColor: 'white'};
     let back = this._renderBackButton();
+    let splitGroups = []
+    profileFixture.assemblies.forEach((group, idx)=>{
+      if (idx & 1) { _.last(splitGroups).push(group);}
+      else { splitGroups.push([group]) }
+    })
     return (
       <View style={styles.container}>
         <NavigationBar
@@ -59,10 +65,16 @@ class Profile extends React.Component{
           <Text style={styles.technologies}>Assemblies</Text>
           <View style={{flexDirection: 'row'}}>
 
-          {profileFixture.assemblies.map((assembly, idx) => {
+          {splitGroups.map((groupDouble, idx) => {
             return (
-              <View key={idx} style={{backgroundColor: assembly.background, height: 150, width: (deviceWidth / 2) - 20, padding: 20, margin: 10,}}>
-                <Text style={{color: 'white', margin: 20, fontSize: 20, fontWeight: '300'}}>{assembly.name}</Text>
+              <View style={styles.groupsContainer} key={idx}>
+                {groupDouble.map((group, idx) => {
+                  return (
+                    <TouchableOpacity key={idx}>
+                      <GroupBox group={group}/>
+                    </TouchableOpacity>
+                  )
+                })}
               </View>
             )
           })}
@@ -74,6 +86,9 @@ class Profile extends React.Component{
 }
 
 let styles = StyleSheet.create({
+  groupsContainer: {
+    flexDirection: 'row'
+  },
   profileContainer: {
     flex: 1,
     flexDirection: 'column',

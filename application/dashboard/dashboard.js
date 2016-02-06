@@ -5,6 +5,7 @@ import CalendarView from '../calendar/calendar_view';
 import MessagesView from '../messages/messages_view';
 import Profile from '../messages/profile';
 import Settings from '../profile/settings';
+import GroupView from '../groups/group_view';
 
 import React, {
   ScrollView,
@@ -76,7 +77,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <View><Text>GROUPS</Text></View>
+          <GroupView />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Calendar"
