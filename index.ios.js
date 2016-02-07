@@ -22,6 +22,13 @@ import React, {
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class assembly extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      foundUser: false,
+      currentUser: null,
+    }
+  }
   render() {
     return (
       <View style={styles.container}>

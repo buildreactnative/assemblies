@@ -25,6 +25,16 @@ class Welcome extends Component {
           <Text style={styles.title}>assembly</Text>
           <Text style={styles.subTitle}>Where Developers Connect</Text>
         </View>
+        <TouchableOpacity style={styles.registerButton}
+          onPress={()=> {
+            this.props.navigator.push({
+              name: 'Dashboard'
+            })
+          }}
+        >
+          <Icon style={styles.icon} name="social-facebook" size={36} color='white' />
+          <Text style={styles.facebookButtonText}>Login with Facebook</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.loginButton}
           onPress={()=> {
             this.props.navigator.push({
@@ -32,8 +42,8 @@ class Welcome extends Component {
             })
           }}
         >
-          <Icon style={styles.icon} name="social-facebook" size={36} color={Colors.facebookBlue} />
-          <Text style={styles.loginButtonText}>Login with Facebook</Text>
+          <Icon style={styles.icon} name="person" size={36} color={Colors.facebookBlue} />
+          <Text style={styles.loginButtonText}>Create an Account</Text>
         </TouchableOpacity>
       </View>
     );
@@ -81,6 +91,17 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 20
   },
+  registerButton: {
+    height: 80,
+    position: 'absolute',
+    bottom: 80,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    backgroundColor: Colors.facebookBlue,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   loginButton: {
     height: 80,
     position: 'absolute',
@@ -96,6 +117,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     left: 30
+  },
+  facebookButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
   },
   loginButtonText: {
     color: Colors.facebookBlue,
