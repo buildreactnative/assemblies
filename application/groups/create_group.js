@@ -18,6 +18,8 @@ import React, {
   ActivityIndicatorIOS,
 } from 'react-native';
 
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
 class CreateGroup extends React.Component{
   _renderBackButton(){
     return (
@@ -112,8 +114,8 @@ let styles = {
   addPhotoContainer: {
     backgroundColor: 'white',
     marginVertical: 15,
-    marginHorizontal: 30,
-    borderRadius: 20,
+    marginHorizontal: (deviceWidth - 200) / 2,
+    borderRadius: 30,
     paddingVertical: 15,
     paddingHorizontal: 10,
     flexDirection: 'row',

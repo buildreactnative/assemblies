@@ -42,7 +42,7 @@ class Groups extends React.Component{
           name: 'CreateGroup'
         })
       }}>
-        <Icon name="ios-plus-outline" size={25} color="#ccc" />
+        <Icon name="w" size={25} color="#ccc" />
       </TouchableOpacity>
     )
   }

@@ -14,4 +14,21 @@ const profileFixture = {
     {name: 'Python Developers', background: Colors.brandPrimary},
   ]
 }
-module.exports = {currentUserAvatar, profileFixture, }
+
+const users = [
+  {
+    username: 'Alim',
+    avatar: 'http://nyccamp.org/sites/default/files/styles/large/public/pictures/picture-1362-1444315715.jpg?itok=DJ0NcfJ0',
+    city: 'Oyster Beach',
+    state: 'NY',
+    technologies: [
+      'JavaScript', 'MeteorJS', 'React Native',
+    ],
+    assemblies: [
+      {name: 'MeteorJS NYC', background: Colors.brandPrimaryDark, backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg'},
+      {name: 'Python Developers', background: Colors.brandPrimary, backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg'},
+    ]
+  },
+  profileFixture,
+]
+module.exports = {currentUserAvatar, profileFixture, users}

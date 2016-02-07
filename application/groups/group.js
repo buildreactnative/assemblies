@@ -31,15 +31,29 @@ class Group extends React.Component{
       </TouchableOpacity>
     )
   }
+  _renderAddButton(){
+    return (
+      <TouchableOpacity style={styles.addButton} onPress={()=> {
+        this.props.navigator.push({
+          name: 'CreateEvent',
+          group: this.props.group,
+        });
+      }}>
+        <Icon name="ios-plus-outline" size={25} color="#ccc" />
+      </TouchableOpacity>
+    )
+  }
   render(){
     let {group} = this.props;
     let backButton = this._renderBackButton();
+    let addButton = this._renderAddButton();
     return (
       <View style={styles.container}>
       <NavigationBar
         title={{title: group.name, tintColor: 'white'}}
         tintColor={Colors.brandPrimary}
         leftButton={backButton}
+        rightButton={addButton}
       />
         <ScrollView style={styles.scrollView}>
         <Image source={{uri: group.backgroundImage}} style={styles.topImage}>
@@ -96,6 +110,11 @@ let styles = {
     paddingLeft: 20,
     paddingBottom: 10,
     backgroundColor: 'transparent',
+  },
+  addButton: {
+    backgroundColor: 'transparent',
+    paddingRight: 20,
+    paddingBottom: 10,
   },
   container: {
     flex: 1,
