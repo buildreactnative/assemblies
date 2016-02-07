@@ -25,25 +25,25 @@ class Welcome extends Component {
           <Text style={styles.title}>assembly</Text>
           <Text style={styles.subTitle}>Where Developers Connect</Text>
         </View>
-        <TouchableOpacity style={styles.registerButton}
-          onPress={()=> {
-            this.props.navigator.push({
-              name: 'Dashboard'
-            })
-          }}
-        >
-          <Icon style={styles.icon} name="social-facebook" size={36} color='white' />
-          <Text style={styles.facebookButtonText}>Login with Facebook</Text>
-        </TouchableOpacity>
         <TouchableOpacity style={styles.loginButton}
           onPress={()=> {
             this.props.navigator.push({
-              name: 'Dashboard'
+              name: 'Register'
             })
           }}
         >
           <Icon style={styles.icon} name="person" size={36} color={Colors.facebookBlue} />
           <Text style={styles.loginButtonText}>Create an Account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.registerButton}
+          onPress={()=> {
+            this.props.navigator.push({
+              name: 'RegisterConfirm'
+            })
+          }}
+        >
+          <Icon style={styles.icon} name="social-facebook" size={36} color='white' />
+          <Text style={styles.facebookButtonText}>Login with Facebook</Text>
         </TouchableOpacity>
       </View>
     );
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   registerButton: {
     height: 80,
     position: 'absolute',
-    bottom: 80,
+    bottom: 0,
     left: 0,
     right: 0,
     flexDirection: 'row',
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   loginButton: {
     height: 80,
     position: 'absolute',
-    bottom: 0,
+    bottom: 80,
     left: 0,
     right: 0,
     flexDirection: 'row',
