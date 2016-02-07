@@ -2,9 +2,10 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-let autocompleteStyles = {
+const autocompleteStyles = {
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   textInputContainer: {
     backgroundColor: 'white',
@@ -23,11 +24,12 @@ let autocompleteStyles = {
     marginTop: 7.5,
     marginLeft: 8,
     marginRight: 8,
-    fontSize: 15,
+    fontSize: 18,
   },
   poweredContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: Colors.inactive,
   },
   powered: {
     marginTop: 15,
@@ -106,18 +108,11 @@ class Register extends React.Component{
         />
         <ScrollView style={styles.formContainer}>
           <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
-          {/*<View style={styles.formField}>
-            <TextInput
-              placeholderTextColor='#bbb'
-              style={styles.input}
-              placeholder="Your city"
-            />
-          </View>*/}
           <GooglePlacesAutocomplete
             styles={autocompleteStyles}
             placeholder='Your city'
             minLength={2} // minimum length of text to search
-            autoFocus={false}
+            autoFocus={true}
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
               console.log(data);
@@ -132,16 +127,7 @@ class Register extends React.Component{
               language: 'en', // language of the results
               types: '(cities)', // default: 'geocode'
             }}
-            styles={{
-              description: {
-                fontWeight: 'bold',
-              },
-              predefinedPlacesDescription: {
-                color: '#1faadb',
-              },
-            }}
-
-            currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+            currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
             currentLocationLabel="Current location"
             nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
             GoogleReverseGeocodingQuery={{
@@ -150,18 +136,13 @@ class Register extends React.Component{
             GooglePlacesSearchQuery={{
               // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
               rankby: 'distance',
-              types: 'food',
             }}
-
-
             filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-
             predefinedPlaces={[]}
           />
           <Text style={styles.h4}>Email</Text>
           <View style={styles.formField}>
             <TextInput
-              autoFocus={true}
               onChangeText={(text)=> this.setState({email: text})}
               keyboardType="email-address"
               autoCapitalize="none"
