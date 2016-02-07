@@ -1,7 +1,61 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+let autocompleteStyles = {
+  container: {
+    flex: 1,
+  },
+  textInputContainer: {
+    backgroundColor: 'white',
+    height: 44,
+    borderTopColor: 'white',
+    borderBottomColor: 'white',
+  },
+  textInput: {
+    backgroundColor: 'white',
+    height: 28,
+    borderRadius: 5,
+    paddingTop: 4.5,
+    paddingBottom: 4.5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 7.5,
+    marginLeft: 8,
+    marginRight: 8,
+    fontSize: 15,
+  },
+  poweredContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  powered: {
+    marginTop: 15,
+  },
+  listView: {
+    // flex: 1,
+  },
+  row: {
+    padding: 13,
+    height: 44,
+    flexDirection: 'row',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: 'white',
+  },
+  description: {
+  },
+  loader: {
+    // flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    height: 20,
+  },
+  androidLoader: {
+    marginRight: -15,
+  },
+}
 import React, {
   ScrollView,
   Component,
@@ -21,6 +75,16 @@ import React, {
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class Register extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      email: '',
+      password: '',
+      firstName: '',
+      lastName: '',
+      location: null,
+    }
+  }
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=>{
@@ -31,7 +95,7 @@ class Register extends React.Component{
     )
   }
   render(){
-    let titleConfig = {title: 'Create Event', tintColor: 'white'}
+    let titleConfig = {title: 'Create Account', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
     return (
       <View style={styles.container}>
@@ -41,23 +105,100 @@ class Register extends React.Component{
           leftButton={leftButtonConfig}
         />
         <ScrollView style={styles.formContainer}>
+          <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
+          {/*<View style={styles.formField}>
+            <TextInput
+              placeholderTextColor='#bbb'
+              style={styles.input}
+              placeholder="Your city"
+            />
+          </View>*/}
+          <GooglePlacesAutocomplete
+            styles={autocompleteStyles}
+            placeholder='Your city'
+            minLength={2} // minimum length of text to search
+            autoFocus={false}
+            fetchDetails={true}
+            onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+              console.log(data);
+              console.log(details);
+            }}
+            getDefaultValue={() => {
+              return ''; // text input default value
+            }}
+            query={{
+              // available options: https://developers.google.com/places/web-service/autocomplete
+              key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
+              language: 'en', // language of the results
+              types: '(cities)', // default: 'geocode'
+            }}
+            styles={{
+              description: {
+                fontWeight: 'bold',
+              },
+              predefinedPlacesDescription: {
+                color: '#1faadb',
+              },
+            }}
+
+            currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+            currentLocationLabel="Current location"
+            nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+            GoogleReverseGeocodingQuery={{
+              // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+            }}
+            GooglePlacesSearchQuery={{
+              // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+              rankby: 'distance',
+              types: 'food',
+            }}
+
+
+            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+
+            predefinedPlaces={[]}
+          />
           <Text style={styles.h4}>Email</Text>
           <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"/>
+            <TextInput
+              autoFocus={true}
+              onChangeText={(text)=> this.setState({email: text})}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              maxLength={140}
+              placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"/>
+          </View>
+          <Text style={styles.h4}>Password</Text>
+          <View style={styles.formField}>
+            <TextInput
+              onChangeText={(text)=> this.setState({password: text})}
+              secureTextEntry={true}
+              autoCapitalize="none"
+              maxLength={140}
+              placeholderTextColor='#bbb' style={styles.input} placeholder="Your password"/>
           </View>
           <Text style={styles.h4}>First Name</Text>
           <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Your first name"/>
+            <TextInput
+              maxLength={140}
+              onChangeText={(text)=> this.setState({firstName: text})}
+              placeholderTextColor='#bbb'
+              style={styles.input}
+              placeholder="Your first name"
+            />
           </View>
           <Text style={styles.h4}>Last name</Text>
           <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Your last name"/>
+            <TextInput
+              maxLength={140}
+              onChangeText={(text) => this.setState({lastName: text})}
+              placeholderTextColor='#bbb'
+              style={styles.input}
+              placeholder="Your last name"
+            />
           </View>
-          <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
-          <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Your city"/>
-          </View>
-          
+
+
         </ScrollView>
         <TouchableOpacity style={styles.submitButton} onPress={()=>{
           this.props.navigator.push({
@@ -132,7 +273,7 @@ let styles = {
     color: Colors.brandPrimary
   },
   input: {
-    color: '#ccc',
+    color: '#777',
     fontSize: 18,
     fontWeight: '300',
     height: 40,

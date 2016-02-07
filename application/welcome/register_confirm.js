@@ -31,7 +31,7 @@ class RegisterConfirm extends React.Component{
     )
   }
   render(){
-    let titleConfig = {title: 'Create Event', tintColor: 'white'}
+    let titleConfig = {title: 'Create Account', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
     return (
       <View style={styles.container}>
