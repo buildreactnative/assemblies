@@ -10,8 +10,8 @@ const profileFixture = {
     'JavaScript', 'Python', 'Machine Learning', 'Perl'
   ],
   assemblies: [
-    {name: 'React Native NYC', background: Colors.brandPrimaryDark},
-    {name: 'Python Developers', background: Colors.brandPrimary},
+    {name: 'React Native NYC', background: Colors.brandPrimaryDark, backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg'},
+    {name: 'Python Developers', background: Colors.brandPrimary, backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg'},
   ]
 }
 

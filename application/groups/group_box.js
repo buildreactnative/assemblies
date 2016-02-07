@@ -22,6 +22,7 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 class GroupBox extends React.Component{
   render(){
     let {group} = this.props;
+    console.log('GROUP', group);
     return (
       <Image source={{uri: group.backgroundImage}} style={styles.groupImage}>
         <View style={[styles.group, {backgroundColor: group.background,}]} >

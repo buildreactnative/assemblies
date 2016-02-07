@@ -1,5 +1,6 @@
 import Colors from '../styles/colors';
 import {users} from './users';
+import {eventFixtures} from './event_fixtures';
 
 let summary = 'Stumptown kickstarter microdosing, kale chips locavore leggings fanny pack mixtape meditation slow-carb kombucha pour-over pickled. Pabst ethical bushwick art party, quinoa chartreuse fanny pack four dollar toast mumblecore irony slow-carb squid. Mumblecore hashtag gentrify butcher ugh brunch, typewriter lo-fi chambray twee ethical. Organic gentrify hammock, messenger bag sriracha retro direct trade freegan mlkshk blog gastropub cronut crucifix.'
 const suggestedGroups = [
@@ -15,16 +16,7 @@ const suggestedGroups = [
       'iOS',
       'Mobile App Development',
     ],
-    events: [
-      {
-        name: 'Hack Night',
-        start: new Date(),
-        end: new Date(),
-        goingCount: 32,
-        summary: 'Hack Night Summary',
-        going: users,
-      }
-    ],
+    events: eventFixtures,
     admins: users,
   },
   {
@@ -39,16 +31,7 @@ const suggestedGroups = [
       'iOS',
       'Mobile App Development',
     ],
-    events: [
-      {
-        name: 'Hack Night',
-        start: new Date(),
-        end: new Date(),
-        goingCount: 32,
-        summary: 'Hack Night Summary',
-        going: users,
-      }
-    ],
+    events: eventFixtures,
     admins: users,
   },
 ]
@@ -65,16 +48,7 @@ const groupsFixture = [
       'iOS',
       'Mobile App Development',
     ],
-    events: [
-      {
-        name: 'Hack Night',
-        start: new Date(),
-        end: new Date(),
-        goingCount: 32,
-        summary: 'Hack Night Summary',
-        going: users,
-      }
-    ],
+    events: eventFixtures,
     admins: users,
   },
   {
@@ -89,16 +63,7 @@ const groupsFixture = [
       'Machine Learning',
       'Algorithms',
     ],
-    events: [
-      {
-        name: 'Hack Night',
-        start: new Date(),
-        end: new Date(),
-        goingCount: 32,
-        summary: 'Hack Night Summary',
-        going: users,
-      },
-    ],
+    events: eventFixtures,
     admins: users,
   },
   {
@@ -113,16 +78,7 @@ const groupsFixture = [
       'iOS',
       'Mobile App Development',
     ],
-    events: [
-      {
-        name: 'Hack Night',
-        start: new Date(),
-        end: new Date(),
-        goingCount: 32,
-        summary: 'Hack Night Summary',
-        going: users,
-      }
-    ],
+    events: eventFixtures,
     admins: users,
   },
   {
@@ -137,16 +93,7 @@ const groupsFixture = [
       'iOS',
       'Mobile App Development',
     ],
-    events: [
-      {
-        name: 'Hack Night',
-        start: new Date(),
-        end: new Date(),
-        goingCount: 32,
-        summary: 'Hack Night Summary',
-        going: users,
-      }
-    ],
+    events: eventFixtures,
     admins: users,
   },
 ]
