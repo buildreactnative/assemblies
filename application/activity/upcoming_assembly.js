@@ -46,6 +46,7 @@ class UpcomingAssembly extends React.Component{
 let styles = {
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   row: {
     flexDirection: 'row',

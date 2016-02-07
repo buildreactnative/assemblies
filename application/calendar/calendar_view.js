@@ -2,6 +2,8 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import UpcomingAssembly from '../activity/upcoming_assembly';
+import NavigationBar from 'react-native-navbar';
+import {calendarFixture} from '../fixtures/calendar_fixtures';
 
 import React, {
   ScrollView,
@@ -17,172 +19,6 @@ import React, {
   NativeModules,
 } from 'react-native';
 
-let now = new Date().getTime();
-let day = 24*60*60*1000;
-const CALENDAR = [
-  {date: new Date(), id: 0, assemblies: [
-    {
-      id: 0,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 1,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 2,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-  ]},
-  {date: new Date(now + 1*day), id: 1, assemblies: [
-    {
-      id: 0,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 1,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 2,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-  ]},
-  {date: new Date(now + 2*day), id: 2, assemblies: [
-    {
-      id: 0,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 1,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 2,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-  ]},
-  {date: new Date(now + 3*day), id: 3, assemblies: [
-    {
-      id: 0,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 1,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 2,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-  ]},
-  {date: new Date(now + 4*day), id: 4, assemblies: [
-    {
-      id: 0,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 1,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 2,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-  ]},
-  {date: new Date(now + 5*day), id: 5, assemblies: [
-    {
-      id: 0,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 1,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 2,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-  ]},
-  {date: new Date(now + 6*day), id: 6, assemblies: [
-    {
-      id: 0,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 1,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-    {
-      id: 2,
-      name: 'Hack Night',
-      group: 'React Native NYC',
-      time: new Date(),
-      going: 10,
-    },
-  ]},
-]
-
 class CalendarView extends React.Component{
   constructor(props){
     super(props);
@@ -192,8 +28,8 @@ class CalendarView extends React.Component{
     let getRowData = (dataBlob, sectionID, rowID) => {
       return dataBlob[`${sectionID}:${rowID}`]
     };
-    let sections = CALENDAR,
-    length = CALENDAR.length,
+    let sections = calendarFixture,
+    length = calendarFixture.length,
     dataBlob = {},
     sectionIDs = [],
     rowIDs = [],
@@ -242,16 +78,18 @@ class CalendarView extends React.Component{
     )
   }
   render(){
+    let titleConfig = {title: 'Calendar', tintColor: 'white'}
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.headerText}>Calendar</Text>
-        </View>
+        <NavigationBar
+          tintColor={Colors.brandPrimary}
+          title={titleConfig}
+        />
         <ListView
           style={styles.listView}
           initialListSize={7}
           ref="assemblyList"
-          contentInset={{bottom: 69}}
+          contentInset={{bottom: 49}}
           automaticallyAdjustContentInsets={false}
           dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)}
@@ -267,14 +105,14 @@ let styles = {
     flex: 1,
   },
   sectionHeader: {
-    backgroundColor: Colors.brandPrimaryDark,
+    backgroundColor: Colors.inactive,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 12,
   },
   sectionHeaderText: {
-    color: 'white',
+    color: Colors.brandPrimaryDark,
     fontSize: 20,
   },
   header: {
