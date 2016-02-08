@@ -2,6 +2,8 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import _ from 'underscore';
+
 const autocompleteStyles = {
   container: {
     flex: 1,
@@ -117,6 +119,12 @@ class Register extends React.Component{
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
               console.log(data);
               console.log(details);
+              this.setState({
+                location: _.extend({}, details.geometry.location, {
+                  city: details.address_components[0].long_name,
+                  state: details.address_components[2].short_name,
+                })
+              })
             }}
             getDefaultValue={() => {
               return ''; // text input default value

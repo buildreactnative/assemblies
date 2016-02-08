@@ -1,6 +1,11 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
+import DropDown, {
+  Select,
+  Option,
+  OptionList,
+} from '../select/index';
 
 import React, {
   ScrollView,
@@ -18,9 +23,66 @@ import React, {
   ActivityIndicatorIOS,
 } from 'react-native';
 
+const TECHNOLOGIES = [
+  'JavaScript',
+  'Python',
+  'Java',
+  'Product Management',
+  'Business Development',
+  'Ruby',
+  'Haskell',
+  'Hadoop',
+  'Machine Learning',
+  'Natural Language Processing',
+  'Elm',
+  'Redux',
+  'React Native',
+];
+
+let selectStyles = {
+  backgroundColor: 'white',
+  justifyContent: 'center',
+  paddingLeft: 20,
+  borderTopWidth: 0,
+  borderBottomWidth: 0,
+}
+
+let optionStyles = {
+
+}
+
+let optionTextStyles = {
+  fontSize: 20,
+  fontWeight: '300',
+}
+
+let overlayStyles = {
+  position: 'relative',
+  width: window.width,
+  height: window.height,
+  flex : 1,
+  justifyContent : "flex-start",
+  alignItems : "center",
+  backgroundColor : "#ffffff",
+}
+
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class RegisterConfirm extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      technologies: 'My Technologies'
+    }
+  }
+  _getOptionList(){
+    return this.refs['OPTIONLIST']
+  }
+  _technologies(tech){
+    this.setState({
+      technologies: tech
+    })
+  }
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=>{
@@ -47,6 +109,22 @@ class RegisterConfirm extends React.Component{
               <Icon name="ios-arrow-forward" size={30} color='#ccc' />
             </TouchableOpacity>
           </View>
+          <Select
+            width={deviceWidth}
+            height={55}
+            ref="SELECT1"
+            styleText={optionTextStyles}
+            style={selectStyles}
+            optionListRef={this._getOptionList.bind(this)}
+            defaultValue="My Technologies"
+            onSelect={this._technologies.bind(this)}>
+            {TECHNOLOGIES.map((tech, idx) => {
+              return <Option style={optionStyles} styleText={optionTextStyles} key={idx}>{tech}</Option>
+            })}
+          </Select>
+
+          <OptionList ref="OPTIONLIST" overlayStyles={overlayStyles}/>
+
           <Text style={styles.h4}>{"Tell us a little about yourself"}</Text>
           <TextInput placeholderTextColor='#bbb' style={styles.largeInput} multiline={true} placeholder="Short personal summary..."/>
 
@@ -113,7 +191,7 @@ let styles = {
   addPhotoContainer: {
     backgroundColor: 'white',
     marginVertical: 15,
-    marginHorizontal: (deviceWidth - 200) / 2,
+    marginHorizontal: (deviceWidth - 250) / 2,
     width: 250,
     borderRadius: 30,
     paddingVertical: 15,
