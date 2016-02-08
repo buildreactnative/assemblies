@@ -97,7 +97,8 @@ class RegisterConfirm extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      technologies: []
+      technologies: [],
+      avatarSource: 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png'
     }
   }
   _getOptionList(){
@@ -137,12 +138,12 @@ class RegisterConfirm extends React.Component{
     }
     else {
       // You can display the image using either data:
-      const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+      // const source = 'data:image/jpeg;base64,' + response.data;
 
       // uri (on iOS)
       // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
       // uri (on android)
-      // const source = {uri: response.uri, isStatic: true};
+      const source = response.uri;
 
       this.setState({
         avatarSource: source
@@ -193,6 +194,9 @@ class RegisterConfirm extends React.Component{
             <Icon name="camera" size={30} color={Colors.brandPrimary}/>
             <Text style={styles.photoText}>Add a Profile Photo</Text>
           </TouchableOpacity>
+          <View style={{height: 120, alignItems: 'center'}}>
+            <Image source={{uri: this.state.avatarSource}} style={styles.avatar}/>
+          </View>
         </ScrollView>
         <TouchableOpacity style={styles.submitButton} onPress={()=> {
           this.props.navigator.push({
@@ -209,6 +213,12 @@ class RegisterConfirm extends React.Component{
 let styles = {
   container: {
     flex: 1,
+  },
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    padding: 20,
   },
   technologyList:{
     textAlign: 'left',
