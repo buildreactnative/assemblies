@@ -28,12 +28,22 @@ class Welcome extends Component {
         <TouchableOpacity style={styles.loginButton}
           onPress={()=> {
             this.props.navigator.push({
-              name: 'Dashboard'
+              name: 'Register'
             })
           }}
         >
-          <Icon style={styles.icon} name="social-facebook" size={36} color={Colors.facebookBlue} />
-          <Text style={styles.loginButtonText}>Login with Facebook</Text>
+          <Icon style={styles.icon} name="person" size={36} color={Colors.facebookBlue} />
+          <Text style={styles.loginButtonText}>Create an Account</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.registerButton}
+          onPress={()=> {
+            this.props.navigator.push({
+              name: 'RegisterConfirm'
+            })
+          }}
+        >
+          <Icon style={styles.icon} name="social-facebook" size={36} color='white' />
+          <Text style={styles.facebookButtonText}>Login with Facebook</Text>
         </TouchableOpacity>
       </View>
     );
@@ -81,10 +91,21 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 20
   },
-  loginButton: {
+  registerButton: {
     height: 80,
     position: 'absolute',
     bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    backgroundColor: Colors.facebookBlue,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginButton: {
+    height: 80,
+    position: 'absolute',
+    bottom: 80,
     left: 0,
     right: 0,
     flexDirection: 'row',
@@ -96,6 +117,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     left: 30
+  },
+  facebookButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '700',
   },
   loginButtonText: {
     color: Colors.facebookBlue,

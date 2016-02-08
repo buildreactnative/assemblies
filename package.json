@@ -9,8 +9,11 @@
     "lodash": "^4.2.1",
     "moment": "^2.11.1",
     "react-native": "^0.18.0",
+    "react-native-google-places-autocomplete": "^1.1.6",
+    "react-native-image-picker": "^0.13.5",
     "react-native-invertible-scroll-view": "^0.2.0",
     "react-native-navbar": "^1.2.0",
+    "react-native-selectme": "^1.0.0",
     "react-native-vector-icons": "^1.1.0",
     "underscore": "^1.8.3",
     "underscore.string": "^3.2.3"

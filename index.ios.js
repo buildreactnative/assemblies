@@ -7,6 +7,9 @@ import Colors from './application/styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Welcome from './application/welcome/welcome';
 import Dashboard from './application/dashboard/dashboard';
+import Register from './application/welcome/register';
+import RegisterConfirm from './application/welcome/register_confirm';
+
 import React, {
   AppRegistry,
   Component,
@@ -22,6 +25,13 @@ import React, {
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class assembly extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      foundUser: false,
+      currentUser: null,
+    }
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -35,13 +45,24 @@ class assembly extends Component {
           renderScene={(route, navigator) => {
             switch(route.name) {
               case 'Welcome':
-                return (
-                  <Welcome navigator={navigator} />
-                )
+                return <Welcome navigator={navigator} />
                 break;
               case 'Dashboard':
+                return <Dashboard navigator={navigator} />
+                break;
+              case 'Register':
+                return <Register navigator={navigator} />
+                break;
+              case 'RegisterConfirm':
                 return (
-                  <Dashboard navigator={navigator} />
+                  <RegisterConfirm
+                    navigator={navigator}
+                    email={route.email}
+                    firstName={route.firstName}
+                    lastName={route.lastName}
+                    password={route.password}
+                    location={route.location}
+                  />
                 )
                 break;
             }
