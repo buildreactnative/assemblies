@@ -98,7 +98,8 @@ class RegisterConfirm extends React.Component{
     super(props);
     this.state = {
       technologies: [],
-      avatarSource: 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png'
+      avatarSource: 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png',
+      summary: '',
     }
   }
   _getOptionList(){
@@ -187,7 +188,7 @@ class RegisterConfirm extends React.Component{
             placeholderTextColor='#bbb'
             style={styles.largeInput}
             multiline={true}
-
+            onChangeText={(text)=> this.setState({summary: text})}
             placeholder="Short personal summary..."/>
 
           <TouchableOpacity style={styles.addPhotoContainer} onPress={this.showImagePicker.bind(this)}>
@@ -199,6 +200,39 @@ class RegisterConfirm extends React.Component{
           </View>
         </ScrollView>
         <TouchableOpacity style={styles.submitButton} onPress={()=> {
+          let {avatarSource, technologies, summary,} = this.state;
+          let {firstName, lastName, email, password, location,} = this.props;
+          let user = {
+            location: location,
+            firstName: firstName,
+            lastName: lastName,
+            username: `${firstName} ${lastName}`,
+            avatarUrl: avatarSource,
+            technologies: technologies,
+            password: password,
+            groupIds: [],
+            summary: summary,
+          }
+          console.log('USER PARAMS', user);
+          fetch("http://localhost:2403/users", {
+            method: "POST",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user)
+          })
+          .then((response) => response.json())
+          .then((data) => {
+              if (data.errors) {
+                console.log(data.errors);
+              }
+              else {
+                console.log('DATA', data);
+              }
+          })
+          .catch((error) => console.log(error))
+          .done();
           this.props.navigator.push({
             name: 'Dashboard'
           })

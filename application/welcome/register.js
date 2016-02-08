@@ -191,7 +191,12 @@ class Register extends React.Component{
         </ScrollView>
         <TouchableOpacity style={styles.submitButton} onPress={()=>{
           this.props.navigator.push({
-            name: 'RegisterConfirm'
+            name: 'RegisterConfirm',
+            email: this.state.email,
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            location: this.state.location,
+            password: this.state.password,
           })
         }}>
           <Text style={styles.buttonText}>Next</Text>

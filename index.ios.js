@@ -54,7 +54,16 @@ class assembly extends Component {
                 return <Register navigator={navigator} />
                 break;
               case 'RegisterConfirm':
-                return <RegisterConfirm navigator={navigator} />
+                return (
+                  <RegisterConfirm
+                    navigator={navigator}
+                    email={route.email}
+                    firstName={route.firstName}
+                    lastName={route.lastName}
+                    password={route.password}
+                    location={route.location}
+                  />
+                )
                 break;
             }
 
