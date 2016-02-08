@@ -1,4 +1,5 @@
 const Option = require('./option');
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import React, {
   Dimensions,
@@ -15,7 +16,11 @@ const SELECT = 'SELECT';
 const styles = StyleSheet.create({
   container: {
     borderColor: '#BDBDC1',
-    borderWidth: 2 / window.scale
+    borderWidth: 2 / window.scale,
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
+    alignItems: 'center',
   }
 });
 
@@ -56,9 +61,9 @@ class Select extends Component {
     optionListRef()._show(children, this.pageX, this.pageY, width, height, (item, value=item) => {
       if (item) {
         onSelect(value);
-        this.setState({
-          value: item
-        });
+        // this.setState({
+        //   value: item
+        // });
       }
     });
   }
@@ -70,7 +75,8 @@ class Select extends Component {
     return (
       <TouchableWithoutFeedback onPress={this._onPress.bind(this)}>
         <View ref={SELECT} style={[styles.container, style, dimensions ]}>
-          <Option style={ styleOption } styleText={ styleText }>{this.state.value}</Option>
+          <Option style={ [styleOption, {flex: 1,}] } styleText={ styleText }>{this.state.value}</Option>
+          <Icon name="ios-arrow-forward" size={30} color="#ccc" style={{flex: 0.1, marginRight: 20,}}/>
         </View>
       </TouchableWithoutFeedback>
     );

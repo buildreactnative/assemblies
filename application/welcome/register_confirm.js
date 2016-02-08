@@ -1,6 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
+
 import DropDown, {
   Select,
   Option,
@@ -23,6 +24,30 @@ import React, {
   ActivityIndicatorIOS,
 } from 'react-native';
 
+var UIImagePickerManager = require('NativeModules').UIImagePickerManager;
+
+var options = {
+  title: 'Select Avatar', // specify null or empty string to remove the title
+  cancelButtonTitle: 'Cancel',
+  takePhotoButtonTitle: 'Take Photo...', // specify null or empty string to remove this button
+  chooseFromLibraryButtonTitle: 'Choose from Library...', // specify null or empty string to remove this button
+  cameraType: 'back', // 'front' or 'back'
+  mediaType: 'photo', // 'photo' or 'video'
+  videoQuality: 'high', // 'low', 'medium', or 'high'
+  maxWidth: 100, // photos only
+  maxHeight: 100, // photos only
+  aspectX: 2, // aspectX:aspectY, the cropping image's ratio of width to height
+  aspectY: 1, // aspectX:aspectY, the cropping image's ratio of width to height
+  quality: 0.2, // photos only
+  angle: 0, // photos only
+  allowsEditing: false, // Built in functionality to resize/reposition the image
+  noData: false, // photos only - disables the base64 `data` field from being generated (greatly improves performance on large photos)
+  storageOptions: { // if this key is provided, the image will get saved in the documents/pictures directory (rather than a temporary directory)
+    skipBackup: true, // image will NOT be backed up to icloud
+    path: 'images' // will save image at /Documents/images rather than the root
+  }
+};
+
 const TECHNOLOGIES = [
   'JavaScript',
   'Python',
@@ -42,7 +67,7 @@ const TECHNOLOGIES = [
 let selectStyles = {
   backgroundColor: 'white',
   justifyContent: 'center',
-  paddingLeft: 20,
+  paddingLeft: 10,
   borderTopWidth: 0,
   borderBottomWidth: 0,
 }
@@ -72,7 +97,7 @@ class RegisterConfirm extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      technologies: 'My Technologies'
+      technologies: []
     }
   }
   _getOptionList(){
@@ -80,7 +105,7 @@ class RegisterConfirm extends React.Component{
   }
   _technologies(tech){
     this.setState({
-      technologies: tech
+      technologies: this.state.technologies.concat(tech)
     })
   }
   _renderBackButton(){
@@ -92,9 +117,44 @@ class RegisterConfirm extends React.Component{
       </TouchableOpacity>
     )
   }
+  _renderTechnologies(){
+    return (
+      <Text style={styles.technologyList}>{this.state.technologies.join(', ')}</Text>
+    )
+  }
+  showImagePicker(){
+    UIImagePickerManager.showImagePicker(options, (response) => {
+    console.log('Response = ', response);
+
+    if (response.didCancel) {
+      console.log('User cancelled image picker');
+    }
+    else if (response.error) {
+      console.log('UIImagePickerManager Error: ', response.error);
+    }
+    else if (response.customButton) {
+      console.log('User tapped custom button: ', response.customButton);
+    }
+    else {
+      // You can display the image using either data:
+      const source = {uri: 'data:image/jpeg;base64,' + response.data, isStatic: true};
+
+      // uri (on iOS)
+      // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
+      // uri (on android)
+      // const source = {uri: response.uri, isStatic: true};
+
+      this.setState({
+        avatarSource: source
+      });
+    }
+  });
+  }
   render(){
+    let {technologies} = this.state;
     let titleConfig = {title: 'Create Account', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
+    let techAreas = technologies.length ? this._renderTechnologies() : null;
     return (
       <View style={styles.container}>
         <NavigationBar
@@ -103,12 +163,8 @@ class RegisterConfirm extends React.Component{
           leftButton={leftButtonConfig}
         />
         <ScrollView style={styles.formContainer}>
-          <View style={styles.formField}>
-            <Text style={styles.formName}>My Technologies</Text>
-            <TouchableOpacity>
-              <Icon name="ios-arrow-forward" size={30} color='#ccc' />
-            </TouchableOpacity>
-          </View>
+          <Text style={styles.h4}>{"My technologies"}</Text>
+          {techAreas}
           <Select
             width={deviceWidth}
             height={55}
@@ -116,7 +172,7 @@ class RegisterConfirm extends React.Component{
             styleText={optionTextStyles}
             style={selectStyles}
             optionListRef={this._getOptionList.bind(this)}
-            defaultValue="My Technologies"
+            defaultValue="Add a technology"
             onSelect={this._technologies.bind(this)}>
             {TECHNOLOGIES.map((tech, idx) => {
               return <Option style={optionStyles} styleText={optionTextStyles} key={idx}>{tech}</Option>
@@ -126,9 +182,14 @@ class RegisterConfirm extends React.Component{
           <OptionList ref="OPTIONLIST" overlayStyles={overlayStyles}/>
 
           <Text style={styles.h4}>{"Tell us a little about yourself"}</Text>
-          <TextInput placeholderTextColor='#bbb' style={styles.largeInput} multiline={true} placeholder="Short personal summary..."/>
+          <TextInput
+            placeholderTextColor='#bbb'
+            style={styles.largeInput}
+            multiline={true}
 
-          <TouchableOpacity style={styles.addPhotoContainer}>
+            placeholder="Short personal summary..."/>
+
+          <TouchableOpacity style={styles.addPhotoContainer} onPress={this.showImagePicker.bind(this)}>
             <Icon name="camera" size={30} color={Colors.brandPrimary}/>
             <Text style={styles.photoText}>Add a Profile Photo</Text>
           </TouchableOpacity>
@@ -148,6 +209,14 @@ class RegisterConfirm extends React.Component{
 let styles = {
   container: {
     flex: 1,
+  },
+  technologyList:{
+    textAlign: 'left',
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: Colors.brandPrimary,
+    paddingHorizontal: 20,
+    paddingVertical: 4,
   },
   backButton: {
     paddingLeft: 20,
@@ -174,6 +243,7 @@ let styles = {
   h4: {
     fontSize: 20,
     fontWeight: '300',
+    marginTop: 15,
     color: 'black',
     paddingHorizontal: 20,
     paddingVertical: 5,
@@ -214,7 +284,7 @@ let styles = {
     paddingVertical: 5,
   },
   largeInput: {
-    color: '#ccc',
+    color: '#777',
     fontSize: 18,
     backgroundColor: 'white',
     fontWeight: '300',
