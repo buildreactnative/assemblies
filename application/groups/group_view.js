@@ -7,6 +7,7 @@ import CreateGroup from './create_group';
 import CreateEvent from './create_event';
 import GroupMembers from './group_members';
 import GroupEvents from './group_events';
+import CreateGroupConfirm from './create_group_confirm';
 
 import React, {
   ScrollView,
@@ -47,6 +48,8 @@ class GroupView extends React.Component{
               return <GroupEvents navigator={navigator} />
             } else if (route.name == 'CreateEvent'){
               return <CreateEvent navigator={navigator} />
+            } else if (route.name == 'CreateGroupConfirm'){
+              return <CreateGroupConfirm {...route} navigator={navigator}/>
             }
           }}/>
       </View>

@@ -35,7 +35,7 @@ import React, {
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
-class CreateGroup extends React.Component{
+class CreateGroupConfirm extends React.Component{
   constructor(props){
     super(props);
     this.state = {
@@ -104,71 +104,32 @@ class CreateGroup extends React.Component{
           leftButton={leftButtonConfig}
         />
         <ScrollView style={styles.formContainer}>
-          <Text style={styles.h4}>Name of your assembly</Text>
-          <View style={styles.formField}>
-            <TextInput
-              onChangeText={(text)=> this.setState({name: text})}
-              placeholderTextColor='#bbb'
-              style={styles.input}
-              placeholder="Name of your assembly"
-            />
+          <Text style={styles.h4}>What technology is your assembly about?</Text>
+          {this.state.technologies.length ? this._renderTechnologies() : null}
+          <Select
+            width={deviceWidth}
+            height={55}
+            ref="SELECT1"
+            styleText={optionTextStyles}
+            style={selectStyles}
+            optionListRef={this._getOptionList.bind(this)}
+            defaultValue="Add a technology"
+            onSelect={this._technologies.bind(this)}>
+            {TECHNOLOGIES.map((tech, idx) => {
+              return <Option style={optionStyles} styleText={optionTextStyles} key={idx}>{tech}</Option>
+            })}
+          </Select>
+          <OptionList ref="OPTIONLIST" overlayStyles={overlayStyles}/>
+          <TouchableOpacity style={styles.addPhotoContainer}>
+            <Icon name="camera" size={30} color={Colors.brandPrimary}/>
+            <Text style={styles.photoText}>Add a Photo</Text>
+          </TouchableOpacity>
+          <View style={{height: 120, alignItems: 'center'}}>
+            <Image source={{uri: this.state.imageUrl}} style={styles.avatar}/>
           </View>
-          <Text style={styles.h4}>Where is your group located?</Text>
-          <GooglePlacesAutocomplete
-            styles={autocompleteStyles}
-            placeholder='Your city'
-            minLength={2} // minimum length of text to search
-            autoFocus={true}
-            fetchDetails={true}
-            onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-              console.log(data);
-              console.log(details);
-              this.setState({
-                location: _.extend({}, details.geometry.location, {
-                  city: details.address_components[0].long_name,
-                  state: details.address_components[2].short_name,
-                })
-              })
-            }}
-            getDefaultValue={() => {
-              return ''; // text input default value
-            }}
-            query={{
-              key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
-              language: 'en', // language of the results
-              types: '(cities)', // default: 'geocode'
-            }}
-            currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
-            currentLocationLabel="Current location"
-            nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-            GoogleReverseGeocodingQuery={{}}
-            GooglePlacesSearchQuery={{ rankby: 'distance',}}
-            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-            predefinedPlaces={[]}
-          />
-
-          <Text style={styles.h4}>Who should join and why?</Text>
-          <TextInput
-            onChangeText={(text)=> this.setState({summary: text})}
-            placeholderTextColor='#bbb'
-            style={styles.largeInput}
-            multiline={true}
-            placeholder="Type a message to get people interested in your group..."
-          />
         </ScrollView>
-        <TouchableOpacity
-          onPress={()=>{
-            let {name, technologies, location} = this.state;
-            this.props.navigator.push({
-              name: 'CreateGroupConfirm',
-              groupName: name,
-              technologies: technologies,
-              location:location,
-            })
-          }}
-          style={styles.submitButton}
-        >
-          <Text style={styles.buttonText}>Next</Text>
+        <TouchableOpacity style={styles.submitButton}>
+          <Text style={styles.buttonText}>Create Assembly</Text>
         </TouchableOpacity>
       </View>
     )
@@ -267,4 +228,4 @@ let styles = {
   },
 }
 
-module.exports = CreateGroup
+module.exports = CreateGroupConfirm
