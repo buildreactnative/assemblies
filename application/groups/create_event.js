@@ -1,6 +1,9 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import _ from 'underscore';
+import {autocompleteStyles} from '../utilities/style_utilities';
 
 import React, {
   ScrollView,
@@ -21,6 +24,14 @@ import React, {
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class CreateEvent extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      summary: '',
+      name: '',
+      location: null,
+    }
+  }
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=>{
@@ -40,28 +51,70 @@ class CreateEvent extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <View style={styles.formContainer}>
-          <Text style={styles.h4}>When is the event?</Text>
-          <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Choose a date"/>
-          </View>
+        <ScrollView style={styles.formContainer}>
           <Text style={styles.h4}>{"What's the event name?"}</Text>
           <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Type a name"/>
+            <TextInput
+              onChangeText={(text)=> this.setState({name: text})}
+              placeholderTextColor='#bbb'
+              style={styles.input}
+              placeholder="Type a name"
+            />
           </View>
           <Text style={styles.h4}>{"What's happening at the event?"}</Text>
-          <TextInput placeholderTextColor='#bbb' style={styles.largeInput} multiline={true} placeholder="Type a summary of the event..."/>
-          <TouchableOpacity style={styles.addPhotoContainer}>
-            <Icon name="camera" size={30} color={Colors.brandPrimary}/>
-            <Text style={styles.photoText}>Add a Photo</Text>
-          </TouchableOpacity>
+          <TextInput
+            onChangeText={(text)=> this.setState({summary: text})}
+            placeholderTextColor='#bbb'
+            style={styles.largeInput}
+            multiline={true}
+            placeholder="Type a summary of the event..."
+          />
           <Text style={styles.h4}>Where is the event?</Text>
-          <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' placeholder="Type a place or street address" style={styles.input}/>
-          </View>
-        </View>
-        <TouchableOpacity style={styles.submitButton}>
-          <Text style={styles.buttonText}>Create Assembly</Text>
+          <GooglePlacesAutocomplete
+            styles={autocompleteStyles}
+            placeholder='Type a place or street address'
+            minLength={2} // minimum length of text to search
+            autoFocus={false}
+            fetchDetails={true}
+            onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+              console.log(data);
+              console.log(details);
+              this.setState({
+                location: _.extend({}, details.geometry.location, {
+                  city: details.address_components[0].long_name,
+                  state: details.address_components[2].short_name,
+                })
+              })
+            }}
+            getDefaultValue={() => {
+              return ''; // text input default value
+            }}
+            query={{
+              key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
+              language: 'en', // language of the results
+              types: '(cities)', // default: 'geocode'
+            }}
+            currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
+            currentLocationLabel="Current location"
+            nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+            GoogleReverseGeocodingQuery={{}}
+            GooglePlacesSearchQuery={{ rankby: 'distance',}}
+            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+            predefinedPlaces={[]}
+          />
+        </ScrollView>
+        <TouchableOpacity
+          onPress={()=>{
+            let {name, summary, location} = this.state;
+            this.props.navigator.push({
+              name: 'CreateEventConfirm',
+              eventName: name,
+              summary: summary,
+              location: location,
+            })
+          }}
+          style={styles.submitButton}>
+          <Text style={styles.buttonText}>Next</Text>
         </TouchableOpacity>
       </View>
     )

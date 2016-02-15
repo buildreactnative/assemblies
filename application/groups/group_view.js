@@ -7,6 +7,7 @@ import CreateGroup from './create_group';
 import CreateEvent from './create_event';
 import GroupMembers from './group_members';
 import GroupEvents from './group_events';
+import CreateEventConfirm from './create_event_confirm';
 import CreateGroupConfirm from './create_group_confirm';
 
 import React, {
@@ -49,6 +50,8 @@ class GroupView extends React.Component{
               return <GroupEvents {...this.props} navigator={navigator}  />
             } else if (route.name == 'CreateEvent'){
               return <CreateEvent {...this.props} navigator={navigator}  />
+            } else if (route.name == 'CreateEventConfirm'){
+              return <CreateEventConfirm {...this.props} {...route} navigator={navigator} />
             } else if (route.name == 'CreateGroupConfirm'){
               return <CreateGroupConfirm {...this.props} {...route} navigator={navigator} />
             }
