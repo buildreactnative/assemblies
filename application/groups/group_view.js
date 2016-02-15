@@ -28,6 +28,7 @@ import React, {
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 class GroupView extends React.Component{
   render(){
+    console.log('THIS PROPS', this.props);
     return (
       <View style={styles.container}>
         <Navigator
@@ -37,19 +38,19 @@ class GroupView extends React.Component{
           }}
           renderScene={(route, navigator) => {
             if (route.name == 'Groups') {
-              return <Groups navigator={navigator}/>
+              return <Groups {...this.props} navigator={navigator} />
             } else if (route.name == 'CreateGroup'){
-              return <CreateGroup navigator={navigator} />
+              return <CreateGroup {...this.props} navigator={navigator} />
             } else if (route.name == 'Group') {
-              return <Group navigator={navigator} group={route.group} />
+              return <Group {...this.props} navigator={navigator} {...route}  />
             } else if (route.name == 'Members') {
-              return <GroupMembers navigator={navigator}/>
+              return <GroupMembers {...this.props} navigator={navigator} />
             } else if (route.name == 'Events' ) {
-              return <GroupEvents navigator={navigator} />
+              return <GroupEvents {...this.props} navigator={navigator}  />
             } else if (route.name == 'CreateEvent'){
-              return <CreateEvent navigator={navigator} />
+              return <CreateEvent {...this.props} navigator={navigator}  />
             } else if (route.name == 'CreateGroupConfirm'){
-              return <CreateGroupConfirm {...route} navigator={navigator}/>
+              return <CreateGroupConfirm {...this.props} {...route} navigator={navigator} />
             }
           }}/>
       </View>

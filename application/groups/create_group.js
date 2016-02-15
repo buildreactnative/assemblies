@@ -92,6 +92,7 @@ class CreateGroup extends React.Component{
     return this.refs['OPTIONLIST']
   }
   render(){
+    console.log('RENDER')
     let {technologies,} = this.state;
     let titleConfig = {title: 'Create Assembly', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
@@ -118,7 +119,7 @@ class CreateGroup extends React.Component{
             styles={autocompleteStyles}
             placeholder='Your city'
             minLength={2} // minimum length of text to search
-            autoFocus={true}
+            autoFocus={false}
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
               console.log(data);
@@ -158,12 +159,12 @@ class CreateGroup extends React.Component{
         </ScrollView>
         <TouchableOpacity
           onPress={()=>{
-            let {name, technologies, location} = this.state;
+            let {name, location, summary} = this.state;
             this.props.navigator.push({
               name: 'CreateGroupConfirm',
               groupName: name,
-              technologies: technologies,
-              location:location,
+              location: location,
+              summary: summary,
             })
           }}
           style={styles.submitButton}

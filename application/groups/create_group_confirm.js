@@ -4,7 +4,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
-import {TECHNOLOGIES,} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -120,7 +120,7 @@ class CreateGroupConfirm extends React.Component{
             })}
           </Select>
           <OptionList ref="OPTIONLIST" overlayStyles={overlayStyles}/>
-          <TouchableOpacity style={styles.addPhotoContainer}>
+          <TouchableOpacity style={styles.addPhotoContainer} onPress={this.showImagePicker.bind(this)}>
             <Icon name="camera" size={30} color={Colors.brandPrimary}/>
             <Text style={styles.photoText}>Add a Photo</Text>
           </TouchableOpacity>
@@ -128,7 +128,47 @@ class CreateGroupConfirm extends React.Component{
             <Image source={{uri: this.state.imageUrl}} style={styles.avatar}/>
           </View>
         </ScrollView>
-        <TouchableOpacity style={styles.submitButton}>
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={()=>{
+            let {groupName, summary, location, currentUser} = this.props;
+            let userId = currentUser ? currentUser.id : '';
+            let {imageUrl, technologies,} = this.state;
+            let group = {
+              name: groupName,
+              summary: summary,
+              location: location || {},
+              imageUrl: imageUrl,
+              technologies: technologies,
+              members: {},
+              events: {},
+            };
+            console.log('GROUP', group)
+            if (!! userId ){
+              group.members[userId] = {
+                confirmed: true,
+                admin: true,
+                owner: true,
+                notifications: true
+              }
+            }
+            fetch("http://localhost:2403/groups", {
+              method: "POST",
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(group)
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('DATA', data);
+              this.props.navigator.push({
+                name: 'Groups',
+              })
+            })
+          }}
+        >
           <Text style={styles.buttonText}>Create Assembly</Text>
         </TouchableOpacity>
       </View>
