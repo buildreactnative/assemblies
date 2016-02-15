@@ -212,6 +212,9 @@ class RegisterConfirm extends React.Component{
             technologies: technologies,
             password: password,
             groupIds: [],
+            eventIds: [],
+            messageIds: [],
+            suggestedEventIds: [],
             summary: summary,
           }
           console.log('USER PARAMS', user);
