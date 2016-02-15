@@ -1,7 +1,13 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-
+import {TECHNOLOGIES} from '../utilities/fixtures';
+import {
+  overlayStyles,
+  optionTextStyles,
+  optionStyles,
+  selectStyles,
+} from '../utilities/style_utilities'
 import DropDown, {
   Select,
   Option,
@@ -49,48 +55,9 @@ var options = {
   }
 };
 
-const TECHNOLOGIES = [
-  'JavaScript',
-  'Python',
-  'Java',
-  'Product Management',
-  'Business Development',
-  'Ruby',
-  'Haskell',
-  'Hadoop',
-  'Machine Learning',
-  'Natural Language Processing',
-  'Elm',
-  'Redux',
-  'React Native',
-];
 
-let selectStyles = {
-  backgroundColor: 'white',
-  justifyContent: 'center',
-  paddingLeft: 10,
-  borderTopWidth: 0,
-  borderBottomWidth: 0,
-}
 
-let optionStyles = {
 
-}
-
-let optionTextStyles = {
-  fontSize: 20,
-  fontWeight: '300',
-}
-
-let overlayStyles = {
-  position: 'relative',
-  width: window.width,
-  height: window.height,
-  flex : 1,
-  justifyContent : "flex-start",
-  alignItems : "center",
-  backgroundColor : "#ffffff",
-}
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
