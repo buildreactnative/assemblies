@@ -66,7 +66,6 @@ class assembly extends Component {
               currentUser: data,
               sessionId: sid,
             })
-            AsyncStorage.setItem('sid', 'false');
           }
         })
         .catch((error) => {
@@ -106,8 +105,7 @@ class assembly extends Component {
                 return (
                   <Dashboard
                     navigator={navigator}
-                    sessionId={sessionId}
-                    currentUser={currentUser}
+                    {...this.state}
                   />
                 )
                 break;
@@ -121,11 +119,7 @@ class assembly extends Component {
                 return (
                   <RegisterConfirm
                     navigator={navigator}
-                    email={route.email}
-                    firstName={route.firstName}
-                    lastName={route.lastName}
-                    password={route.password}
-                    location={route.location}
+                    {...route}
                   />
                 )
                 break;

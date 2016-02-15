@@ -42,11 +42,11 @@ class Settings extends React.Component{
               )
             } else if (route.name == 'UserSettings'){
               return (
-                <UserSettings navigator={navigator} />
+                <UserSettings navigator={navigator} {...this.props}/>
               )
             } else if (route.name == 'UserProfile') {
               return (
-                <UserProfile navigator={navigator} />
+                <UserProfile navigator={navigator} {...this.props}/>
               )
             }
           }}

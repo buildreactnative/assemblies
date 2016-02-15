@@ -10,6 +10,7 @@ import GroupView from '../groups/group_view';
 import React, {
   ScrollView,
   Component,
+  AsyncStorage,
   StyleSheet,
   Text,
   View,
@@ -31,6 +32,12 @@ class Dashboard extends Component {
       selectedTab: 'Activity',
       loading: true,
     }
+  }
+  _logout(){
+    AsyncStorage.setItem('sid', 'false');
+    this.props.navigator.push({
+      name: 'Welcome'
+    })
   }
   _setTab(tabId){
     this.setState({selectedTab: tabId})
@@ -116,7 +123,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <Settings />
+          <Settings {...this.props} logout={this._logout.bind(this)}/>
         </Icon.TabBarItem>
 
       </TabBarIOS>

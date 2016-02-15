@@ -48,7 +48,13 @@ class UserProfile extends React.Component{
             <Icon name="ios-arrow-forward" size={30} color='#ccc' />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.logoutButton}>
+        <TouchableOpacity
+          onPress={()=>{
+            console.log('PROPS', this.props)
+            this.props.logout();
+          }}
+          style={styles.logoutButton}
+        >
           <Text style={styles.logoutText}>Log Out</Text>
         </TouchableOpacity>
       </View>
