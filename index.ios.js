@@ -9,6 +9,7 @@ import Welcome from './application/welcome/welcome';
 import Dashboard from './application/dashboard/dashboard';
 import Register from './application/welcome/register';
 import RegisterConfirm from './application/welcome/register_confirm';
+import Login from './application/welcome/login';
 
 import React, {
   AppRegistry,
@@ -19,6 +20,7 @@ import React, {
   Image,
   TouchableOpacity,
   Dimensions,
+  AsyncStorage,
   Navigator,
 } from 'react-native';
 
@@ -30,9 +32,61 @@ class assembly extends Component {
     this.state = {
       foundUser: false,
       currentUser: null,
+      initialRoute: 'Welcome',
+      sessionId: null,
+    }
+  }
+  componentDidMount(){
+    this._loadUser()
+  }
+  async _loadUser(){
+    try {
+      var sid = await AsyncStorage.getItem('sid');
+      console.log('SID', sid);
+      if (sid !== null && sid !== 'false'){
+        fetch("http://localhost:2403/users/me", {
+          method: "GET",
+          headers: {
+              'Set-Cookie': `sid=${sid}`,
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.errors) {
+            console.log(data.errors);
+            this.setState({foundUser: true})
+          }
+          else {
+            console.log('DATA', data);
+            this.setState({
+              foundUser: true,
+              initialRoute: 'Dashboard',
+              currentUser: data,
+              sessionId: sid,
+            })
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          AsyncStorage.setItem('sid', 'false');
+          this.setState({foundUser: true})
+        })
+        .done();
+      } else {
+        this.setState({foundUser: true})
+        AsyncStorage.setItem('sid', 'false')
+      }
+    } catch (error) {
+      console.log('ERR: ', error)
     }
   }
   render() {
+    let {foundUser, currentUser, sessionId,} = this.state;
+    if (! foundUser) {
+      return <View></View>
+    }
     return (
       <View style={styles.container}>
         <Navigator
@@ -40,7 +94,7 @@ class assembly extends Component {
             return Navigator.SceneConfigs.FadeAndroid;
           }}
           initialRoute={{
-            name: 'Welcome'
+            name: this.state.initialRoute
           }}
           renderScene={(route, navigator) => {
             switch(route.name) {
@@ -48,20 +102,24 @@ class assembly extends Component {
                 return <Welcome navigator={navigator} />
                 break;
               case 'Dashboard':
-                return <Dashboard navigator={navigator} />
+                return (
+                  <Dashboard
+                    navigator={navigator}
+                    {...this.state}
+                  />
+                )
                 break;
               case 'Register':
                 return <Register navigator={navigator} />
+                break;
+              case 'Login':
+                return <Login navigator={navigator} />
                 break;
               case 'RegisterConfirm':
                 return (
                   <RegisterConfirm
                     navigator={navigator}
-                    email={route.email}
-                    firstName={route.firstName}
-                    lastName={route.lastName}
-                    password={route.password}
-                    location={route.location}
+                    {...route}
                   />
                 )
                 break;

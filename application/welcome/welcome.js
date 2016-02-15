@@ -38,12 +38,12 @@ class Welcome extends Component {
         <TouchableOpacity style={styles.registerButton}
           onPress={()=> {
             this.props.navigator.push({
-              name: 'RegisterConfirm'
+              name: 'Login'
             })
           }}
         >
-          <Icon style={styles.icon} name="social-facebook" size={36} color='white' />
-          <Text style={styles.facebookButtonText}>Login with Facebook</Text>
+          <Icon style={styles.icon} name="unlocked" size={36} color='white' />
+          <Text style={styles.facebookButtonText}>Login</Text>
         </TouchableOpacity>
       </View>
     );
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   loginButtonText: {
-    color: Colors.facebookBlue,
+    color: Colors.brandPrimary,
     fontSize: 16,
     fontWeight: '700'
   }

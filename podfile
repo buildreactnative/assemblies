@@ -1,0 +1,6 @@
+pod 'Analytics'
+
+# uncomment to add these integrations
+pod 'Segment-GoogleAnalytics'
+pod 'Segment-Branch'
+pod "Segment-Localytics"

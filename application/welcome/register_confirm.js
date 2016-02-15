@@ -16,6 +16,7 @@ import React, {
   TextInput,
   View,
   TabBarIOS,
+  AsyncStorage,
   Image,
   TouchableOpacity,
   Dimensions,
@@ -206,11 +207,14 @@ class RegisterConfirm extends React.Component{
             location: location,
             firstName: firstName,
             lastName: lastName,
-            username: `${firstName} ${lastName}`,
+            username: email,
             avatarUrl: avatarSource,
             technologies: technologies,
             password: password,
             groupIds: [],
+            eventIds: [],
+            messageIds: [],
+            suggestedEventIds: [],
             summary: summary,
           }
           console.log('USER PARAMS', user);
@@ -229,13 +233,36 @@ class RegisterConfirm extends React.Component{
               }
               else {
                 console.log('DATA', data);
+                let user = {username: email, password: password};
+                fetch("http://localhost:2403/users/login", {
+                  method: "POST",
+                  headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify(user)
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                  if (data.errors || data.status == 401) {
+                    console.log(data.errors);
+                    errors = 'Login failed'
+                  }
+                  else {
+                    console.log('DATA', data);
+                    AsyncStorage.setItem('sid', data.id)
+                    this.props.navigator.push({
+                      name: 'Dashboard'
+                    })
+                  }
+                })
+                .catch((error) => console.log(error))
+                .done();
               }
           })
           .catch((error) => console.log(error))
           .done();
-          this.props.navigator.push({
-            name: 'Dashboard'
-          })
+
         }}>
           <Text style={styles.buttonText}>Create Account</Text>
         </TouchableOpacity>
