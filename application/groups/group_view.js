@@ -54,6 +54,12 @@ class GroupView extends React.Component{
     })
     .catch((error) => {console.log(error)})
   }
+  createGroup(group){
+    if (! group) {return;}
+    this.setState({
+      groups: this.state.groups.concat(group),
+    })
+  }
   render(){
     // console.log('THIS PROPS', this.props);
     return (
@@ -79,7 +85,12 @@ class GroupView extends React.Component{
             } else if (route.name == 'CreateEventConfirm'){
               return <CreateEventConfirm {...this.props} {...route} navigator={navigator} />
             } else if (route.name == 'CreateGroupConfirm'){
-              return <CreateGroupConfirm {...this.props} {...route} navigator={navigator} />
+              return (
+                <CreateGroupConfirm {...this.props} {...route}
+                  createGroup={this.createGroup.bind(this)}
+                  navigator={navigator}
+                />
+              )
             }
           }}/>
       </View>
