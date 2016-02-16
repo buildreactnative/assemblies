@@ -1,4 +1,5 @@
 import Colors from '../styles/colors';
+import COLOR_FIXTURES from '../styles/color_fixtures';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
@@ -46,6 +47,7 @@ class CreateGroupConfirm extends React.Component{
       members: {},
       imageUrl: "http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg",
       events: {},
+      backgroundColor: 'transparent',
     }
   }
   showImagePicker(){
@@ -124,8 +126,39 @@ class CreateGroupConfirm extends React.Component{
             <Icon name="camera" size={30} color={Colors.brandPrimary}/>
             <Text style={styles.photoText}>Add a Photo</Text>
           </TouchableOpacity>
-          <View style={{height: 120, alignItems: 'center'}}>
+          <View style={{height: 200, alignItems: 'center'}}>
             <Image source={{uri: this.state.imageUrl}} style={styles.avatar}/>
+          </View>
+          <Text style={styles.h4}>What background color would you like?</Text>
+          <View style={styles.colorContainer}>
+            {COLOR_FIXTURES.slice(0, 4).map((color, idx)=>{
+              let isSelected = color.code == this.state.backgroundColor;
+              let bgColor = isSelected ? '#FFFF8D' : 'transparent';
+              console.log('bg color', color.code, this.state.backgroundColor);
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  onPress={()=>this.setState({backgroundColor: color.code})}
+                  style={[styles.colorBox, {backgroundColor: color.code, borderColor: bgColor }]}
+                >
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+          <View style={styles.colorContainer}>
+            {COLOR_FIXTURES.slice(4, 8).map((color, idx)=>{
+              let isSelected = color.code == this.state.backgroundColor;
+              let bgColor = isSelected ? '#FFFF8D' : 'transparent';
+              console.log('bg color', color.code, this.state.backgroundColor);
+              return (
+                <TouchableOpacity
+                  key={idx}
+                  onPress={()=>this.setState({backgroundColor: color.code})}
+                  style={[styles.colorBox, {backgroundColor: color.code, borderColor: bgColor }]}
+                >
+                </TouchableOpacity>
+              )
+            })}
           </View>
         </ScrollView>
         <TouchableOpacity
@@ -133,13 +166,14 @@ class CreateGroupConfirm extends React.Component{
           onPress={()=>{
             let {groupName, summary, location, currentUser} = this.props;
             let userId = currentUser ? currentUser.id : '';
-            let {imageUrl, technologies,} = this.state;
+            let {imageUrl, technologies, backgroundColor,} = this.state;
             let group = {
               name: groupName,
               summary: summary,
               location: location || {},
               imageUrl: imageUrl,
               technologies: technologies,
+              backgroundColor: backgroundColor,
               members: {},
               events: {},
             };
@@ -162,7 +196,6 @@ class CreateGroupConfirm extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('DATA', data);
               this.props.navigator.push({
                 name: 'Groups',
               })
@@ -179,6 +212,18 @@ class CreateGroupConfirm extends React.Component{
 let styles = {
   container: {
     flex: 1,
+  },
+  colorContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'stretch'
+  },
+  colorBox: {
+    flex: 1,
+    height: (deviceWidth / 4) - 20,
+    margin: 10,
+    borderWidth: 4,
   },
   backButton: {
     paddingLeft: 20,
