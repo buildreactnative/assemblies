@@ -41,12 +41,50 @@ class Groups extends React.Component{
       </TouchableOpacity>
     )
   }
-  render(){
+  _renderGroupBoxes(){
     let splitGroups = [];
     this.props.groups.forEach((group, idx)=>{
       if (idx & 1) { _.last(splitGroups).push(group);}
       else { splitGroups.push([group]) }
     })
+    return (
+      <View style={styles.assemblyBoxContainer}>
+        {splitGroups.map((groupDouble, idx) => {
+          return (
+            <View style={styles.groupsContainer} key={idx}>
+              {groupDouble.map((group, idx) => {
+                return (
+                  <TouchableOpacity key={idx} onPress={()=>{
+                    this.props.navigator.push({
+                      name: 'Group',
+                      group: group,
+                    })
+                  }}>
+                    <GroupBox group={group}/>
+                  </TouchableOpacity>
+                )
+              })}
+            </View>
+          )
+        })}
+      </View>
+    )
+  }
+  _renderNoGroups(){
+    return (
+      <View style={styles.eventContainer}>
+        <View style={styles.eventInfo}>
+          <Text style={styles.h3}>No subscribed groups</Text>
+        </View>
+        <View style={styles.goingContainer}>
+          <Text style={styles.goingText}>Search groups</Text>
+          <Icon name="checkmark-circled" size={30} color="green" />
+        </View>
+      </View>
+    )
+  }
+  render(){
+    let {groups} = this.props;
     let rightButtonConfig = this._renderAddButton()
     let titleConfig = {title: 'My Groups', tintColor: 'white'}
     return (
@@ -58,26 +96,7 @@ class Groups extends React.Component{
         />
         <ScrollView style={styles.assembliesContainer}>
           <Text style={styles.h2}>Your Assemblies:</Text>
-          <View style={styles.assemblyBoxContainer}>
-            {splitGroups.map((groupDouble, idx) => {
-              return (
-                  <View style={styles.groupsContainer} key={idx}>
-                    {groupDouble.map((group, idx) => {
-                      return (
-                        <TouchableOpacity key={idx} onPress={()=>{
-                          this.props.navigator.push({
-                            name: 'Group',
-                            group: group,
-                          })
-                        }}>
-                          <GroupBox group={group}/>
-                        </TouchableOpacity>
-                      )
-                    })}
-                  </View>
-              )
-            })}
-          </View>
+          {groups.length ? this._renderGroupBoxes() : this._renderNoGroups()}
           <Text style={styles.h2}>You Might Like:</Text>
           <View style={styles.assemblyBoxContainer}>
             {splitSuggestions.map((groupDouble, idx) => {
@@ -123,12 +142,36 @@ let styles = {
     fontWeight: '300',
     paddingHorizontal: 10,
   },
+  h3: {
+    fontSize: 18,
+    fontWeight: '300',
+    paddingHorizontal: 10,
+  },
   groupText: {
     color: 'white',
     margin: 20,
     fontSize: 20,
     position: 'absolute',
     fontWeight: '500',
+  },
+  goingContainer: {
+    flex: 0.8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  goingText: {
+    fontSize: 17,
+    color: Colors.brandPrimary
+  },
+  eventContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  eventInfo: {
+    flex: 1,
   },
   forwardButton: {
     paddingBottom: 8,
