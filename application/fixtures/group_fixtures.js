@@ -6,9 +6,9 @@ let summary = 'Stumptown kickstarter microdosing, kale chips locavore leggings f
 const suggestedGroups = [
   {
     name: 'Morning Java',
-    background: Colors.brandPrimaryDark,
+    backgroundColor: Colors.brandPrimaryDark,
     summary: summary,
-    backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
+    imageUrl: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
     members: users,
     technologies: [
@@ -22,8 +22,8 @@ const suggestedGroups = [
   {
     name: 'Haskell & Hadoop',
     summary: summary,
-    background: Colors.brandPrimaryDark,
-    backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
+    backgroundColor: Colors.brandPrimaryDark,
+    imageUrl: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
     members: users,
     technologies: [
@@ -39,8 +39,8 @@ const groupsFixture = [
   {
     name: 'React Native NYC',
     summary: summary,
-    background: Colors.brandPrimaryDark,
-    backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
+    backgroundColor: Colors.brandPrimaryDark,
+    imageUrl: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
     members: users,
     technologies: [
@@ -54,8 +54,8 @@ const groupsFixture = [
   {
     name: 'Python Developers',
     summary: summary,
-    background: Colors.brandPrimary,
-    backgroundImage: 'http://www.crainscleveland.com/apps/pbcsi.dll/storyimage/CC/20150104/SUB1/301049991/V2/0/V2-301049991.jpg?MaxW=880&v=201411210943',
+    backgroundColor: Colors.brandPrimary,
+    imageUrl: 'http://www.crainscleveland.com/apps/pbcsi.dll/storyimage/CC/20150104/SUB1/301049991/V2/0/V2-301049991.jpg?MaxW=880&v=201411210943',
     memberCount: 120,
     members: users,
     technologies: [
@@ -69,8 +69,8 @@ const groupsFixture = [
   {
     name: 'Downtown Tech Breakfast',
     summary: summary,
-    background: Colors.brandPrimaryDark,
-    backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
+    backgroundColor: Colors.brandPrimaryDark,
+    imageUrl: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
     members: users,
     technologies: [
@@ -84,8 +84,8 @@ const groupsFixture = [
   {
     name: 'JavaScript NYC',
     summary: summary,
-    background: Colors.brandPrimaryDark,
-    backgroundImage: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
+    backgroundColor: Colors.brandPrimaryDark,
+    imageUrl: 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
     memberCount: 110,
     members: users,
     technologies: [

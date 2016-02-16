@@ -37,7 +37,7 @@ class GroupView extends React.Component{
   }
   componentDidMount(){
     let {currentUser} = this.props;
-    let {groupIds} = currentUser;
+    let groupIds = currentUser ? currentUser.groupIds : [];
     let url = `http://localhost:2403/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
     console.log('URL', url)
     fetch(url, {
@@ -65,7 +65,7 @@ class GroupView extends React.Component{
           }}
           renderScene={(route, navigator) => {
             if (route.name == 'Groups') {
-              return <Groups {...this.props} navigator={navigator} />
+              return <Groups {...this.props} {...this.state} navigator={navigator} />
             } else if (route.name == 'CreateGroup'){
               return <CreateGroup {...this.props} navigator={navigator} />
             } else if (route.name == 'Group') {

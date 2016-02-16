@@ -24,8 +24,8 @@ class GroupBox extends React.Component{
     let {group} = this.props;
     // console.log('GROUP', group);
     return (
-      <Image source={{uri: group.backgroundImage}} style={styles.groupImage}>
-        <View style={[styles.group, {backgroundColor: group.background,}]} >
+      <Image source={{uri: group.imageUrl}} style={styles.groupImage}>
+        <View style={[styles.group, {backgroundColor: group.backgroundColor,}]} >
           <Text style={styles.groupText}>{group.name}</Text>
         </View>
       </Image>

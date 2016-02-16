@@ -23,12 +23,7 @@ import React, {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-let splitGroups = []
 let splitSuggestions = []
-groupsFixture.forEach((group, idx)=>{
-  if (idx & 1) { _.last(splitGroups).push(group);}
-  else { splitGroups.push([group]) }
-})
 suggestedGroups.forEach((group, idx) => {
   if (idx & 1) { _.last(splitSuggestions).push(group);}
   else { splitSuggestions.push([group]); }
@@ -47,7 +42,11 @@ class Groups extends React.Component{
     )
   }
   render(){
-
+    let splitGroups = [];
+    this.props.groups.forEach((group, idx)=>{
+      if (idx & 1) { _.last(splitGroups).push(group);}
+      else { splitGroups.push([group]) }
+    })
     let rightButtonConfig = this._renderAddButton()
     let titleConfig = {title: 'My Groups', tintColor: 'white'}
     return (

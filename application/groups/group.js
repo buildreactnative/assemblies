@@ -70,7 +70,8 @@ class Group extends React.Component{
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
         <Text style={styles.h2}>Events</Text>
         <View style={styles.break}></View>
-        {group.events.map((event, idx) => {
+        {Object.keys(group.events).map((key, idx) => {
+          let event = group.events[key];
           return (
             <View key={idx} style={styles.eventContainer}>
               <View style={styles.eventInfo}>
