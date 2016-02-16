@@ -92,7 +92,6 @@ class CreateGroup extends React.Component{
     return this.refs['OPTIONLIST']
   }
   render(){
-    console.log('RENDER')
     let {technologies,} = this.state;
     let titleConfig = {title: 'Create Assembly', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
@@ -122,8 +121,8 @@ class CreateGroup extends React.Component{
             autoFocus={false}
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-              console.log(data);
-              console.log(details);
+              // console.log(data);
+              // console.log(details);
               this.setState({
                 location: _.extend({}, details.geometry.location, {
                   city: details.address_components[0].long_name,

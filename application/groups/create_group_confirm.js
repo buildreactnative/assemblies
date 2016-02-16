@@ -52,7 +52,7 @@ class CreateGroupConfirm extends React.Component{
   }
   showImagePicker(){
     UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
-      console.log('Response = ', response);
+      // console.log('Response = ', response);
       if (response.didCancel) { console.log('User cancelled image picker');}
       else if (response.error) { console.log('UIImagePickerManager Error: ', response.error);}
       else if (response.customButton) {console.log('User tapped custom button: ', response.customButton);}
@@ -134,7 +134,7 @@ class CreateGroupConfirm extends React.Component{
             {COLOR_FIXTURES.slice(0, 4).map((color, idx)=>{
               let isSelected = color.code == this.state.backgroundColor;
               let bgColor = isSelected ? '#FFFF8D' : 'transparent';
-              console.log('bg color', color.code, this.state.backgroundColor);
+              // console.log('bg color', color.code, this.state.backgroundColor);
               return (
                 <TouchableOpacity
                   key={idx}
@@ -149,7 +149,7 @@ class CreateGroupConfirm extends React.Component{
             {COLOR_FIXTURES.slice(4, 8).map((color, idx)=>{
               let isSelected = color.code == this.state.backgroundColor;
               let bgColor = isSelected ? '#FFFF8D' : 'transparent';
-              console.log('bg color', color.code, this.state.backgroundColor);
+              // console.log('bg color', color.code, this.state.backgroundColor);
               return (
                 <TouchableOpacity
                   key={idx}
@@ -177,7 +177,7 @@ class CreateGroupConfirm extends React.Component{
               members: {},
               events: {},
             };
-            console.log('GROUP', group)
+            // console.log('GROUP', group)
             if (!! userId ){
               group.members[userId] = {
                 confirmed: true,

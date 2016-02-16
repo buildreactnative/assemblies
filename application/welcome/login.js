@@ -145,11 +145,11 @@ class Login extends React.Component{
           .then((response) => response.json())
           .then((data) => {
             if (data.errors || data.status == 401) {
-              console.log(data.errors);
+              // console.log(data.errors);
               errors = 'Login failed'
             }
             else {
-              console.log('DATA', data);
+              // console.log('DATA', data);
               AsyncStorage.setItem('sid', data.id)
               this.props.navigator.push({
                 name: 'Dashboard'

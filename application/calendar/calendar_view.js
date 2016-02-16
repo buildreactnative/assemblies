@@ -53,7 +53,7 @@ class CalendarView extends React.Component{
         dataBlob[section.id + ':' + j] = assembly;
       }
     }
-    console.log('DATA BLOB', dataBlob);
+    // console.log('DATA BLOB', dataBlob);
     this.state = {
       dataSource: new ListView.DataSource({
         getSectionData: getSectionData,
@@ -65,7 +65,7 @@ class CalendarView extends React.Component{
     }
   }
   _renderSectionHeader(sectionData, sectionID){
-    console.log('SECTION DATA', sectionData, sectionID)
+    // console.log('SECTION DATA', sectionData, sectionID)
     return (
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionHeaderText}>{moment(sectionData).format('dddd, MMM Do')} at {moment(sectionData).format('h:m')}</Text>

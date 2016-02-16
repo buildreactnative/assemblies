@@ -29,7 +29,7 @@ import React, {
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 class GroupView extends React.Component{
   render(){
-    console.log('THIS PROPS', this.props);
+    // console.log('THIS PROPS', this.props);
     return (
       <View style={styles.container}>
         <Navigator

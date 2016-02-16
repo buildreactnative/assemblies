@@ -50,7 +50,7 @@ class CreateEventConfirm extends React.Component{
   }
   showImagePicker(){
     UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
-      console.log('Response = ', response);
+      // console.log('Response = ', response);
       if (response.didCancel) { console.log('User cancelled image picker');}
       else if (response.error) { console.log('UIImagePickerManager Error: ', response.error);}
       else if (response.customButton) {console.log('User tapped custom button: ', response.customButton);}
