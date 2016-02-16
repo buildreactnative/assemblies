@@ -67,6 +67,42 @@ class Group extends React.Component{
       </TouchableOpacity>
     )
   }
+  _renderEvents(){
+    let {group} = this.props;
+    return (
+      <View>
+        {Object.keys(group.events).map((key, idx) => {
+          let event = group.events[key];
+          return (
+            <View key={idx} style={styles.eventContainer}>
+              <View style={styles.eventInfo}>
+                <Text style={styles.h5}>{event.name}</Text>
+                <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
+                <Text style={styles.h4}>{event.goingCount} Going</Text>
+              </View>
+              <View style={styles.goingContainer}>
+                <Text style={styles.goingText}>{"You're Going"}</Text>
+                <Icon name="checkmark-circled" size={30} color="green" />
+              </View>
+            </View>
+          )
+        })}
+      </View>
+    )
+  }
+  _renderNoEvents(){
+    return (
+      <View style={styles.eventContainer}>
+        <View style={styles.eventInfo}>
+          <Text style={styles.h5}>No events scheduled</Text>
+        </View>
+        <View style={styles.goingContainer}>
+          <Text style={styles.goingText}>Create an event</Text>
+          <Icon name="checkmark-circled" size={30} color="green" />
+        </View>
+      </View>
+    )
+  }
   render(){
     let {group} = this.props;
     let backButton = this._renderBackButton();
@@ -94,22 +130,7 @@ class Group extends React.Component{
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
         <Text style={styles.h2}>Events</Text>
         <View style={styles.break}></View>
-        {Object.keys(group.events).map((key, idx) => {
-          let event = group.events[key];
-          return (
-            <View key={idx} style={styles.eventContainer}>
-              <View style={styles.eventInfo}>
-                <Text style={styles.h5}>{event.name}</Text>
-                <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
-                <Text style={styles.h4}>{event.goingCount} Going</Text>
-              </View>
-              <View style={styles.goingContainer}>
-                <Text style={styles.goingText}>{"You're Going"}</Text>
-                <Icon name="checkmark-circled" size={30} color="green" />
-              </View>
-            </View>
-          )
-        })}
+        {Object.keys(group.events).length ? this._renderEvents() : this._renderNoEvents()}
         <View style={styles.break}></View>
         <Text style={styles.h2}>Members</Text>
         <View style={styles.break}></View>
