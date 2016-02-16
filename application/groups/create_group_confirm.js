@@ -209,6 +209,8 @@ class CreateGroupConfirm extends React.Component{
               })
               .then((response) => response.json())
               .then((data) => {
+                console.log('USER DATA', data);
+                this.props.updateUser(data);
                 this.props.navigator.push({
                   name: 'Groups',
                 })

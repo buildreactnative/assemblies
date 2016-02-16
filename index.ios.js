@@ -82,6 +82,9 @@ class assembly extends Component {
       console.log('ERR: ', error)
     }
   }
+  updateUser(user){
+    this.setState({currentUser: user})
+  }
   render() {
     let {foundUser, currentUser, sessionId,} = this.state;
     if (! foundUser) {
@@ -106,6 +109,7 @@ class assembly extends Component {
                   <Dashboard
                     navigator={navigator}
                     {...this.state}
+                    updateUser={this.updateUser.bind(this)}
                   />
                 )
                 break;

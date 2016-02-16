@@ -28,6 +28,32 @@ import React, {
 
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 class GroupView extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      groups: [],
+      suggestedGroups: [],
+    }
+  }
+  componentDidMount(){
+    let {currentUser} = this.props;
+    let {groupIds} = currentUser;
+    let url = `http://localhost:2403/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
+    console.log('URL', url)
+    fetch(url, {
+      method: "GET",
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('DATA GROUPS', data)
+      this.setState({groups: data})
+    })
+    .catch((error) => {console.log(error)})
+  }
   render(){
     // console.log('THIS PROPS', this.props);
     return (
