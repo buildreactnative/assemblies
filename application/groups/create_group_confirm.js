@@ -186,6 +186,7 @@ class CreateGroupConfirm extends React.Component{
                 notifications: true
               }
             }
+            // create group
             fetch("http://localhost:2403/groups", {
               method: "POST",
               headers: {
@@ -196,8 +197,21 @@ class CreateGroupConfirm extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              this.props.navigator.push({
-                name: 'Groups',
+              console.log('DATA', data);
+              // update groupIds array in user profile
+              fetch(`http://localhost:2403/users/${currentUser.id}`, {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({groupIds: currentUser.groupIds.concat(data.id)})
+              })
+              .then((response) => response.json())
+              .then((data) => {
+                this.props.navigator.push({
+                  name: 'Groups',
+                })
               })
             })
           }}
