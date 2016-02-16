@@ -22,6 +22,30 @@ import React, {
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class Group extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      members: [],
+    }
+  }
+  componentDidMount(){
+    let {group} = this.props;
+    let userIds = Object.keys(group.members);
+    let url = `http://localhost:2403/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('DATA USERS', data)
+      this.setState({members: data})
+    })
+    .catch((error) => {console.log(error)})
+  }
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=> {
@@ -56,12 +80,12 @@ class Group extends React.Component{
         rightButton={addButton}
       />
         <ScrollView style={styles.scrollView}>
-        <Image source={{uri: group.backgroundImage}} style={styles.topImage}>
+        <Image source={{uri: group.imageUrl}} style={styles.topImage}>
           <View style={styles.overlayBlur}>
             <Text style={styles.h1}>{group.name}</Text>
           </View>
           <View style={styles.bottomPanel}>
-            <Text style={styles.memberText}>{group.memberCount} members</Text>
+            <Text style={styles.memberText}>{Object.keys(group.members).length} members</Text>
           </View>
         </Image>
         <Text style={styles.h2}>Summary</Text>
@@ -89,13 +113,17 @@ class Group extends React.Component{
         <View style={styles.break}></View>
         <Text style={styles.h2}>Members</Text>
         <View style={styles.break}></View>
-        {group.members.map((member, idx) => {
+        {this.state.members.map((member, idx) => {
+          console.log('MEMBER', member)
+          let isOwner = group.members[member.id].owner;
+          let isAdmin = group.members[member.id].admin;
+          let status = isOwner ? 'owner' : isAdmin ? 'admin' : 'member'
           return (
             <View key={idx} style={styles.memberContainer}>
-              <Image source={{uri: member.avatar}} style={styles.avatar}/>
+              <Image source={{uri: member.avatarUrl}} style={styles.avatar}/>
               <View style={styles.memberInfo}>
-                <Text style={styles.h5}>{member.username}</Text>
-                <Text style={styles.h4}>Member</Text>
+                <Text style={styles.h5}>{member.firstName} {member.lastName}</Text>
+                <Text style={styles.h4}>{status}</Text>
               </View>
             </View>
           )
