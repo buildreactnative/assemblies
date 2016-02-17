@@ -4,6 +4,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
+import CalendarPicker from 'react-native-calendar-picker';
 import {TECHNOLOGIES,} from '../utilities/fixtures';
 import {
   overlayStyles,
@@ -39,14 +40,15 @@ class CreateEventConfirm extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      technologies: [],
-      name: '',
-      location: null,
-      summary: '',
-      members: {},
-      imageUrl: "http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg",
-      events: {},
+      date: new Date(),
+      duration: 2,
+      capacity: 100,
+      showCalendar: false,
+      choseDate: false,
     }
+  }
+  onDateChange(date){
+    this.setState({date: date, choseDate: true, showCalendar: false})
   }
   showImagePicker(){
     UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
@@ -91,12 +93,18 @@ class CreateEventConfirm extends React.Component{
   _getOptionList(){
     return this.refs['OPTIONLIST']
   }
+  _renderCalendar(){
+    return (
+      <CalendarPicker
+        selectedDate={this.state.date}
+        onDateChange={this.onDateChange.bind(this)}
+      />
+    )
+  }
   render(){
     console.log('RENDER')
-    let {technologies,} = this.state;
     let titleConfig = {title: 'Create Assembly', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
-    let techAreas = technologies.length ? this._renderTechnologies() : null;
     return (
       <View style={styles.container}>
         <NavigationBar
@@ -107,8 +115,14 @@ class CreateEventConfirm extends React.Component{
         <ScrollView style={styles.formContainer}>
           <Text style={styles.h4}>When is the event?</Text>
           <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Choose a date"/>
+            <TouchableOpacity
+              onPress={()=>this.setState({showCalendar: true})}
+              style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Text style={styles.input}>{this.state.choseDate ? this.state.date.toLocaleString() : 'Choose a date'}</Text>
+              <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
+            </TouchableOpacity>
           </View>
+          {this.state.showCalendar ? this._renderCalendar() : null}
           <Text style={styles.h4}>How long will it last?</Text>
           <View style={styles.formField}>
             <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Choose a duration"/>
@@ -120,12 +134,12 @@ class CreateEventConfirm extends React.Component{
         </ScrollView>
         <TouchableOpacity
           onPress={()=>{
-            let {name, location, summary} = this.state;
+            let {date, duration, capacity} = this.state;
             this.props.navigator.push({
               name: 'CreateGroupConfirm',
-              groupName: name,
-              location: location,
-              summary: summary,
+              date: date,
+              duration: duration,
+              capacity: capacity
             })
           }}
           style={styles.submitButton}
