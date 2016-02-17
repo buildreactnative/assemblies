@@ -14,6 +14,7 @@
     "react-native-image-picker": "^0.13.5",
     "react-native-invertible-scroll-view": "^0.2.0",
     "react-native-navbar": "^1.2.0",
+    "react-native-picker": "^1.0.0",
     "react-native-selectme": "^1.0.0",
     "react-native-vector-icons": "^1.1.0",
     "underscore": "^1.8.3",

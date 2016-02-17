@@ -1,10 +1,12 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
+import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
 import CalendarPicker from 'react-native-calendar-picker';
+import Picker from 'react-native-picker';
 import {TECHNOLOGIES,} from '../utilities/fixtures';
 import {
   overlayStyles,
@@ -45,37 +47,14 @@ class CreateEventConfirm extends React.Component{
       capacity: 100,
       showCalendar: false,
       choseDate: false,
+      choseDuration: false,
+      showDuration: false,
     }
   }
   onDateChange(date){
     this.setState({date: date, choseDate: true, showCalendar: false})
   }
-  showImagePicker(){
-    UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
-      // console.log('Response = ', response);
-      if (response.didCancel) { console.log('User cancelled image picker');}
-      else if (response.error) { console.log('UIImagePickerManager Error: ', response.error);}
-      else if (response.customButton) {console.log('User tapped custom button: ', response.customButton);}
-      else {
-        // You can display the image using either data:
-        // const source = 'data:image/jpeg;base64,' + response.data;
 
-        // uri (on iOS)
-        // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-        // uri (on android)
-        const source = response.uri;
-
-        this.setState({
-          imageUrl: source
-        });
-      }
-    });
-  }
-  _technologies(tech){
-    this.setState({
-      technologies: this.state.technologies.concat(tech)
-    })
-  }
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=>{
@@ -85,13 +64,41 @@ class CreateEventConfirm extends React.Component{
       </TouchableOpacity>
     )
   }
-  _renderTechnologies(){
+  _renderDuration(){
     return (
-      <Text style={styles.technologyList}>{this.state.technologies.join(', ')}</Text>
+      <Picker
+        ref="picker"
+        pickerHeight={300}
+        showDuration={300}
+        pickerCancelBtnText='Cancel'
+        pickerBtnText='Confirm'
+        onValueChange={(val)=>this.setState({duration: val})}
+        pickerTitle="Event Duration"
+        pickerData={[1, 2, 3, 4, 5]}//picker`s value List
+        selectedValue={this.state.duration}//default to be selected value
+        onPickerDone={()=>{
+          this.setState({showDuration: false, choseDuration: true,})
+        }}
+      />
     )
   }
-  _getOptionList(){
-    return this.refs['OPTIONLIST']
+  _renderCapacity(){
+    return (
+      <Picker
+        ref="picker"
+        pickerHeight={300}
+        showDuration={300}
+        pickerCancelBtnText='Cancel'
+        pickerBtnText='Confirm'
+        onValueChange={(val)=>this.setState({capacity: val})}
+        pickerTitle="Event Duration"
+        pickerData={_.range(300)}//picker`s value List
+        selectedValue={this.state.capacity}//default to be selected value
+        onPickerDone={()=>{
+          this.setState({showDuration: false, choseDuration: true,})
+        }}
+      />
+    )
   }
   _renderCalendar(){
     return (
@@ -125,8 +132,14 @@ class CreateEventConfirm extends React.Component{
           {this.state.showCalendar ? this._renderCalendar() : null}
           <Text style={styles.h4}>How long will it last?</Text>
           <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Choose a duration"/>
+            <TouchableOpacity
+              onPress={()=>this.setState({showDuration: true})}
+              style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Text style={styles.input}>{this.state.choseDuration ? this.state.duration : 'Choose a duration'}</Text>
+              <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
+            </TouchableOpacity>
           </View>
+          {this.state.showDuration ? this._renderDuration() : null}
           <Text style={styles.h4}>Attendee capacity</Text>
           <View style={styles.formField}>
             <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Choose a duration"/>
