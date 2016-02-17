@@ -47,12 +47,21 @@ class Groups extends React.Component{
       if (idx & 1) { _.last(splitGroups).push(group);}
       else { splitGroups.push([group]) }
     })
+    if (_.last(splitGroups).length == 1){
+      _.last(splitGroups).push(null)
+    }
+    console.log('SPLIT GROUPS', splitGroups)
     return (
       <View style={styles.assemblyBoxContainer}>
         {splitGroups.map((groupDouble, idx) => {
           return (
             <View style={styles.groupsContainer} key={idx}>
               {groupDouble.map((group, idx) => {
+                if (!group) {
+                  return (
+                    <GroupBox group={group} key={idx}/>
+                  )
+                }
                 return (
                   <TouchableOpacity key={idx} onPress={()=>{
                     this.props.navigator.push({

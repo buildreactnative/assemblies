@@ -149,8 +149,24 @@ class Login extends React.Component{
               errors = 'Login failed'
             }
             else {
-              // console.log('DATA', data);
+              console.log('DATA', data);
               AsyncStorage.setItem('sid', data.id)
+              fetch("http://localhost:2403/users/me", {
+                method: "GET",
+                headers: {
+                    'Set-Cookie': `sid=${data.id}`,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+              })
+              .then((response) => response.json())
+              .then((data) => {
+                this.props.updateUser(data);
+              })
+              .catch((error) => {
+                console.log(error)
+              })
+              .done();
               this.props.navigator.push({
                 name: 'Dashboard'
               })

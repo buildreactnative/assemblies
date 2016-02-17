@@ -182,7 +182,7 @@ let styles = {
     color: Colors.brandPrimary
   },
   input: {
-    color: '#ccc',
+    color: '#777',
     fontSize: 18,
     fontWeight: '300',
     height: 40,
@@ -190,7 +190,7 @@ let styles = {
     paddingVertical: 5,
   },
   largeInput: {
-    color: '#ccc',
+    color: '#777',
     fontSize: 18,
     backgroundColor: 'white',
     fontWeight: '300',

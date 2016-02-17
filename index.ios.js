@@ -117,7 +117,9 @@ class assembly extends Component {
                 return <Register navigator={navigator} />
                 break;
               case 'Login':
-                return <Login navigator={navigator} />
+                return (
+                  <Login navigator={navigator} updateUser={this.updateUser.bind(this)}/>
+                )
                 break;
               case 'RegisterConfirm':
                 return (
