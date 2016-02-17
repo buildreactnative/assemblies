@@ -41,9 +41,9 @@ class Groups extends React.Component{
       </TouchableOpacity>
     )
   }
-  _renderGroupBoxes(){
+  _renderGroupBoxes(groups){
     let splitGroups = [];
-    this.props.groups.forEach((group, idx)=>{
+    groups.forEach((group, idx)=>{
       if (idx & 1) { _.last(splitGroups).push(group);}
       else { splitGroups.push([group]) }
     })
@@ -93,7 +93,7 @@ class Groups extends React.Component{
     )
   }
   render(){
-    let {groups} = this.props;
+    let {groups, suggestedGroups,} = this.props;
     let rightButtonConfig = this._renderAddButton()
     let titleConfig = {title: 'My Groups', tintColor: 'white'}
     return (
@@ -105,23 +105,9 @@ class Groups extends React.Component{
         />
         <ScrollView style={styles.assembliesContainer}>
           <Text style={styles.h2}>Your Assemblies:</Text>
-          {groups.length ? this._renderGroupBoxes() : this._renderNoGroups()}
+          {groups.length ? this._renderGroupBoxes(groups) : this._renderNoGroups()}
           <Text style={styles.h2}>You Might Like:</Text>
-          <View style={styles.assemblyBoxContainer}>
-            {splitSuggestions.map((groupDouble, idx) => {
-              return (
-                <View style={styles.groupsContainer} key={idx}>
-                  {groupDouble.map((group, idx) => {
-                    return (
-                      <TouchableOpacity key={idx}>
-                        <GroupBox group={group} />
-                      </TouchableOpacity>
-                    )
-                  })}
-                </View>
-              )
-            })}
-          </View>
+          {suggestedGroups.length ? this._renderGroupBoxes(suggestedGroups) : this._renderNoGroups()}
         </ScrollView>
       </View>
     )

@@ -9,6 +9,7 @@ import GroupMembers from './group_members';
 import GroupEvents from './group_events';
 import CreateEventConfirm from './create_event_confirm';
 import CreateGroupConfirm from './create_group_confirm';
+import _ from 'underscore';
 
 import React, {
   ScrollView,
@@ -43,14 +44,32 @@ class GroupView extends React.Component{
     fetch(url, {
       method: "GET",
       headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
     })
     .then((response) => response.json())
     .then((data) => {
       console.log('DATA GROUPS', data)
       this.setState({groups: data})
+    })
+    .catch((error) => {console.log(error)})
+
+    console.log('URL', url)
+    fetch(`http://localhost:2403/groups`, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('DATA SG GROUPS', data)
+      this.setState({suggestedGroups: _.reject(data, (gp) => {
+          return _.contains(groupIds, gp.id)
+        })
+      })
     })
     .catch((error) => {console.log(error)})
   }
