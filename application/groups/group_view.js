@@ -83,7 +83,11 @@ class GroupView extends React.Component{
             } else if (route.name == 'CreateEvent'){
               return <CreateEvent {...this.props} {...route} navigator={navigator}  />
             } else if (route.name == 'CreateEventConfirm'){
-              return <CreateEventConfirm {...this.props} {...route} navigator={navigator} />
+              return (
+                <CreateEventConfirm {...this.props} {...route}
+                  navigator={navigator}
+                />
+              )
             } else if (route.name == 'CreateGroupConfirm'){
               return (
                 <CreateGroupConfirm {...this.props} {...route}

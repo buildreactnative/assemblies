@@ -175,7 +175,7 @@ class CreateGroupConfirm extends React.Component{
               technologies: technologies,
               backgroundColor: backgroundColor,
               members: {},
-              events: {},
+              events: [],
             };
             // console.log('GROUP', group)
             if (!! userId ){

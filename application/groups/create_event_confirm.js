@@ -45,10 +45,15 @@ class CreateEventConfirm extends React.Component{
       date: new Date(),
       duration: 2,
       capacity: 100,
+      time: 20,
       showCalendar: false,
-      choseDate: false,
-      choseDuration: false,
+      showTime: false,
       showDuration: false,
+      showCapacity: false,
+      choseDate: false,
+      choseTime: false,
+      choseDuration: false,
+      choseCapacity: false,
     }
   }
   onDateChange(date){
@@ -85,7 +90,7 @@ class CreateEventConfirm extends React.Component{
   _renderCapacity(){
     return (
       <Picker
-        ref="picker"
+        ref="capacity"
         pickerHeight={300}
         showDuration={300}
         pickerCancelBtnText='Cancel'
@@ -95,7 +100,7 @@ class CreateEventConfirm extends React.Component{
         pickerData={_.range(300)}//picker`s value List
         selectedValue={this.state.capacity}//default to be selected value
         onPickerDone={()=>{
-          this.setState({showDuration: false, choseDuration: true,})
+          this.setState({showCapacity: false, choseCapacity: true,})
         }}
       />
     )
@@ -105,6 +110,24 @@ class CreateEventConfirm extends React.Component{
       <CalendarPicker
         selectedDate={this.state.date}
         onDateChange={this.onDateChange.bind(this)}
+      />
+    )
+  }
+  _renderTime(){
+    return (
+      <Picker
+        ref="time"
+        pickerHeight={300}
+        showDuration={300}
+        pickerCancelBtnText='Cancel'
+        pickerBtnText='Confirm'
+        onValueChange={(val)=>this.setState({time: val})}
+        pickerTitle="Event Duration"
+        pickerData={_.range(24)}//picker`s value List
+        selectedValue={this.state.time}//default to be selected value
+        onPickerDone={()=>{
+          this.setState({showTime: false, choseTime: true,})
+        }}
       />
     )
   }
@@ -120,7 +143,7 @@ class CreateEventConfirm extends React.Component{
           leftButton={leftButtonConfig}
         />
         <ScrollView style={styles.formContainer}>
-          <Text style={styles.h4}>When is the event?</Text>
+          <Text style={styles.h4}>When is the event date?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
               onPress={()=>this.setState({showCalendar: true})}
@@ -130,6 +153,16 @@ class CreateEventConfirm extends React.Component{
             </TouchableOpacity>
           </View>
           {this.state.showCalendar ? this._renderCalendar() : null}
+          <Text style={styles.h4}>When does it start?</Text>
+          <View style={styles.formField}>
+            <TouchableOpacity
+              onPress={()=>this.setState({showTime: true})}
+              style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Text style={styles.input}>{this.state.choseTime ? this.state.time : 'Choose a time'}</Text>
+              <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
+            </TouchableOpacity>
+          </View>
+          {this.state.showTime ? this._renderTime() : null}
           <Text style={styles.h4}>How long will it last?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
@@ -142,18 +175,51 @@ class CreateEventConfirm extends React.Component{
           {this.state.showDuration ? this._renderDuration() : null}
           <Text style={styles.h4}>Attendee capacity</Text>
           <View style={styles.formField}>
-            <TextInput placeholderTextColor='#bbb' style={styles.input} placeholder="Choose a duration"/>
+            <TouchableOpacity
+              onPress={()=>this.setState({showCapacity: true})}
+              style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+              <Text style={styles.input}>{this.state.choseCapacity ? this.state.capacity : 'Choose a duration'}</Text>
+              <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
+            </TouchableOpacity>
           </View>
+          {this.state.showCapacity ? this._renderCapacity() : null}
         </ScrollView>
         <TouchableOpacity
           onPress={()=>{
-            let {date, duration, capacity} = this.state;
-            this.props.navigator.push({
-              name: 'CreateGroupConfirm',
-              date: date,
-              duration: duration,
-              capacity: capacity
+            let {date, duration, capacity, time} = this.state;
+            let {location, summary, eventName, group, currentUser,} = this.props;
+            let dateVal = date.valueOf();
+            let start = new Date(dateVal + time*1000*60*60);
+            let end = new Date(dateVal + time*1000*60*60 + duration*1000*60*60)
+            let event = {
+              start: start.valueOf(),
+              end: end.valueOf(),
+              name: eventName,
+              summary: summary,
+              attending: {},
+              notAttending: {},
+              location: location,
+              groupId: group.id,
+              comments: [],
+              capacity: capacity,
+            };
+            event.attending[currentUser.id] = {
+              confirmed: true
+            }
+            console.log('EVENT', event);
+            fetch("http://localhost:2403/events", {
+              method: "POST",
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(event)
             })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('DATA', data);
+
+            });
           }}
           style={styles.submitButton}
         >

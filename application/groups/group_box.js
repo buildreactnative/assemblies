@@ -46,6 +46,7 @@ let styles = {
     opacity: 0.9,
     flex: 1,
     height: 150,
+    width: (deviceWidth / 2) - 18,
   },
   groupImage: {
     height: 150,

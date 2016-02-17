@@ -77,8 +77,8 @@ class CreateEvent extends React.Component{
             autoFocus={false}
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-              // console.log(data);
-              // console.log(details);
+              console.log(data);
+              console.log(details);
               this.setState({
                 location: _.extend({}, details.geometry.location, {
                   city: details.address_components[0].long_name,
@@ -92,7 +92,6 @@ class CreateEvent extends React.Component{
             query={{
               key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
               language: 'en', // language of the results
-              types: '(cities)', // default: 'geocode'
             }}
             currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
             currentLocationLabel="Current location"
@@ -111,6 +110,7 @@ class CreateEvent extends React.Component{
               eventName: name,
               summary: summary,
               location: location,
+              group: this.props.group,
             })
           }}
           style={styles.submitButton}>
