@@ -28,6 +28,7 @@ class Group extends React.Component{
     this.state = {
       members: [],
       events: [],
+      joined: false,
     }
   }
   componentDidMount(){
@@ -125,12 +126,61 @@ class Group extends React.Component{
       </View>
     )
   }
+  _renderJoinIcon(){
+    let {joined} = this.state;
+    if (joined) {
+      return (
+        <Icon name="checkmark-circled" size={20} color="white" style={styles.joinIcon}/>
+      )
+    } else {
+      return (
+        <Icon name="plus" size={20} color="white" style={styles.joinIcon}/>
+      )
+    }
+  }
   _renderJoin(){
+    let {group, currentUser} = this.props;
     return (
       <View style={styles.joinContainer}>
-        <TouchableOpacity style={styles.joinButton}>
-          <Icon name="plus" size={20} color="white" style={styles.joinIcon}/>
-          <Text style={styles.joinText}>Join</Text>
+        <TouchableOpacity
+          onPress={()=>{
+            let members = group.members;
+            members[currentUser.id] = {
+              confirmed: true,
+              admin: false,
+              owner: false,
+              notifications: true
+            }
+            fetch(`http://localhost:2403/groups/${group.id}`, {
+              method: "PUT",
+              headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({members: members})
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('ADD USER TO GROUP', data);
+              fetch(`http://localhost:2403/users/${currentUser.id}`, {
+                method: "PUT",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({groupIds: currentUser.groupIds.concat(group.id)})
+              })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log('ADD GROUP_ID TO USER', data);
+                this.setState({joined: true, members: this.state.members.concat(currentUser)})
+              });
+            });
+          }}
+          style={styles.joinButton}
+        >
+          {this._renderJoinIcon()}
+          <Text style={styles.joinText}>{this.state.joined ? 'Joined' : 'Join'}</Text>
         </TouchableOpacity>
       </View>
     )
