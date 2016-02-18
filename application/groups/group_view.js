@@ -80,6 +80,18 @@ class GroupView extends React.Component{
       groups: this.state.groups.concat(group),
     })
   }
+  addUserToGroup(groupId, userId){
+    let {currentUser} = this.props;
+    let {groups} = this.state;
+    groups.forEach((gp, idx) => {
+      if (gp.id == groupId){
+        gp.members[userId] = true;
+      }
+    })
+    currentUser.groupIds.push(groupId)
+    this.props.updateUser(currentUser)
+    this.setState({groups: groups})
+  }
   addEvent(event){
     let {groups} = this.state;
     let group;
@@ -119,7 +131,15 @@ class GroupView extends React.Component{
             } else if (route.name == 'CreateGroup'){
               return <CreateGroup {...this.props} navigator={navigator} />
             } else if (route.name == 'Group') {
-              return <Group {...this.props} navigator={navigator} {...route} {...this.state} />
+              return (
+                <Group
+                  addUserToGroup={this.addUserToGroup.bind(this)}
+                  {...this.props}
+                  {...route}
+                  {...this.state}
+                  navigator={navigator}
+                />
+              )
             } else if (route.name == 'Members') {
               return <GroupMembers {...this.props} navigator={navigator} />
             } else if (route.name == 'Events' ) {

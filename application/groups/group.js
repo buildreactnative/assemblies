@@ -28,7 +28,8 @@ class Group extends React.Component{
     this.state = {
       members: [],
       events: [],
-      joined: false,
+      alreadyJoined: !! props.group.members[props.currentUser.id],
+      joined : false,
     }
   }
   componentDidMount(){
@@ -71,6 +72,7 @@ class Group extends React.Component{
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=> {
+        console.log('Routes', this.props.navigator.getCurrentRoutes());
         this.props.navigator.popToTop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
@@ -173,6 +175,7 @@ class Group extends React.Component{
               .then((response) => response.json())
               .then((data) => {
                 console.log('ADD GROUP_ID TO USER', data);
+                this.props.addUserToGroup(group.id, currentUser.id)
                 this.setState({joined: true, members: this.state.members.concat(currentUser)})
               });
             });
@@ -215,7 +218,7 @@ class Group extends React.Component{
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(group.summary, 140)}</Text>
         <Text style={styles.h2}>Technologies</Text>
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
-        {! isMember ? this._renderJoin() : null}
+        {! this.state.alreadyJoined ? this._renderJoin() : null}
         <Text style={styles.h2}>Events</Text>
         <View style={styles.break}></View>
         {Object.keys(group.events).length ? this._renderEvents() : this._renderNoEvents()}
