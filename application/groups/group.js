@@ -89,19 +89,21 @@ class Group extends React.Component{
     )
   }
   _renderEvents(){
-    let {group} = this.props;
+    let {group, currentUser} = this.props;
     return (
       <View>
         {this.state.events.map((event, idx) => {
+          let attending = event.attending[currentUser.id]
+          let going = Object.keys(event.attending).length;
           return (
             <View key={idx} style={styles.eventContainer}>
               <View style={styles.eventInfo}>
                 <Text style={styles.h5}>{event.name}</Text>
                 <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
-                <Text style={styles.h4}>{100} Going</Text>
+                <Text style={styles.h4}>{going} Going</Text>
               </View>
               <View style={styles.goingContainer}>
-                <Text style={styles.goingText}>{"You're Going"}</Text>
+                <Text style={styles.goingText}>{!! attending ? "You're Going" : "Want to go?"}</Text>
                 <Icon name="checkmark-circled" size={30} color="green" />
               </View>
             </View>
@@ -123,12 +125,25 @@ class Group extends React.Component{
       </View>
     )
   }
+  _renderJoin(){
+    return (
+      <View style={styles.joinContainer}>
+        <TouchableOpacity style={styles.joinButton}>
+          <Icon name="plus" size={20} color="white" style={styles.joinIcon}/>
+          <Text style={styles.joinText}>Join</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
   render(){
-    let {group} = this.props;
+    let {group, currentUser} = this.props;
     let {events, members} = this.state;
+    let isMember = _.contains(currentUser.groupIds, group.id);
+    let isAdmin = isMember && group.members[currentUser.id].admin;
+    let isOwner = isMember && group.members[currentUser.id].owner;
     console.log('EVENTS', events, group.events);
     let backButton = this._renderBackButton();
-    let addButton = this._renderAddButton();
+    let addButton = isAdmin ? this._renderAddButton() : <View></View>;
     return (
       <View style={styles.container}>
       <NavigationBar
@@ -150,6 +165,7 @@ class Group extends React.Component{
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(group.summary, 140)}</Text>
         <Text style={styles.h2}>Technologies</Text>
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
+        {! isMember ? this._renderJoin() : null}
         <Text style={styles.h2}>Events</Text>
         <View style={styles.break}></View>
         {Object.keys(group.events).length ? this._renderEvents() : this._renderNoEvents()}
@@ -254,6 +270,29 @@ let styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  joinContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  joinButton: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    backgroundColor: Colors.brandPrimary,
+  },
+  joinText: {
+    fontSize: 22,
+    color: 'white',
+    fontWeight: 'bold',
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    textAlign: 'center',
+  },
+  joinIcon: {
     paddingVertical: 10,
   },
   eventInfo: {

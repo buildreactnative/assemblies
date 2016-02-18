@@ -145,7 +145,7 @@ class RegisterConfirm extends React.Component{
           let {avatarSource, technologies, summary,} = this.state;
           let {firstName, lastName, email, password, location,} = this.props;
           let user = {
-            location: location,
+            location: location || {},
             firstName: firstName,
             lastName: lastName,
             username: email,
