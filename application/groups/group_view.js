@@ -34,6 +34,7 @@ class GroupView extends React.Component{
     this.state = {
       groups: [],
       suggestedGroups: [],
+      events: [],
     }
   }
   componentDidMount(){
@@ -79,6 +80,27 @@ class GroupView extends React.Component{
       groups: this.state.groups.concat(group),
     })
   }
+  addEvent(event){
+    let {groups} = this.state;
+    groups.forEach((gp, id) => {
+      if (gp.id == event.groupId){
+        groups[id].events.push(event.id)
+      }
+    })
+    console.log('UPDATED GROUPS', groups)
+    fetch(`http://localhost:2403/groups/${event.groupId}?{"events": {"$push": ${event.id}}}`, {
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      this.setState({events: this.state.events.concat(event), groups: groups})
+      console.log('UPDATED GROUP EVENT DATA', data);
+    });
+  }
   render(){
     // console.log('THIS PROPS', this.props);
     return (
@@ -94,7 +116,7 @@ class GroupView extends React.Component{
             } else if (route.name == 'CreateGroup'){
               return <CreateGroup {...this.props} navigator={navigator} />
             } else if (route.name == 'Group') {
-              return <Group {...this.props} navigator={navigator} {...route}  />
+              return <Group {...this.props} navigator={navigator} {...route} {...this.state} />
             } else if (route.name == 'Members') {
               return <GroupMembers {...this.props} navigator={navigator} />
             } else if (route.name == 'Events' ) {
@@ -105,6 +127,7 @@ class GroupView extends React.Component{
               return (
                 <CreateEventConfirm {...this.props} {...route}
                   navigator={navigator}
+                  addEvent={this.addEvent.bind(this)}
                 />
               )
             } else if (route.name == 'CreateGroupConfirm'){

@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
+import _ from 'underscore';
 
 import React, {
   ScrollView,
@@ -26,10 +27,30 @@ class Group extends React.Component{
     super(props);
     this.state = {
       members: [],
+      events: [],
     }
   }
   componentDidMount(){
-    let {group} = this.props;
+    let {group, events,} = this.props;
+    let eventIds = group.events;
+    let groupEvents = _.reject(events, (evt) => ! _.contains(eventIds, evt.id));
+    if (groupEvents.length == eventIds ){
+      this.setState({events: groupEvents})
+    } else {
+      fetch(`http://localhost:2403/events?{"id": {"$in": ${JSON.stringify(eventIds)}}}`, {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('DATA USERS', data)
+        this.setState({events: data})
+      })
+      .catch((error) => {console.log(error)})
+    }
     let userIds = Object.keys(group.members);
     let url = `http://localhost:2403/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`
     fetch(url, {
@@ -71,14 +92,13 @@ class Group extends React.Component{
     let {group} = this.props;
     return (
       <View>
-        {Object.keys(group.events).map((key, idx) => {
-          let event = group.events[key];
+        {this.state.events.map((event, idx) => {
           return (
             <View key={idx} style={styles.eventContainer}>
               <View style={styles.eventInfo}>
                 <Text style={styles.h5}>{event.name}</Text>
                 <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
-                <Text style={styles.h4}>{event.goingCount} Going</Text>
+                <Text style={styles.h4}>{100} Going</Text>
               </View>
               <View style={styles.goingContainer}>
                 <Text style={styles.goingText}>{"You're Going"}</Text>
@@ -105,6 +125,8 @@ class Group extends React.Component{
   }
   render(){
     let {group} = this.props;
+    let {events, members} = this.state;
+    console.log('EVENTS', events, group.events);
     let backButton = this._renderBackButton();
     let addButton = this._renderAddButton();
     return (

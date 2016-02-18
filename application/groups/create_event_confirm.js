@@ -217,8 +217,12 @@ class CreateEventConfirm extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('DATA', data);
-
+              console.log('EVENT CREATION DATA', data);
+              this.props.addEvent(data);
+              this.props.navigator.push({
+                name: 'Group',
+                group: group,
+              })
             });
           }}
           style={styles.submitButton}
