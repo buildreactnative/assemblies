@@ -82,18 +82,21 @@ class GroupView extends React.Component{
   }
   addEvent(event){
     let {groups} = this.state;
+    let group;
     groups.forEach((gp, id) => {
       if (gp.id == event.groupId){
+        group = groups[id];
         groups[id].events.push(event.id)
       }
     })
     console.log('UPDATED GROUPS', groups)
-    fetch(`http://localhost:2403/groups/${event.groupId}?{"events": {"$push": ${event.id}}}`, {
+    fetch(`http://localhost:2403/groups/${event.groupId}`, {
       method: "PUT",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-      }
+      },
+      body: JSON.stringify({events: group.events.concat(event.id)})
     })
     .then((response) => response.json())
     .then((data) => {

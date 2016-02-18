@@ -30,6 +30,10 @@ suggestedGroups.forEach((group, idx) => {
 })
 
 class Groups extends React.Component{
+  componentDidMount(){
+    console.log('ROUTES', this.props.navigator.getCurrentRoutes())
+    let routes = this.props.navigator.getCurrentRoutes();
+  }
   _renderAddButton(){
     return (
       <TouchableOpacity style={styles.forwardButton} onPress={()=>{
@@ -94,6 +98,7 @@ class Groups extends React.Component{
   }
   render(){
     let {groups, suggestedGroups,} = this.props;
+    console.log('NAV', this.props.navigator);
     let rightButtonConfig = this._renderAddButton()
     let titleConfig = {title: 'My Groups', tintColor: 'white'}
     return (

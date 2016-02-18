@@ -201,7 +201,7 @@ class CreateGroupConfirm extends React.Component{
               this.props.createGroup(data);
               // update groupIds array in user profile
               fetch(`http://localhost:2403/users/${currentUser.id}`, {
-                method: "POST",
+                method: "PUT",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -212,9 +212,7 @@ class CreateGroupConfirm extends React.Component{
               .then((data) => {
                 console.log('USER DATA', data);
                 this.props.updateUser(data);
-                this.props.navigator.push({
-                  name: 'Groups',
-                })
+                this.props.navigator.popToTop();
               })
             })
           }}
