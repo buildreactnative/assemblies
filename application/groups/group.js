@@ -70,7 +70,7 @@ class Group extends React.Component{
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=> {
-        this.props.navigator.pop();
+        this.props.navigator.popToTop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
       </TouchableOpacity>
