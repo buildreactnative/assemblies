@@ -19,10 +19,21 @@ import React, {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class GroupBox extends React.Component{
+class SuggestedGroupBox extends React.Component{
+  _renderSaved(){
+    return <Icon name="checkmark-circled" color="white" size={30} />
+  }
+  _renderSuggested(){
+    return (
+      <TouchableOpacity style={styles.groupAdd}>
+        <Icon name="ios-plus-outline" size={30} color="white" />
+      </TouchableOpacity>
+    )
+  }
   render(){
-    let {group} = this.props;
-    // console.log('GROUP', group);
+    let {group, currentUser,} = this.props;
+    // console.log('GROUP', group, currentUser.groupIds);
+    let isSaved = _.contains(currentUser.groupIds, group.id)
     if (! group ) {
       return (
         <View style={styles.groupImage}>
@@ -35,6 +46,9 @@ class GroupBox extends React.Component{
       <Image source={{uri: group.imageUrl}} style={styles.groupImage}>
         <View style={[styles.group, {backgroundColor: group.backgroundColor,}]} >
           <Text style={styles.groupText}>{group.name}</Text>
+          <TouchableOpacity style={styles.groupAdd}>
+            {isSaved ? this._renderSaved() : this._renderSuggested()}
+          </TouchableOpacity>
         </View>
       </Image>
     )
@@ -69,4 +83,4 @@ let styles = {
   }
 }
 
-module.exports = GroupBox;
+module.exports = SuggestedGroupBox;

@@ -5,6 +5,7 @@ import {groupsFixture, suggestedGroups,} from '../fixtures/group_fixtures';
 import {profileFixture} from '../fixtures/users';
 import _ from 'underscore';
 import GroupBox from './group_box';
+import SuggestedGroupBox from './suggested_group_box';
 
 import React, {
   ScrollView,
@@ -43,6 +44,44 @@ class Groups extends React.Component{
       }}>
         <Icon name="ios-plus-outline" size={25} color="#ccc" />
       </TouchableOpacity>
+    )
+  }
+  _renderSuggestedGroupBoxes(groups){
+    let splitGroups = [];
+    groups.forEach((group, idx)=>{
+      if (idx & 1) { _.last(splitGroups).push(group);}
+      else { splitGroups.push([group]) }
+    })
+    if (_.last(splitGroups).length == 1){
+      _.last(splitGroups).push(null)
+    }
+    console.log('SPLIT GROUPS', splitGroups)
+    return (
+      <View style={styles.assemblyBoxContainer}>
+        {splitGroups.map((groupDouble, idx) => {
+          return (
+            <View style={styles.groupsContainer} key={idx}>
+              {groupDouble.map((group, idx) => {
+                if (!group) {
+                  return (
+                    <GroupBox group={group} key={idx}/>
+                  )
+                }
+                return (
+                  <TouchableOpacity key={idx} onPress={()=>{
+                    this.props.navigator.push({
+                      name: 'Group',
+                      group: group,
+                    })
+                  }}>
+                    <SuggestedGroupBox {...this.props} group={group}/>
+                  </TouchableOpacity>
+                )
+              })}
+            </View>
+          )
+        })}
+      </View>
     )
   }
   _renderGroupBoxes(groups){
@@ -112,7 +151,7 @@ class Groups extends React.Component{
           <Text style={styles.h2}>Your Assemblies:</Text>
           {groups.length ? this._renderGroupBoxes(groups) : this._renderNoGroups()}
           <Text style={styles.h2}>You Might Like:</Text>
-          {suggestedGroups.length ? this._renderGroupBoxes(suggestedGroups) : this._renderNoGroups()}
+          {suggestedGroups.length ? this._renderSuggestedGroupBoxes(suggestedGroups) : this._renderNoGroups()}
         </ScrollView>
       </View>
     )
