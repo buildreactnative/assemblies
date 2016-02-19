@@ -128,7 +128,14 @@ class GroupView extends React.Component{
           }}
           renderScene={(route, navigator) => {
             if (route.name == 'Groups') {
-              return <Groups {...this.props} {...this.state} navigator={navigator} />
+              return (
+                <Groups
+                  {...this.props}
+                  {...this.state}
+                  navigator={navigator}
+                  addUserToGroup={this.addUserToGroup.bind(this)}
+                />
+              )
             } else if (route.name == 'CreateGroup'){
               return <CreateGroup {...this.props} navigator={navigator} />
             } else if (route.name == 'Group') {

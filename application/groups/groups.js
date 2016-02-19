@@ -103,7 +103,7 @@ class Groups extends React.Component{
               {groupDouble.map((group, idx) => {
                 if (!group) {
                   return (
-                    <GroupBox group={group} key={idx}/>
+                    <AddGroupBox group={null} {...this.props} key={idx}/>
                   )
                 }
                 return (
@@ -127,7 +127,7 @@ class Groups extends React.Component{
     return (
       <View style={styles.assemblyBoxContainer}>
         <View style={styles.groupsContainer}>
-          <AddGroupBox group={null}/>
+          <AddGroupBox group={null} {...this.props}/>
           <GroupBox group={null}/>
         </View>
       </View>

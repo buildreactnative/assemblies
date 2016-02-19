@@ -39,12 +39,14 @@ class Profile extends React.Component{
     let titleConfig = {title: `${user.firstName}'s Profile`, tintColor: 'white'};
     let back = this._renderBackButton();
     let splitGroups = []
-    groups.forEach((group, idx)=>{
-      if (idx & 1) { _.last(splitGroups).push(group);}
-      else { splitGroups.push([group]) }
-    })
-    if (_.last(splitGroups).length == 1){
-      _.last(splitGroups).push(null)
+    if (groups.length != 0){
+      groups.forEach((group, idx)=>{
+        if (idx & 1) { _.last(splitGroups).push(group);}
+        else { splitGroups.push([group]) }
+      })
+      if (_.last(splitGroups).length == 1){
+        _.last(splitGroups).push(null)
+      }
     }
     console.log('SPLIT', splitGroups);
     return (

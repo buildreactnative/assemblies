@@ -24,11 +24,17 @@ class GroupBox extends React.Component{
     let {group} = this.props;
     // console.log('GROUP', group);
     return (
-      <View style={styles.groupImage}>
+      <TouchableOpacity
+        onPress={()=>{
+          this.props.navigator.push({
+            name: 'CreateGroup'
+          })
+        }}
+        style={styles.groupImage}>
         <View style={[styles.group, {backgroundColor: Colors.inactive,}]} >
           <Icon name="plus" size={80} color={Colors.brandPrimary} />
         </View>
-      </View>
+      </TouchableOpacity>
     )
   }
 }
