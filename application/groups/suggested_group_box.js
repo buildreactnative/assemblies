@@ -24,8 +24,42 @@ class SuggestedGroupBox extends React.Component{
     return <Icon name="checkmark-circled" color="white" size={30} />
   }
   _renderSuggested(){
+    let {group, currentUser} = this.props;
     return (
-      <TouchableOpacity style={styles.groupAdd}>
+      <TouchableOpacity style={styles.groupAdd} onPress={()=>{
+        let members = group.members;
+        members[currentUser.id] = {
+          confirmed: true,
+          admin: false,
+          owner: false,
+          notifications: true
+        }
+        fetch(`http://localhost:2403/groups/${group.id}`, {
+          method: "PUT",
+          headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({members: members})
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('ADD USER TO GROUP', data);
+          fetch(`http://localhost:2403/users/${currentUser.id}`, {
+            method: "PUT",
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({groupIds: currentUser.groupIds.concat(group.id)})
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('ADD GROUP_ID TO USER', data);
+            this.props.addUserToGroup(group.id, currentUser.id)
+          });
+        });
+      }}>
         <Icon name="ios-plus-outline" size={30} color="white" />
       </TouchableOpacity>
     )

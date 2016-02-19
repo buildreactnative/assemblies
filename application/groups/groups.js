@@ -6,6 +6,7 @@ import {profileFixture} from '../fixtures/users';
 import _ from 'underscore';
 import GroupBox from './group_box';
 import SuggestedGroupBox from './suggested_group_box';
+import AddGroupBox from './add_group_box';
 
 import React, {
   ScrollView,
@@ -124,13 +125,20 @@ class Groups extends React.Component{
   }
   _renderNoGroups(){
     return (
-      <View style={styles.eventContainer}>
-        <View style={styles.eventInfo}>
-          <Text style={styles.h3}>No subscribed groups</Text>
+      <View style={styles.assemblyBoxContainer}>
+        <View style={styles.groupsContainer}>
+          <AddGroupBox group={null}/>
+          <GroupBox group={null}/>
         </View>
-        <View style={styles.goingContainer}>
-          <Text style={styles.goingText}>Search groups</Text>
-          <Icon name="checkmark-circled" size={30} color="green" />
+      </View>
+    )
+  }
+  _renderNoSuggestions(){
+    return (
+      <View style={styles.assemblyBoxContainer}>
+        <View style={styles.groupsContainer}>
+          <GroupBox group={null}/>
+          <GroupBox group={null}/>
         </View>
       </View>
     )
@@ -151,7 +159,7 @@ class Groups extends React.Component{
           <Text style={styles.h2}>Your Assemblies:</Text>
           {groups.length ? this._renderGroupBoxes(groups) : this._renderNoGroups()}
           <Text style={styles.h2}>You Might Like:</Text>
-          {suggestedGroups.length ? this._renderSuggestedGroupBoxes(suggestedGroups) : this._renderNoGroups()}
+          {suggestedGroups.length ? this._renderSuggestedGroupBoxes(suggestedGroups) : this._renderNoSuggestions()}
         </ScrollView>
       </View>
     )
