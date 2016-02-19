@@ -9,6 +9,7 @@ import GroupMembers from './group_members';
 import GroupEvents from './group_events';
 import CreateEventConfirm from './create_event_confirm';
 import CreateGroupConfirm from './create_group_confirm';
+import Profile from '../messages/profile';
 import _ from 'underscore';
 
 import React, {
@@ -159,6 +160,10 @@ class GroupView extends React.Component{
                   createGroup={this.createGroup.bind(this)}
                   navigator={navigator}
                 />
+              )
+            } else if (route.name == 'Profile') {
+              return (
+                <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
               )
             }
           }}/>

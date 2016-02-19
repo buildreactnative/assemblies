@@ -2,7 +2,7 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import _ from 'underscore';
-import {profileFixture} from '../fixtures/users';
+// import {profileFixture} from '../fixtures/users';
 import NavigationBar from 'react-native-navbar';
 import GroupBox from '../groups/group_box';
 
@@ -34,14 +34,19 @@ class Profile extends React.Component{
     )
   }
   render(){
-    let {username, avatar,} = this.props;
-    let titleConfig = {title: `${username}'s Profile`, tintColor: 'white'};
+    let {user, groups} = this.props;
+    console.log('LOCATION', groups.length);
+    let titleConfig = {title: `${user.firstName}'s Profile`, tintColor: 'white'};
     let back = this._renderBackButton();
     let splitGroups = []
-    profileFixture.assemblies.forEach((group, idx)=>{
+    groups.forEach((group, idx)=>{
       if (idx & 1) { _.last(splitGroups).push(group);}
       else { splitGroups.push([group]) }
     })
+    if (_.last(splitGroups).length == 1){
+      _.last(splitGroups).push(null)
+    }
+    console.log('SPLIT', splitGroups);
     return (
       <View style={styles.container}>
         <NavigationBar
@@ -51,30 +56,41 @@ class Profile extends React.Component{
         />
         <ScrollView style={styles.profileContainer}>
           <View style={{height: 120, alignItems: 'center'}}>
-            <Image source={{uri: avatar}} style={styles.avatar}/>
+            <Image source={{uri: user.avatarUrl}} style={styles.avatar}/>
           </View>
-          <Text style={styles.username}>{username}</Text>
-          <Text style={styles.location}>{profileFixture.city}, {profileFixture.state}</Text>
+          <Text style={styles.username}>{user.firstName} {user.lastName}</Text>
+          <Text style={styles.location}>{user.location.city}, {user.location.state}</Text>
           <View style={styles.newMessageContainer}>
             <Icon name="chatbubbles" size={40} style={styles.chatBubble} color={Colors.brandPrimary}/>
             <Text style={styles.sendMessageText}>Send a Message</Text>
           </View>
           <View style={styles.break}></View>
           <Text style={styles.technologies}>Technologies</Text>
-          <Text style={styles.technologyList}>{profileFixture.technologies.join(', ')}</Text>
+          <Text style={styles.technologyList}>{user.technologies.join(', ')}</Text>
           <Text style={styles.technologies}>Assemblies</Text>
-          <View style={{flexDirection: 'row'}}>
+          <View style={{flex: 1}}>
 
-          {splitGroups.map((groupDouble, idx) => {
+          {splitGroups.map((groupDouble, i) => {
+            console.log('IDX', i);
             return (
-              <View style={styles.groupsContainer} key={idx}>
-                {groupDouble.map((group, idx) => {
+              <View style={styles.groupsContainer} key={i}>
+              {groupDouble.map((group, idx) => {
+                if (!group) {
                   return (
-                    <TouchableOpacity key={idx}>
-                      <GroupBox group={group}/>
-                    </TouchableOpacity>
+                    <GroupBox group={group} key={idx}/>
                   )
-                })}
+                }
+                return (
+                  <TouchableOpacity key={idx} onPress={()=>{
+                    this.props.navigator.push({
+                      name: 'Group',
+                      group: group,
+                    })
+                  }}>
+                    <GroupBox group={group}/>
+                  </TouchableOpacity>
+                )
+              })}
               </View>
             )
           })}

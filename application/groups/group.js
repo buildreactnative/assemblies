@@ -231,13 +231,21 @@ class Group extends React.Component{
           let isAdmin = group.members[member.id].admin;
           let status = isOwner ? 'owner' : isAdmin ? 'admin' : 'member'
           return (
-            <View key={idx} style={styles.memberContainer}>
+            <TouchableOpacity
+              onPress={()=>{
+                this.props.navigator.push({
+                  name: 'Profile',
+                  user: member,
+                })
+              }}
+              key={idx}
+              style={styles.memberContainer}>
               <Image source={{uri: member.avatarUrl}} style={styles.avatar}/>
               <View style={styles.memberInfo}>
                 <Text style={styles.h5}>{member.firstName} {member.lastName}</Text>
                 <Text style={styles.h4}>{status}</Text>
               </View>
-            </View>
+            </TouchableOpacity>
           )
         })}
         </ScrollView>
