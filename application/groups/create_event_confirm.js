@@ -203,9 +203,7 @@ class CreateEventConfirm extends React.Component{
               comments: [],
               capacity: capacity,
             };
-            event.attending[currentUser.id] = {
-              confirmed: true
-            }
+            event.attending[currentUser.id] = true;
             console.log('EVENT', event);
             fetch("http://localhost:2403/events", {
               method: "POST",

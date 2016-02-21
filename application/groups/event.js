@@ -25,8 +25,10 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 class Event extends React.Component{
   constructor(props){
     super(props);
+    console.log('SUPER', props.event.attending, props.currentUser.id)
     this.state = {
       members: [],
+      going: !! props.event.attending[props.currentUser.id],
     }
   }
   componentDidMount(){
@@ -69,49 +71,30 @@ class Event extends React.Component{
     }
   }
   _renderJoin(){
-    let {group, currentUser} = this.props;
+    let {group, currentUser, event} = this.props;
     return (
       <View style={styles.joinContainer}>
         <TouchableOpacity
           onPress={()=>{
-            let members = group.members;
-            members[currentUser.id] = {
-              confirmed: true,
-              admin: false,
-              owner: false,
-              notifications: true
-            }
-            fetch(`http://localhost:2403/groups/${group.id}`, {
+            let attending = event.attending;
+            attending[currentUser.id] = true;
+            fetch(`http://localhost:2403/events/${event.id}`, {
               method: "PUT",
               headers: {
                   'Accept': 'application/json',
                   'Content-Type': 'application/json',
               },
-              body: JSON.stringify({members: members})
+              body: JSON.stringify({attending: attending})
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('ADD USER TO GROUP', data);
-              fetch(`http://localhost:2403/users/${currentUser.id}`, {
-                method: "PUT",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({groupIds: currentUser.groupIds.concat(group.id)})
-              })
-              .then((response) => response.json())
-              .then((data) => {
-                console.log('ADD GROUP_ID TO USER', data);
-                this.props.addUserToGroup(group.id, currentUser.id)
-                this.setState({joined: true, members: this.state.members.concat(currentUser)})
-              });
+              console.log('RES', data);
             });
           }}
           style={styles.joinButton}
         >
           {this._renderJoinIcon()}
-          <Text style={styles.joinText}>{this.state.joined ? 'Joined' : 'Join'}</Text>
+          <Text style={styles.joinText}>{this.state.joined ? " I'm Going" : "Going"}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -144,7 +127,7 @@ class Event extends React.Component{
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(event.summary, 140)}</Text>
         <Text style={styles.h2}>Technologies</Text>
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
-        {! this.state.alreadyJoined ? this._renderJoin() : null}
+          {! this.state.going ? this._renderJoin() : null}
         <Text style={styles.h2}>Comments</Text>
         <View style={styles.break}></View>
         <Text style={styles.h2}>Going</Text>
