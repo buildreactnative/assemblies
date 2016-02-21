@@ -22,40 +22,17 @@ import React, {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class Group extends React.Component{
+class Event extends React.Component{
   constructor(props){
     super(props);
     this.state = {
       members: [],
-      events: [],
-      alreadyJoined: !! props.group.members[props.currentUser.id],
-      joined : false,
     }
   }
   componentDidMount(){
-    let {group, events,} = this.props;
-    let eventIds = group.events;
-    let groupEvents = _.reject(events, (evt) => ! _.contains(eventIds, evt.id));
-    if (groupEvents.length == eventIds ){
-      this.setState({events: groupEvents})
-    } else {
-      fetch(`http://localhost:2403/events?{"id": {"$in": ${JSON.stringify(eventIds)}}}`, {
-        method: "GET",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('DATA USERS', data)
-        this.setState({events: data})
-      })
-      .catch((error) => {console.log(error)})
-    }
-    let userIds = Object.keys(group.members);
-    let url = `http://localhost:2403/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`
-    fetch(url, {
+    let {group, event,} = this.props;
+    let attending = Object.keys(event.attending)
+    fetch(`http://localhost:2403/users?{"id": {"$in": ${JSON.stringify(attending)}}}`, {
       method: "GET",
       headers: {
         'Accept': 'application/json',
@@ -73,68 +50,10 @@ class Group extends React.Component{
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=> {
         console.log('Routes', this.props.navigator.getCurrentRoutes());
-        this.props.navigator.popToTop();
+        this.props.navigator.pop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
       </TouchableOpacity>
-    )
-  }
-  _renderAddButton(){
-    return (
-      <TouchableOpacity style={styles.addButton} onPress={()=> {
-        this.props.navigator.push({
-          name: 'CreateEvent',
-          group: this.props.group,
-        });
-      }}>
-        <Icon name="ios-plus-outline" size={25} color="#ccc" />
-      </TouchableOpacity>
-    )
-  }
-  _renderEvents(){
-    let {group, currentUser} = this.props;
-    return (
-      <View>
-        {this.state.events.map((event, idx) => {
-          let attending = event.attending[currentUser.id]
-          let going = Object.keys(event.attending).length;
-          return (
-            <TouchableOpacity
-              onPress={()=>{
-                this.props.navigator.push({
-                  name: 'Event',
-                  event: event,
-                  group: group,
-                })
-              }}
-              key={idx}
-              style={styles.eventContainer}>
-              <View style={styles.eventInfo}>
-                <Text style={styles.h5}>{event.name}</Text>
-                <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
-                <Text style={styles.h4}>{going} Going</Text>
-              </View>
-              <View style={styles.goingContainer}>
-                <Text style={styles.goingText}>{!! attending ? "You're Going" : "Want to go?"}</Text>
-                <Icon name="checkmark-circled" size={30} color="green" />
-              </View>
-            </TouchableOpacity>
-          )
-        })}
-      </View>
-    )
-  }
-  _renderNoEvents(){
-    return (
-      <View style={styles.eventContainer}>
-        <View style={styles.eventInfo}>
-          <Text style={styles.h5}>No events scheduled</Text>
-        </View>
-        <View style={styles.goingContainer}>
-          <Text style={styles.goingText}>Create an event</Text>
-          <Icon name="checkmark-circled" size={30} color="green" />
-        </View>
-      </View>
     )
   }
   _renderJoinIcon(){
@@ -198,41 +117,37 @@ class Group extends React.Component{
     )
   }
   render(){
-    let {group, currentUser} = this.props;
+    let {group, currentUser, event} = this.props;
     let {events, members} = this.state;
     let isMember = _.contains(currentUser.groupIds, group.id);
     let isAdmin = isMember && group.members[currentUser.id].admin;
     let isOwner = isMember && group.members[currentUser.id].owner;
     console.log('EVENTS', events, group.events);
     let backButton = this._renderBackButton();
-    let addButton = isAdmin ? this._renderAddButton() : <View></View>;
     return (
       <View style={styles.container}>
       <NavigationBar
         title={{title: group.name, tintColor: 'white'}}
         tintColor={Colors.brandPrimary}
         leftButton={backButton}
-        rightButton={addButton}
       />
         <ScrollView style={styles.scrollView}>
         <Image source={{uri: group.imageUrl}} style={styles.topImage}>
           <View style={styles.overlayBlur}>
-            <Text style={styles.h1}>{group.name}</Text>
+            <Text style={styles.h1}>{event.name}</Text>
           </View>
           <View style={styles.bottomPanel}>
-            <Text style={styles.memberText}>{Object.keys(group.members).length} members</Text>
+            <Text style={styles.memberText}>{Object.keys(event.attending).length} going</Text>
           </View>
         </Image>
         <Text style={styles.h2}>Summary</Text>
-        <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(group.summary, 140)}</Text>
+        <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(event.summary, 140)}</Text>
         <Text style={styles.h2}>Technologies</Text>
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
         {! this.state.alreadyJoined ? this._renderJoin() : null}
-        <Text style={styles.h2}>Events</Text>
+        <Text style={styles.h2}>Comments</Text>
         <View style={styles.break}></View>
-        {Object.keys(group.events).length ? this._renderEvents() : this._renderNoEvents()}
-        <View style={styles.break}></View>
-        <Text style={styles.h2}>Members</Text>
+        <Text style={styles.h2}>Going</Text>
         <View style={styles.break}></View>
         {this.state.members.map((member, idx) => {
           console.log('MEMBER', member)
@@ -398,4 +313,4 @@ let styles = {
   },
 }
 
-module.exports = Group;
+module.exports = Event;
