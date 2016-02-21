@@ -27,8 +27,10 @@ class Event extends React.Component{
     super(props);
     console.log('SUPER', props.event.attending, props.currentUser.id)
     this.state = {
+      event: props.event,
       members: [],
       going: !! props.event.attending[props.currentUser.id],
+      signedUp: false,
     }
   }
   componentDidMount(){
@@ -59,8 +61,8 @@ class Event extends React.Component{
     )
   }
   _renderJoinIcon(){
-    let {joined} = this.state;
-    if (joined) {
+    let {going} = this.state;
+    if (going) {
       return (
         <Icon name="checkmark-circled" size={20} color="white" style={styles.joinIcon}/>
       )
@@ -71,7 +73,8 @@ class Event extends React.Component{
     }
   }
   _renderJoin(){
-    let {group, currentUser, event} = this.props;
+    let {group, currentUser} = this.props;
+    let {event} = this.state;
     return (
       <View style={styles.joinContainer}>
         <TouchableOpacity
@@ -89,18 +92,25 @@ class Event extends React.Component{
             .then((response) => response.json())
             .then((data) => {
               console.log('RES', data);
+              this.setState({
+                event: data,
+                going: true,
+                signedUp: true,
+                members: this.state.members.concat(this.props.currentUser)
+              });
             });
           }}
           style={styles.joinButton}
         >
           {this._renderJoinIcon()}
-          <Text style={styles.joinText}>{this.state.joined ? " I'm Going" : "Going"}</Text>
+          <Text style={styles.joinText}>{this.state.going ? "Going" : "RSVP"}</Text>
         </TouchableOpacity>
       </View>
     )
   }
   render(){
-    let {group, currentUser, event} = this.props;
+    let {group, currentUser} = this.props;
+    let {event} = this.state;
     let {events, members} = this.state;
     let isMember = _.contains(currentUser.groupIds, group.id);
     let isAdmin = isMember && group.members[currentUser.id].admin;
@@ -127,7 +137,7 @@ class Event extends React.Component{
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(event.summary, 140)}</Text>
         <Text style={styles.h2}>Technologies</Text>
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
-          {! this.state.going ? this._renderJoin() : null}
+          {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
         <Text style={styles.h2}>Comments</Text>
         <View style={styles.break}></View>
         <Text style={styles.h2}>Going</Text>
