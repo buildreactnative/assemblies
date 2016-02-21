@@ -5,6 +5,7 @@ platform :ios, '9.1'
 
 target 'assembly' do
   pod 'Analytics'
+  pod 'Segment-GoogleAnalytics'
 end
 
 target 'assemblyTests' do

@@ -1,5 +1,6 @@
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/Analytics"
-OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/Analytics"
-OTHER_LDFLAGS = $(inherited) -ObjC -l"Analytics"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/Analytics" "${PODS_ROOT}/Headers/Public/GoogleAnalytics" "${PODS_ROOT}/Headers/Public/GoogleIDFASupport" "${PODS_ROOT}/Headers/Public/Segment-GoogleAnalytics"
+LIBRARY_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/GoogleAnalytics/Libraries" $(inherited) "${PODS_ROOT}/GoogleIDFASupport/Libraries"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/Analytics" -isystem "${PODS_ROOT}/Headers/Public/GoogleAnalytics" -isystem "${PODS_ROOT}/Headers/Public/GoogleIDFASupport" -isystem "${PODS_ROOT}/Headers/Public/Segment-GoogleAnalytics"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"AdIdAccessLibrary" -l"Analytics" -l"GoogleAnalytics" -l"Segment-GoogleAnalytics" -l"sqlite3" -l"z" -framework "AdSupport" -framework "CoreData" -framework "SystemConfiguration"
 PODS_ROOT = ${SRCROOT}/Pods

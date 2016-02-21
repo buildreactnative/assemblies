@@ -1,4 +1,4 @@
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/Analytics" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/Analytics"
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/Analytics" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/Analytics" "${PODS_ROOT}/Headers/Public/GoogleAnalytics" "${PODS_ROOT}/Headers/Public/GoogleIDFASupport" "${PODS_ROOT}/Headers/Public/Segment-GoogleAnalytics"
 PODS_ROOT = ${SRCROOT}
 SKIP_INSTALL = YES
