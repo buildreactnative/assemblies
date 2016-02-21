@@ -1,0 +1,1 @@
+../../../Analytics/Pod/Classes/Integrations/SEGPayload.h

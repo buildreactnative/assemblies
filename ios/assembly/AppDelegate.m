@@ -8,13 +8,14 @@
  */
 
 #import "AppDelegate.h"
-
+#import <Analytics/SEGAnalytics.h>
 #import "RCTRootView.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [SEGAnalytics setupWithConfiguration:[SEGAnalyticsConfiguration configurationWithWriteKey:@"LPt1hu87m5Z6raDD5CNCQpIoDMVOctnm"]];
   NSURL *jsCodeLocation;
 
   /**
