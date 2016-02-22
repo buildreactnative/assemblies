@@ -8,13 +8,17 @@
  */
 
 #import "AppDelegate.h"
-
+#import <Analytics/SEGAnalytics.h>
+#import <Segment-GoogleAnalytics/SEGGoogleAnalyticsIntegrationFactory.h>
 #import "RCTRootView.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey:@"LPt1hu87m5Z6raDD5CNCQpIoDMVOctnm"];
+
+    [SEGAnalytics setupWithConfiguration:config];
   NSURL *jsCodeLocation;
 
   /**

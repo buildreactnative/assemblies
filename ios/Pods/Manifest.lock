@@ -1,0 +1,20 @@
+PODS:
+  - Analytics (3.0.7)
+  - GoogleAnalytics (3.14.0)
+  - GoogleIDFASupport (3.14.0)
+  - Segment-GoogleAnalytics (1.0.1):
+    - Analytics (~> 3.0.0)
+    - GoogleAnalytics (~> 3.14)
+    - GoogleIDFASupport (~> 3.14)
+
+DEPENDENCIES:
+  - Analytics
+  - Segment-GoogleAnalytics
+
+SPEC CHECKSUMS:
+  Analytics: b342fb4f43fa4f97ca6f4358b44d3295217ba294
+  GoogleAnalytics: 9be1afdb8deeac4bb5f13ca7f7d3b9db2a1f43dc
+  GoogleIDFASupport: aaf8c10bd429abb1c15349d5252244f5eda8ead1
+  Segment-GoogleAnalytics: ffea73c99196720b28b58ea93bcc0e6d11f172e1
+
+COCOAPODS: 0.39.0

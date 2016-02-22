@@ -99,7 +99,16 @@ class Group extends React.Component{
           let attending = event.attending[currentUser.id]
           let going = Object.keys(event.attending).length;
           return (
-            <View key={idx} style={styles.eventContainer}>
+            <TouchableOpacity
+              onPress={()=>{
+                this.props.navigator.push({
+                  name: 'Event',
+                  event: event,
+                  group: group,
+                })
+              }}
+              key={idx}
+              style={styles.eventContainer}>
               <View style={styles.eventInfo}>
                 <Text style={styles.h5}>{event.name}</Text>
                 <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
@@ -109,7 +118,7 @@ class Group extends React.Component{
                 <Text style={styles.goingText}>{!! attending ? "You're Going" : "Want to go?"}</Text>
                 <Icon name="checkmark-circled" size={30} color="green" />
               </View>
-            </View>
+            </TouchableOpacity>
           )
         })}
       </View>

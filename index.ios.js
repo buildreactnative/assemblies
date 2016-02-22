@@ -10,6 +10,7 @@ import Dashboard from './application/dashboard/dashboard';
 import Register from './application/welcome/register';
 import RegisterConfirm from './application/welcome/register_confirm';
 import Login from './application/welcome/login';
+import DeviceInfo from 'react-native-device-info';
 
 import React, {
   AppRegistry,
@@ -21,10 +22,12 @@ import React, {
   TouchableOpacity,
   Dimensions,
   AsyncStorage,
+  NativeModules,
   Navigator,
 } from 'react-native';
 
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+let clientId = DeviceInfo.getUniqueID();
 
 class assembly extends Component {
   constructor(props){
@@ -37,7 +40,10 @@ class assembly extends Component {
     }
   }
   componentDidMount(){
+    console.log('CLIENT ID', DeviceInfo)
+    NativeModules.SegmentAnalytics.identify(clientId);
     this._loadUser()
+
   }
   async _loadUser(){
     try {

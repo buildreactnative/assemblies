@@ -1,0 +1,1 @@
+../../../Segment-GoogleAnalytics/Pod/Classes/SEGGoogleAnalyticsIntegrationFactory.h
