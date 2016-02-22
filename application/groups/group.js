@@ -1,6 +1,8 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
+import EventList from './event_list';
+import FakeEvent from './fake_event';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';
@@ -92,36 +94,9 @@ class Group extends React.Component{
     )
   }
   _renderEvents(){
-    let {group, currentUser} = this.props;
+    let {currentUser, group, navigator} = this.props;
     return (
-      <View>
-        {this.state.events.map((event, idx) => {
-          let attending = event.attending[currentUser.id]
-          let going = Object.keys(event.attending).length;
-          return (
-            <TouchableOpacity
-              onPress={()=>{
-                this.props.navigator.push({
-                  name: 'Event',
-                  event: event,
-                  group: group,
-                })
-              }}
-              key={idx}
-              style={styles.eventContainer}>
-              <View style={styles.eventInfo}>
-                <Text style={styles.h5}>{event.name}</Text>
-                <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
-                <Text style={styles.h4}>{going} Going</Text>
-              </View>
-              <View style={styles.goingContainer}>
-                <Text style={styles.goingText}>{!! attending ? "You're Going" : "Want to go?"}</Text>
-                <Icon name="checkmark-circled" size={30} color="green" />
-              </View>
-            </TouchableOpacity>
-          )
-        })}
-      </View>
+      <FakeEvent events={this.state.events} currentUser={currentUser} group={group} navigator={navigator}/>
     )
   }
   _renderNoEvents(){
