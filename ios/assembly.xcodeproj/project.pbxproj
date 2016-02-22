@@ -179,6 +179,8 @@
 		893FE1161C7A79B000B50E0C /* SegmentAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentAnalytics.h; sourceTree = "<group>"; };
 		893FE1171C7A79C500B50E0C /* SegmentAnalytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentAnalytics.m; sourceTree = "<group>"; };
 		893FE1191C7A7FA100B50E0C /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
+		893FE1201C7A87CA00B50E0C /* libSegment-GoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSegment-GoogleAnalytics.a"; path = "Pods/../build/Debug-iphoneos/libSegment-GoogleAnalytics.a"; sourceTree = "<group>"; };
+		893FE1221C7A87F000B50E0C /* libSegment-GoogleAnalytics.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libSegment-GoogleAnalytics.a"; path = "Pods/../build/Debug-iphoneos/libSegment-GoogleAnalytics.a"; sourceTree = "<group>"; };
 		899531391C683A9800A39223 /* UIImagePickerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIImagePickerManager.h; path = "../node_modules/react-native-image-picker/ios/UIImagePickerManager.h"; sourceTree = "<group>"; };
 		8995313A1C683A9800A39223 /* UIImagePickerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIImagePickerManager.m; path = "../node_modules/react-native-image-picker/ios/UIImagePickerManager.m"; sourceTree = "<group>"; };
 		ACE67A53A7684F0DAF8C4816 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 0; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
@@ -268,6 +270,8 @@
 		00C40D7129FE888A8CC8D2CE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				893FE1221C7A87F000B50E0C /* libSegment-GoogleAnalytics.a */,
+				893FE1201C7A87CA00B50E0C /* libSegment-GoogleAnalytics.a */,
 				893FE0F11C7A789100B50E0C /* libSegment-Localytics.a */,
 				893FE0EF1C7A788D00B50E0C /* libSegment-GoogleAnalytics.a */,
 				893FE0ED1C7A788B00B50E0C /* libSegment-Branch.a */,
