@@ -5,6 +5,7 @@ import moment from 'moment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';
 import EventItem from './event_item';
+import Swipeout from 'react-native-swipeout';
 
 import React, {
   ScrollView,
@@ -43,8 +44,7 @@ class EventList extends React.Component{
         return {event: evt, right: [{text: 'button'}]}
       })
       console.log('ROWS', rows, nextProps.events);
-      let ds = new ListView.DataSource({rowHasChanged: (row1, row2) => true})
-      this.setState({dataSource: ds.cloneWithRows(rows)})
+      this._updateDataSource(rows);
     }
   }
   _allowScroll(scrollEnabled){
@@ -65,12 +65,9 @@ class EventList extends React.Component{
   _renderRow (rowData: string, sectionID: number, rowID: number) {
     return (
       <Swipeout
-        right={rowData.right}
         rowID={rowID}
-        sectionID={sectionID}
-        close={!rowData.active}
-        onOpen={(sectionID, rowID) => this._handleSwipeout(sectionID, rowID)}
-        scroll={event => this._allowScroll(event)}>
+        right={rowData.right}
+        sectionID={sectionID}>
         <View style={styles.li}>
           <Text style={styles.liText}>{rowData.event.name}</Text>
         </View>
