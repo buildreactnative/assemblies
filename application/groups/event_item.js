@@ -3,8 +3,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
+import Swipeout from 'react-native-swipeout';
 import _ from 'underscore';
-import EventItem from './event_item';
 
 import React, {
   ScrollView,
@@ -25,70 +25,29 @@ import React, {
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class EventList extends React.Component{
-  constructor(props){
-    super(props);
-    let rows = props.events.map((evt) => {
-      return {event: evt, right: [{text: 'button'}]}
-    })
-    console.log('ROWS', rows, props.events);
-    let ds = new ListView.DataSource({rowHasChanged: (row1, row2) => true})
-    this.state = {
-      dataSource: ds.cloneWithRows(rows),
-      scrollEnabled: true
-    }
-  }
-  componentWillReceiveProps(nextProps){
-    if (nextProps.events != this.props.events){
-      let rows = nextProps.events.map((evt) => {
-        return {event: evt, right: [{text: 'button'}]}
-      })
-      console.log('ROWS', rows, nextProps.events);
-      let ds = new ListView.DataSource({rowHasChanged: (row1, row2) => true})
-      this.setState({dataSource: ds.cloneWithRows(rows)})
-    }
-  }
-  _allowScroll(scrollEnabled){
-    this.setState({scrollEnabled: scrollEnable})
-  }
-  _handleSwipeout(sectionID, rowID) {
-    for (var i = 0; i < rows.length; i++) {
-      if (i != rowID) rows[i].active = false
-      else rows[i].active = true
-    }
-    this._updateDataSource(rows)
-  }
-  _updateDataSource(data) {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(data)
-    })
-  }
-  _renderRow (rowData: string, sectionID: number, rowID: number) {
-    return (
-      <Swipeout
-        right={rowData.right}
-        rowID={rowID}
-        sectionID={sectionID}
-        close={!rowData.active}
-        onOpen={(sectionID, rowID) => this._handleSwipeout(sectionID, rowID)}
-        scroll={event => this._allowScroll(event)}>
-        <View style={styles.li}>
-          <Text style={styles.liText}>{rowData.event.name}</Text>
-        </View>
-      </Swipeout>
-    )
-  }
   render(){
-    let {group, currentUser, events, navigator} = this.props;
-    console.log('EVENT LIST', this.state.dataSource);
+    let {group, event, attending, going, navigator} = this.props;
+    console.log('EVENT', event);
     return (
-      <View style={styles.container}>
-        <View style={styles.statusbar}/>
-        <ListView
-          scrollEnabled={this.state.scrollEnabled}
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow}
-          style={styles.listview}/>
-      </View>
+      <TouchableOpacity
+        onPress={()=>{
+          this.props.navigator.push({
+            name: 'Event',
+            event: event,
+            group: group,
+          })
+        }}
+        style={styles.eventContainer}>
+        <View style={styles.eventInfo}>
+          <Text style={styles.h5}>{event.name}</Text>
+          <Text style={styles.h4}>{moment(event.start).format('dddd, MMM Do')}</Text>
+          <Text style={styles.h4}>{going} Going</Text>
+        </View>
+        <View style={styles.goingContainer}>
+          <Text style={styles.goingText}>{!! attending ? "You're Going" : "Want to go?"}</Text>
+          <Icon name="checkmark-circled" size={30} color="green" />
+        </View>
+      </TouchableOpacity>
     )
   }
 }
@@ -121,6 +80,36 @@ let styles = {
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
+  },
+  h1: {
+    fontSize: 22,
+    color: 'white',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  bottomPanel: {
+    flex: 0.3,
+    backgroundColor: 'white',
+    opacity: 0.8,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  memberText: {
+    textAlign: 'center',
+    color: Colors.brandPrimary,
+    fontSize: 18,
+    fontWeight: '400',
+  },
+  h4: {
+    fontSize: 18,
+    fontWeight: '300',
+  },
+  h3: {
+    fontSize: 18,
+    color: Colors.brandPrimary,
+    paddingHorizontal: 18,
+    paddingVertical: 5,
+    fontWeight: '500',
   },
   container: {
     backgroundColor: '#f2f2f2',
@@ -162,36 +151,6 @@ let styles = {
   statusbar: {
     backgroundColor: '#fff',
     height: 22,
-  },
-  h1: {
-    fontSize: 22,
-    color: 'white',
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  bottomPanel: {
-    flex: 0.3,
-    backgroundColor: 'white',
-    opacity: 0.8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  memberText: {
-    textAlign: 'center',
-    color: Colors.brandPrimary,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  h4: {
-    fontSize: 18,
-    fontWeight: '300',
-  },
-  h3: {
-    fontSize: 18,
-    color: Colors.brandPrimary,
-    paddingHorizontal: 18,
-    paddingVertical: 5,
-    fontWeight: '500',
   },
   break: {
     height: 1,

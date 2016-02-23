@@ -95,8 +95,14 @@ class Group extends React.Component{
   }
   _renderEvents(){
     let {currentUser, group, navigator} = this.props;
+    console.log('EVENTS GROUP', this.state.events);
     return (
-      <FakeEvent events={this.state.events} currentUser={currentUser} group={group} navigator={navigator}/>
+      <EventList
+        currentUser={currentUser}
+        group={group}
+        navigator={navigator}
+        events={this.state.events}
+      />
     )
   }
   _renderNoEvents(){
