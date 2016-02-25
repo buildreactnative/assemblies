@@ -198,6 +198,7 @@ class CreateEventConfirm extends React.Component{
               summary: summary,
               attending: {},
               notAttending: {},
+              maybe: {},
               location: location || {},
               groupId: group.id,
               comments: [],

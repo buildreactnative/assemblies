@@ -97,8 +97,136 @@ class EventList extends React.Component{
       this._updateDataSource(rows);
     }
   }
+  _going(event){
+    let {currentUser} = this.props;
+    let attending = event.attending;
+    let maybe = event.maybe;
+    let notAttending = event.notAttending;
+    if (notAttending[currentUser.id]) {
+      delete notAttending[currentUser.id];
+    }
+    if (maybe[currentUser.id]){
+      delete maybe[currentUser.id]
+    }
+    attending[currentUser.id] = true;
+    fetch(`http://localhost:2403/events/${event.id}`, {
+      method: "PUT",
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        attending: attending,
+        maybe: maybe,
+        notAttending: notAttending
+      })
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('RES', data);
+      let {events} = this.props;
+      let updatedEvents = _.reject(events, (evt) => evt.id == event.id);
+      updatedEvents.push(data);
+      // this.setState({
+      //   event: data,
+      //   going: true,
+      //   signedUp: true,
+      //   members: this.state.members.concat(this.props.currentUser)
+      // });
+    });
+  }
+  _maybe(event){
+    let {currentUser} = this.props;
+    let attending = event.attending;
+    let maybe = event.maybe;
+    let notAttending = event.notAttending;
+    if (attending[currentUser.id]) {
+      delete attending[currentUser.id];
+    }
+    if (notAttending[currentUser.id]){
+      delete notAttending[currentUser.id]
+    }
+    maybe[currentUser.id] = true;
+    fetch(`http://localhost:2403/events/${event.id}`, {
+      method: "PUT",
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        attending: attending,
+        maybe: maybe,
+        notAttending: notAttending
+      })
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('RES', data);
+      let {events} = this.props;
+      let updatedEvents = _.reject(events, (evt) => evt.id == event.id);
+      updatedEvents.push(data);
+      // this.setState({
+      //   event: data,
+      //   going: true,
+      //   signedUp: true,
+      //   members: this.state.members.concat(this.props.currentUser)
+      // });
+    });
+  }
+  _notGoing(event){
+    console.log('NOT GOING EVENT', event);
+    let {currentUser} = this.props;
+    let attending = event.attending;
+    let maybe = event.maybe;
+    let notAttending = event.notAttending;
+    if (attending[currentUser.id]) {
+      delete attending[currentUser.id];
+    }
+    if (maybe[currentUser.id]){
+      delete maybe[currentUser.id]
+    }
+    notAttending[currentUser.id] = true;
+    fetch(`http://localhost:2403/events/${event.id}`, {
+      method: "PUT",
+      headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        attending: attending,
+        maybe: maybe,
+        notAttending: notAttending
+      })
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('RES', data);
+      let {events} = this.props;
+      let updatedEvents = _.reject(events, (evt) => evt.id == event.id);
+      updatedEvents.push(data);
+
+      // this.setState({
+      //   event: data,
+      //   going: true,
+      //   signedUp: true,
+      //   members: this.state.members.concat(this.props.currentUser)
+      // });
+    });
+  }
   _updateEvent(evt, type){
     console.log('UPDATE EVENT', evt, type);
+    switch(type) {
+      case 'going':
+        this._going(evt);
+      break;
+      case 'maybe':
+        this._maybe(evt);
+      break;
+      case 'not going':
+        this._notGoing(evt);
+      break;
+    }
+
   }
   _allowScroll(scrollEnabled){
     this.setState({scrollEnabled: scrollEnable})
@@ -116,6 +244,13 @@ class EventList extends React.Component{
     })
   }
   _renderRow(rowData: string, sectionID: number, rowID: number) {
+    let {currentUser} = this.props;
+    let attending = rowData.event.attending;
+    let notAttending = rowData.event.notAttending;
+    let maybe = rowData.event.maybe;
+    let going = !! attending[currentUser.id];
+    let goingCount = Object.keys(attending).length;
+    let maybeCount = Object.keys(maybe).length;
     return (
       <Swipeout
         backgroundColor="white"
@@ -134,10 +269,10 @@ class EventList extends React.Component{
           >
             <Text style={styles.h5}>{rowData.event.name}</Text>
             <Text style={styles.h4}>{moment(rowData.event.start).format('dddd, MMM Do')}</Text>
-            <Text style={styles.h4}>{100} Going</Text>
+            <Text style={styles.h4}>{goingCount} Going, {maybeCount} maybe</Text>
           </TouchableOpacity>
           <View style={styles.goingContainer}>
-            <Text style={styles.goingText}>{!! true ? "You're Going" : "Want to go?"}</Text>
+            <Text style={styles.goingText}>{!! going ? "You're Going" : "Want to go?"}</Text>
             <Icon name="checkmark-circled" size={30} color="green" />
           </View>
         </View>
