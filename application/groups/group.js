@@ -100,7 +100,7 @@ class Group extends React.Component{
       <EventList
         currentUser={currentUser}
         group={group}
-        navigator={navigator}
+        navigator={this.props.navigator}
         events={this.state.events}
       />
     )

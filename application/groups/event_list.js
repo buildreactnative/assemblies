@@ -29,7 +29,32 @@ class EventList extends React.Component{
   constructor(props){
     super(props);
     let rows = props.events.map((evt) => {
-      return {event: evt, right: [{text: 'button'}]}
+      return {
+        event: evt,
+        right: [
+          {
+            text: 'Going',
+            type: 'primary',
+            onPress: ()=>{
+              this._updateEvent(evt, 'going');
+            },
+          },
+          {
+            text: 'Maybe',
+            type: 'secondary',
+            onPress: ()=>{
+              this._updateEvent(evt, 'maybe');
+            },
+          },
+          {
+            text: 'Not Going',
+            type: 'delete',
+            onPress: ()=>{
+              this._updateEvent(evt, 'not going');
+            },
+           }
+        ]
+      }
     })
     console.log('ROWS', rows, props.events);
     let ds = new ListView.DataSource({rowHasChanged: (row1, row2) => true})
@@ -41,11 +66,39 @@ class EventList extends React.Component{
   componentWillReceiveProps(nextProps){
     if (nextProps.events != this.props.events){
       let rows = nextProps.events.map((evt) => {
-        return {event: evt, right: [{text: 'button'}]}
+        return {
+          event: evt,
+          right: [
+            {
+              text: 'Going',
+              type: 'primary',
+              onPress: ()=>{
+                this._updateEvent(evt, 'going');
+              },
+            },
+            {
+              text: 'Maybe',
+              type: 'secondary',
+              onPress: ()=>{
+                this._updateEvent(evt, 'maybe');
+              },
+            },
+            {
+              text: 'Not Going',
+              type: 'delete',
+              onPress: ()=>{
+                this._updateEvent(evt, 'not going');
+              },
+             }
+          ]
+        }
       })
       console.log('ROWS', rows, nextProps.events);
       this._updateDataSource(rows);
     }
+  }
+  _updateEvent(evt, type){
+    console.log('UPDATE EVENT', evt, type);
   }
   _allowScroll(scrollEnabled){
     this.setState({scrollEnabled: scrollEnable})
@@ -62,14 +115,31 @@ class EventList extends React.Component{
       dataSource: this.state.dataSource.cloneWithRows(data)
     })
   }
-  _renderRow (rowData: string, sectionID: number, rowID: number) {
+  _renderRow(rowData: string, sectionID: number, rowID: number) {
     return (
       <Swipeout
+        backgroundColor="white"
         rowID={rowID}
         right={rowData.right}
         sectionID={sectionID}>
-        <View style={styles.li}>
-          <Text style={styles.liText}>{rowData.event.name}</Text>
+        <View style={styles.eventContainer}>
+          <TouchableOpacity style={styles.eventInfo}
+            onPress={()=>{
+              this.props.navigator.push({
+                name: 'Event',
+                event: rowData.event,
+                group: this.props.group,
+              })
+            }}
+          >
+            <Text style={styles.h5}>{rowData.event.name}</Text>
+            <Text style={styles.h4}>{moment(rowData.event.start).format('dddd, MMM Do')}</Text>
+            <Text style={styles.h4}>{100} Going</Text>
+          </TouchableOpacity>
+          <View style={styles.goingContainer}>
+            <Text style={styles.goingText}>{!! true ? "You're Going" : "Want to go?"}</Text>
+            <Icon name="checkmark-circled" size={30} color="green" />
+          </View>
         </View>
       </Swipeout>
     )
@@ -83,7 +153,7 @@ class EventList extends React.Component{
         <ListView
           scrollEnabled={this.state.scrollEnabled}
           dataSource={this.state.dataSource}
-          renderRow={this._renderRow}
+          renderRow={this._renderRow.bind(this)}
           style={styles.listview}/>
       </View>
     )
