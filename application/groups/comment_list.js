@@ -37,7 +37,7 @@ class CommentList extends React.Component{
   _renderRow(comment, idx){
     // console.log('DATA', comment);
     return (
-      <View key={idx}>
+      <View key={idx} style={styles.messageBox}>
         <View style={styles.messageContainer}>
           <Image style={styles.profile} source={{uri: comment.avatarUrl}}/>
           <View style={styles.messageTextContainer}>
@@ -71,7 +71,7 @@ class CommentList extends React.Component{
   }
   render(){
     return (
-      <View>
+      <View style={styles.commentsBox}>
         {this.props.comments.map((comment, idx) => {
           return this._renderRow(comment, idx)
         })}
@@ -86,6 +86,10 @@ let styles = {
     padding: 10,
     marginRight: 15,
     fontWeight: '300',
+  },
+  commentsBox: {
+    backgroundColor: 'f2f2f2',
+    padding: 5,
   },
   commentDataText: {
     fontSize: 14,
@@ -111,6 +115,10 @@ let styles = {
     fontSize: 18,
     fontWeight: '300',
     paddingHorizontal: 15,
+  },
+  messageBox: {
+    backgroundColor: 'white',
+    margin: 5,
   },
   messageContainer:{
     flex: 1,
