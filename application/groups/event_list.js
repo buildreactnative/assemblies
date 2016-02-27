@@ -63,38 +63,40 @@ class EventList extends React.Component{
       scrollEnabled: true
     }
   }
+  _loadData(events){
+    let rows = events.map((evt) => {
+      return {
+        event: evt,
+        right: [
+          {
+            text: 'Going',
+            type: 'primary',
+            onPress: ()=>{
+              this._updateEvent(evt, 'going');
+            },
+          },
+          {
+            text: 'Maybe',
+            type: 'secondary',
+            onPress: ()=>{
+              this._updateEvent(evt, 'maybe');
+            },
+          },
+          {
+            text: 'Not Going',
+            type: 'delete',
+            onPress: ()=>{
+              this._updateEvent(evt, 'not going');
+            },
+           }
+        ]
+      }
+    })
+    this._updateDataSource(rows);
+  }
   componentWillReceiveProps(nextProps){
     if (nextProps.events != this.props.events){
-      let rows = nextProps.events.map((evt) => {
-        return {
-          event: evt,
-          right: [
-            {
-              text: 'Going',
-              type: 'primary',
-              onPress: ()=>{
-                this._updateEvent(evt, 'going');
-              },
-            },
-            {
-              text: 'Maybe',
-              type: 'secondary',
-              onPress: ()=>{
-                this._updateEvent(evt, 'maybe');
-              },
-            },
-            {
-              text: 'Not Going',
-              type: 'delete',
-              onPress: ()=>{
-                this._updateEvent(evt, 'not going');
-              },
-             }
-          ]
-        }
-      })
-      console.log('ROWS', rows, nextProps.events);
-      this._updateDataSource(rows);
+      this._loadData(nextProps.events);
     }
   }
   _going(event){
@@ -127,12 +129,7 @@ class EventList extends React.Component{
       let {events} = this.props;
       let updatedEvents = _.reject(events, (evt) => evt.id == event.id);
       updatedEvents.push(data);
-      // this.setState({
-      //   event: data,
-      //   going: true,
-      //   signedUp: true,
-      //   members: this.state.members.concat(this.props.currentUser)
-      // });
+      this._loadData(updatedEvents);
     });
   }
   _maybe(event){
@@ -165,12 +162,7 @@ class EventList extends React.Component{
       let {events} = this.props;
       let updatedEvents = _.reject(events, (evt) => evt.id == event.id);
       updatedEvents.push(data);
-      // this.setState({
-      //   event: data,
-      //   going: true,
-      //   signedUp: true,
-      //   members: this.state.members.concat(this.props.currentUser)
-      // });
+      this._loadData(updatedEvents);
     });
   }
   _notGoing(event){
@@ -204,13 +196,7 @@ class EventList extends React.Component{
       let {events} = this.props;
       let updatedEvents = _.reject(events, (evt) => evt.id == event.id);
       updatedEvents.push(data);
-
-      // this.setState({
-      //   event: data,
-      //   going: true,
-      //   signedUp: true,
-      //   members: this.state.members.concat(this.props.currentUser)
-      // });
+      this._loadData(updatedEvents);
     });
   }
   _updateEvent(evt, type){
