@@ -37,7 +37,7 @@ class CommentList extends React.Component{
   _renderRow(comment, idx){
     // console.log('DATA', comment);
     return (
-      <TouchableOpacity key={idx}>
+      <View key={idx}>
         <View style={styles.messageContainer}>
           <Image style={styles.profile} source={{uri: comment.avatarUrl}}/>
           <View style={styles.messageTextContainer}>
@@ -46,9 +46,27 @@ class CommentList extends React.Component{
               <Text style={styles.sentText}>{moment(comment.timestamp).fromNow()}</Text>
             </View>
             <Text style={styles.messageText}>{comment.text}</Text>
+            <View style={styles.fromContainer}>
+              <Text style={styles.commentDataText}>{comment.replies.length} replies</Text>
+              <Text style={styles.commentDataText}>{Object.keys(comment.likes).length} likes</Text>
+            </View>
           </View>
         </View>
-      </TouchableOpacity>
+        <View style={styles.reactionContainer}>
+          <TouchableOpacity style={styles.reactionBox}>
+            <Icon name="thumbsup" color="#999" size={30}/>
+            <Text style={styles.reactionText}> Like</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.reactionBox}>
+            <Icon name="android-chat" color="#999" size={30}/>
+            <Text style={styles.reactionText}> Reply</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.reactionBox}>
+            <Icon name="ios-flag" color="#999" size={30}/>
+            <Text style={styles.reactionText}> Flag</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     )
   }
   render(){
@@ -68,6 +86,13 @@ let styles = {
     padding: 10,
     marginRight: 15,
     fontWeight: '300',
+  },
+  commentDataText: {
+    fontSize: 14,
+    fontWeight: '300',
+    marginHorizontal: 20,
+    paddingVertical: 10,
+    textAlign: 'center',
   },
   fromContainer:{
     flexDirection: 'row',
@@ -112,6 +137,29 @@ let styles = {
     color: 'white',
     fontSize: 22,
   },
+  reactionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  reactionBox: {
+    backgroundColor: '#eee',
+    padding: 10,
+    borderWidth: 1,
+    width: deviceWidth / 3,
+    borderColor: '#ccc',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1,
+    flexDirection: 'row',
+  },
+  reactionText: {
+    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '400',
+    color: '#777'
+  }
+
 }
 
 module.exports = CommentList;

@@ -152,7 +152,7 @@ class Event extends React.Component{
             onChange={(e) => {this.setState({message: e.nativeEvent.text}); }}
             style={styles.input}
             />
-          <TouchableHighlight
+          <TouchableOpacity
             style={this.state.message ? styles.buttonActive : styles.buttonInactive}
             underlayColor={Colors.brandPrimaryDark}
             onPress={()=>{
@@ -167,6 +167,7 @@ class Event extends React.Component{
                 timestamp: new Date().valueOf(),
                 text: message,
                 replies: [],
+                likes: {},
               };
               console.log('COMMENT', comment);
               fetch(`http://localhost:2403/events/${this.props.event.id}`, {
@@ -186,7 +187,7 @@ class Event extends React.Component{
             }}
           >
             <Text style={styles.buttonText}>Comment</Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
         <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} />
         <View style={styles.break}></View>
@@ -239,7 +240,7 @@ let styles = {
     height: 60,
     backgroundColor: '#f2f2f2',
     flexDirection: 'row',
-    marginBottom: 50,
+    marginBottom: 5,
   },
   input: {
     height: 40,
