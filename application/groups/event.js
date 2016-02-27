@@ -1,6 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
+import CommentList from './comment_list';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';
@@ -10,6 +11,8 @@ import React, {
   Component,
   StyleSheet,
   Text,
+  TextInput,
+  TouchableHighlight,
   View,
   TabBarIOS,
   Image,
@@ -31,6 +34,7 @@ class Event extends React.Component{
       members: [],
       going: !! props.event.attending[props.currentUser.id],
       signedUp: false,
+      message: '',
     }
   }
   componentDidMount(){
@@ -109,9 +113,8 @@ class Event extends React.Component{
     )
   }
   render(){
-    let {group, currentUser} = this.props;
-    let {event} = this.state;
-    let {events, members} = this.state;
+    let {group, currentUser, events} = this.props;
+    let {event, members} = this.state;
     let isMember = _.contains(currentUser.groupIds, group.id);
     let isAdmin = isMember && group.members[currentUser.id].admin;
     let isOwner = isMember && group.members[currentUser.id].owner;
@@ -137,8 +140,55 @@ class Event extends React.Component{
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(event.summary, 140)}</Text>
         <Text style={styles.h2}>Technologies</Text>
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
-          {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
-        <Text style={styles.h2}>Comments</Text>
+        {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
+        <View style={styles.commentTitleContainer}>
+          <Text style={styles.h2}>Comments </Text>
+        </View>
+        <View style={styles.inputBox}>
+          <TextInput
+            ref="input"
+            value={this.state.message}
+            placeholder='Say something...'
+            onChange={(e) => {this.setState({message: e.nativeEvent.text}); }}
+            style={styles.input}
+            />
+          <TouchableHighlight
+            style={this.state.message ? styles.buttonActive : styles.buttonInactive}
+            underlayColor={Colors.brandPrimaryDark}
+            onPress={()=>{
+              let {currentUser} = this.props;
+              let {message, event} = this.state;
+              this.setState({message: ''});
+              // console.log('SUBMIT COMMENT', this.state.message, this.props.currentUser)
+              let {comments} = event;
+              let comment = {
+                avatarUrl: currentUser.avatarUrl,
+                name: `${currentUser.firstName} ${currentUser.lastName}`,
+                timestamp: new Date().valueOf(),
+                text: message,
+                replies: [],
+              };
+              console.log('COMMENT', comment);
+              fetch(`http://localhost:2403/events/${this.props.event.id}`, {
+                method: "PUT",
+                headers: {
+                  'Accept':'application/json',
+                  'Content-Type':'application/json',
+                },
+                body: JSON.stringify({comments: comments.concat(comment)})
+              })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log('DATA', data);
+                event.comments = comments.concat(comment);
+                this.setState({event: event})
+              })
+            }}
+          >
+            <Text style={styles.buttonText}>Comment</Text>
+          </TouchableHighlight>
+        </View>
+        <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} />
         <View style={styles.break}></View>
         <Text style={styles.h2}>Going</Text>
         <View style={styles.break}></View>
@@ -185,8 +235,64 @@ let styles = {
   container: {
     flex: 1,
   },
+  inputBox: {
+    height: 60,
+    backgroundColor: '#f2f2f2',
+    flexDirection: 'row',
+    marginBottom: 50,
+  },
+  input: {
+    height: 40,
+    padding: 8,
+    flex: 1,
+    fontSize: 18,
+    margin: 10,
+    marginRight: 5,
+    borderColor: '#b4b4b4',
+    borderRadius: 8,
+    color: 'black',
+    backgroundColor: 'white',
+  },
+  buttonActive: {
+    flex: 0.4,
+    backgroundColor: Colors.brandPrimary,
+    borderRadius: 6,
+    justifyContent: 'center',
+    margin: 10,
+  },
+  buttonInactive: {
+    flex: 0.4,
+    backgroundColor: "#eeeeee",
+    borderWidth: 1,
+    borderColor: '#ffffff',
+    borderRadius: 6,
+    justifyContent: 'center',
+    margin: 10,
+  },
+  buttonText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 16,
+  },
+  centering: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: deviceHeight,
+  },
+  sentText:{
+    fontSize: 14,
+    padding: 10,
+    marginRight: 15,
+    fontWeight: '300',
+  },
   scrollView: {
     flex: 1,
+  },
+  commentTitleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingRight: 20,
   },
   topImage: {
     width: deviceWidth,
