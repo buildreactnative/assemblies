@@ -1,6 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
+import Comment from './comment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';
 
@@ -37,36 +38,7 @@ class CommentList extends React.Component{
   _renderRow(comment, idx){
     // console.log('DATA', comment);
     return (
-      <View key={idx} style={styles.messageBox}>
-        <View style={styles.messageContainer}>
-          <Image style={styles.profile} source={{uri: comment.avatarUrl}}/>
-          <View style={styles.messageTextContainer}>
-            <View style={styles.fromContainer}>
-              <Text style={styles.fromText}>{comment.name}</Text>
-              <Text style={styles.sentText}>{moment(comment.timestamp).fromNow()}</Text>
-            </View>
-            <Text style={styles.messageText}>{comment.text}</Text>
-            <View style={styles.fromContainer}>
-              <Text style={styles.commentDataText}>{comment.replies.length} replies</Text>
-              <Text style={styles.commentDataText}>{Object.keys(comment.likes).length} likes</Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.reactionContainer}>
-          <TouchableOpacity style={styles.reactionBox}>
-            <Icon name="thumbsup" color="#999" size={30}/>
-            <Text style={styles.reactionText}> Like</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.reactionBox}>
-            <Icon name="android-chat" color="#999" size={30}/>
-            <Text style={styles.reactionText}> Reply</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.reactionBox}>
-            <Icon name="ios-flag" color="#999" size={30}/>
-            <Text style={styles.reactionText}> Flag</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <Comment comment={comment} key={idx} {...this.props} />
     )
   }
   render(){
@@ -89,7 +61,6 @@ let styles = {
   },
   commentsBox: {
     backgroundColor: 'f2f2f2',
-    padding: 5,
   },
   commentDataText: {
     fontSize: 14,
@@ -154,7 +125,7 @@ let styles = {
     backgroundColor: '#eee',
     padding: 10,
     borderWidth: 1,
-    width: deviceWidth / 3,
+    width: deviceWidth / 2,
     borderColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',

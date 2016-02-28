@@ -189,7 +189,7 @@ class Event extends React.Component{
             <Text style={styles.buttonText}>Comment</Text>
           </TouchableOpacity>
         </View>
-        <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} />
+        <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} {...this.props}/>
         <View style={styles.break}></View>
         <Text style={styles.h2}>Going</Text>
         <View style={styles.break}></View>
