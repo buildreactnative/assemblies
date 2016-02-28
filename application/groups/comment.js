@@ -110,7 +110,37 @@ class Comment extends React.Component{
         </View>
         {this.state.isReply ? this._renderReplyForm() : null  }
         <View style={styles.reactionContainer}>
-          <TouchableOpacity style={styles.reactionBox}>
+          <TouchableOpacity style={styles.reactionBox} onPress={()=>{
+            console.log('LIKE');
+            let {currentUser, event} = this.props;
+            let {message, comment} = this.state;
+            this.setState({message: ''});
+            let foundComments = _.reject(event.comments, (c) => {
+              return (
+                c.timestamp == comment.timestamp &&
+                c.text      == comment.text      &&
+                c.name      == comment.name
+              )
+            })
+            // console.log('SUBMIT COMMENT', this.state.message, this.props.currentUser)
+
+            comment.likes[currentUser.id] = true;
+            foundComments.push(comment);
+
+            fetch(`http://localhost:2403/events/${this.props.event.id}`, {
+              method: "PUT",
+              headers: {
+                'Accept':'application/json',
+                'Content-Type':'application/json',
+              },
+              body: JSON.stringify({comments: foundComments})
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('DATA', data);
+              this.setState({comment: comment})
+            })
+          }}>
             <Icon name="thumbsup" color="#999" size={30}/>
             <Text style={styles.reactionText}> Like</Text>
           </TouchableOpacity>
@@ -180,6 +210,7 @@ let styles = {
     fontWeight: '300',
     paddingHorizontal: 15,
     paddingVertical: 4,
+    marginBottom: 10,
   },
   messageBox: {
     backgroundColor: 'white',
