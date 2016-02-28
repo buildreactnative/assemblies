@@ -1,9 +1,18 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
-import UpcomingAssembly from '../activity/upcoming_assembly';
 import NavigationBar from 'react-native-navbar';
-import {calendarFixture} from '../fixtures/calendar_fixtures';
+import Groups from '../groups/groups';
+import Group from '../groups/group';
+import CreateGroup from '../groups/create_group';
+import CreateEvent from '../groups/create_event';
+import GroupMembers from '../groups/group_members';
+import GroupEvents from '../groups/group_events';
+import CreateEventConfirm from '../groups/create_event_confirm';
+import CreateGroupConfirm from '../groups/create_group_confirm';
+import Profile from '../messages/profile';
+import Event from '../groups/event';
+import CalendarList from './calendar_list';
+import _ from 'underscore';
 
 import React, {
   ScrollView,
@@ -13,88 +22,79 @@ import React, {
   View,
   TabBarIOS,
   Image,
-  ListView,
   TouchableOpacity,
   Dimensions,
   NativeModules,
+  Navigator,
+  InteractionManager,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
-class CalendarView extends React.Component{
+const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
+// console.log('GESTURES', CUSTOM_CONFIG.gestures);
+CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
+class GroupView extends React.Component{
   constructor(props){
     super(props);
-    let getSectionData = (dataBlob, sectionID) => {
-      return dataBlob[sectionID];
-    };
-    let getRowData = (dataBlob, sectionID, rowID) => {
-      return dataBlob[`${sectionID}:${rowID}`]
-    };
-    let sections = calendarFixture,
-    length = calendarFixture.length,
-    dataBlob = {},
-    sectionIDs = [],
-    rowIDs = [],
-    section,
-    assemblies,
-    assemblyLength,
-    assembly,
-    i,
-    j;
-
-    for (i=0; i < length; i++) {
-      section = sections[i];
-      sectionIDs.push(section.id);
-      dataBlob[section.id] = section.date;
-      assemblies = section.assemblies;
-      assemblyLength = assemblies.length;
-      rowIDs[i] = [];
-      for (j=0; j < assemblyLength; j++) {
-        assembly = assemblies[j];
-        rowIDs[i].push(assembly.id)
-        dataBlob[section.id + ':' + j] = assembly;
-      }
-    }
-    // console.log('DATA BLOB', dataBlob);
     this.state = {
-      dataSource: new ListView.DataSource({
-        getSectionData: getSectionData,
-        getRowData: getRowData,
-        rowHasChanged: (r1, r2) => r1 != r2,
-        sectionHeaderHasChanged: (s1, s2) => s1 != s2
-      })
-      .cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs)
+      events: []
     }
   }
-  _renderSectionHeader(sectionData, sectionID){
-    // console.log('SECTION DATA', sectionData, sectionID)
-    return (
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{moment(sectionData).format('dddd, MMM Do')} at {moment(sectionData).format('h:m')}</Text>
-      </View>
-    )
-  }
-  _renderRow(rowData, sectionID, rowID){
-    return (
-      <UpcomingAssembly assembly={rowData} />
-    )
+  componentDidMount(){
+    
   }
   render(){
-    let titleConfig = {title: 'Calendar', tintColor: 'white'}
+    // console.log('THIS PROPS', this.props);
     return (
       <View style={styles.container}>
-        <NavigationBar
-          tintColor={Colors.brandPrimary}
-          title={titleConfig}
-        />
-        <ListView
-          style={styles.listView}
-          initialListSize={7}
-          ref="assemblyList"
-          contentInset={{bottom: 49}}
-          automaticallyAdjustContentInsets={false}
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow.bind(this)}
-          renderSectionHeader={this._renderSectionHeader.bind(this)}
-        />
+        <Navigator
+          initialRoute={{ name: 'CalendarList' }}
+          configureScene={(route, routeStack) => {
+            return CUSTOM_CONFIG;
+          }}
+          renderScene={(route, navigator) => {
+            if (route.name == 'CalendarList') {
+              return (
+                <CalendarList {...this.props} navigator={navigator}/>
+              )
+            } else if (route.name == 'CreateGroup'){
+              return <CreateGroup {...this.props} navigator={navigator} />
+            } else if (route.name == 'Group') {
+              return (
+                <Group
+                  {...this.props}
+                  {...route}
+                  navigator={navigator}
+                />
+              )
+            } else if (route.name == 'Members') {
+              return <GroupMembers {...this.props} navigator={navigator} />
+            } else if (route.name == 'Events' ) {
+              return <GroupEvents {...this.props} navigator={navigator}  />
+            } else if (route.name == 'CreateEvent'){
+              return <CreateEvent {...this.props} {...route} navigator={navigator}  />
+            } else if (route.name == 'CreateEventConfirm'){
+              return (
+                <CreateEventConfirm {...this.props} {...route}
+                  navigator={navigator}
+                />
+              )
+            } else if (route.name == 'CreateGroupConfirm'){
+              return (
+                <CreateGroupConfirm {...this.props} {...route}
+                  navigator={navigator}
+                />
+              )
+            } else if (route.name == 'Profile') {
+              return (
+                <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
+            } else if (route.name == 'Event') {
+              return (
+                <Event {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
+            }
+          }}/>
       </View>
     )
   }
@@ -103,28 +103,6 @@ class CalendarView extends React.Component{
 let styles = {
   container: {
     flex: 1,
-  },
-  sectionHeader: {
-    backgroundColor: Colors.inactive,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  sectionHeaderText: {
-    color: Colors.brandPrimaryDark,
-    fontSize: 20,
-  },
-  header: {
-    height: 70,
-    backgroundColor: Colors.brandPrimary,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  headerText: {
-    color: 'white',
-    fontSize: 22,
-  },
-  listView: {},
+  }
 }
-module.exports = CalendarView;
+module.exports = GroupView;
