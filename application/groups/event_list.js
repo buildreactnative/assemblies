@@ -127,9 +127,9 @@ class EventList extends React.Component{
     .then((data) => {
       console.log('RES', data);
       let {events} = this.props;
-      let updatedEvents = _.reject(events, (evt) => evt.id == event.id);
-      updatedEvents.push(data);
-      this._loadData(updatedEvents);
+      let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
+      events[eventIndex] = data;
+      this._loadData(events);
     });
   }
   _maybe(event){
@@ -160,9 +160,9 @@ class EventList extends React.Component{
     .then((data) => {
       console.log('RES', data);
       let {events} = this.props;
-      let updatedEvents = _.reject(events, (evt) => evt.id == event.id);
-      updatedEvents.push(data);
-      this._loadData(updatedEvents);
+      let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
+      events[eventIndex] = data;
+      this._loadData(events);
     });
   }
   _notGoing(event){
@@ -194,9 +194,9 @@ class EventList extends React.Component{
     .then((data) => {
       console.log('RES', data);
       let {events} = this.props;
-      let updatedEvents = _.reject(events, (evt) => evt.id == event.id);
-      updatedEvents.push(data);
-      this._loadData(updatedEvents);
+      let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
+      events[eventIndex] = data;
+      this._loadData(events);
     });
   }
   _updateEvent(evt, type){

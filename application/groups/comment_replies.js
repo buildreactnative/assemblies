@@ -3,7 +3,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';
-import CommentReplies from './comment_replies';
 
 import React, {
   ScrollView,
@@ -25,136 +24,25 @@ import React, {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class Comment extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      isReply: false,
-      message: '',
-      comment: props.comment,
-      showReplies: false,
-    }
-  }
-  _renderReplyForm(){
-    return (
-      <View style={styles.inputBox}>
-        <TextInput
-          ref="input"
-          value={this.state.message}
-          placeholder='Say something...'
-          onChange={(e) => {this.setState({message: e.nativeEvent.text}); }}
-          style={styles.input}
-          />
-        <TouchableOpacity
-          style={this.state.message ? styles.buttonActive : styles.buttonInactive}
-          underlayColor={Colors.brandPrimaryDark}
-          onPress={()=>{
-            console.log('SUBMIT REPLY');
-            let {currentUser, event} = this.props;
-            let {message, comment} = this.state;
-            this.setState({message: ''});
-            let foundComments = _.reject(event.comments, (c) => {
-              return (
-                c.timestamp == comment.timestamp &&
-                c.text      == comment.text      &&
-                c.name      == comment.name
-              )
-            })
-            // console.log('SUBMIT COMMENT', this.state.message, this.props.currentUser)
-            let reply = {
-              avatarUrl: currentUser.avatarUrl,
-              name: `${currentUser.firstName} ${currentUser.lastName}`,
-              timestamp: new Date().valueOf(),
-              text: message,
-            };
-
-            comment.replies.push(reply)
-            foundComments.push(comment);
-
-            console.log('COMMENT', reply);
-            fetch(`http://localhost:2403/events/${this.props.event.id}`, {
-              method: "PUT",
-              headers: {
-                'Accept':'application/json',
-                'Content-Type':'application/json',
-              },
-              body: JSON.stringify({comments: foundComments})
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log('DATA', data);
-              this.setState({comment: comment, isReply: false})
-            })
-          }}
-        >
-          <Text style={styles.buttonText}>Reply</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
+class CommentReplies extends React.Component{
   render(){
-    let {comment} = this.props;
-    console.log('COMMENT', comment);
+    let {replies} = this.props;
     return (
-      <View style={styles.messageBox}>
-        <View style={styles.messageContainer}>
-          <Image style={styles.profile} source={{uri: comment.avatarUrl}}/>
-          <View style={styles.messageTextContainer}>
-            <View style={styles.fromContainer}>
-              <Text style={styles.fromText}>{comment.name}</Text>
-              <Text style={styles.sentText}>{moment(comment.timestamp).fromNow()}</Text>
+      <View>
+        {replies.map((reply, idx) => {
+          return (
+            <View style={styles.replyContainer} key={idx}>
+              <Image style={styles.replyProfile} source={{uri: reply.avatarUrl}}/>
+              <View style={styles.messageTextContainer}>
+                <View style={styles.fromContainer}>
+                  <Text style={styles.fromText}>{reply.name}</Text>
+                  <Text style={styles.sentText}>{moment(reply.timestamp).fromNow()}</Text>
+                </View>
+                <Text style={styles.replyText}>{reply.text}</Text>
+              </View>
             </View>
-            <Text style={styles.messageText}>{comment.text}</Text>
-            <View style={styles.fromContainer}>
-              <TouchableOpacity onPress={()=>this.setState({showReplies: ! this.state.showReplies})}>
-                <Text style={styles.commentDataText}>{comment.replies.length} replies</Text>
-              </TouchableOpacity>
-              <Text style={styles.commentDataText}>{Object.keys(comment.likes).length} likes</Text>
-            </View>
-          </View>
-        </View>
-        {this.state.isReply ? this._renderReplyForm() : null  }
-        <View style={styles.reactionContainer}>
-          <TouchableOpacity style={styles.reactionBox} onPress={()=>{
-            console.log('LIKE');
-            let {currentUser, event} = this.props;
-            let {message, comment} = this.state;
-            this.setState({message: ''});
-            let foundComments = _.reject(event.comments, (c) => {
-              return (
-                c.timestamp == comment.timestamp &&
-                c.text      == comment.text      &&
-                c.name      == comment.name
-              )
-            })
-            // console.log('SUBMIT COMMENT', this.state.message, this.props.currentUser)
-
-            comment.likes[currentUser.id] = true;
-            foundComments.push(comment);
-
-            fetch(`http://localhost:2403/events/${this.props.event.id}`, {
-              method: "PUT",
-              headers: {
-                'Accept':'application/json',
-                'Content-Type':'application/json',
-              },
-              body: JSON.stringify({comments: foundComments})
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              console.log('DATA', data);
-              this.setState({comment: comment})
-            })
-          }}>
-            <Icon name="thumbsup" color="#999" size={30}/>
-            <Text style={styles.reactionText}> Like</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.reactionBox} onPress={()=>this.setState({isReply: !this.state.isReply})}>
-            <Icon name="android-chat" color="#999" size={30}/>
-            <Text style={styles.reactionText}> Reply</Text>
-          </TouchableOpacity>
-        </View>
-        {this.state.showReplies ? <CommentReplies replies={comment.replies}/> : null}
+          )
+        })}
       </View>
     )
   }
@@ -458,4 +346,5 @@ let styles = {
   },
 }
 
-module.exports = Comment;
+
+module.exports = CommentReplies;

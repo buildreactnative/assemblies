@@ -35,11 +35,11 @@ class Profile extends React.Component{
   }
   render(){
     let {user, groups} = this.props;
-    console.log('LOCATION', groups.length);
+    // console.log('LOCATION', groups.length);
     let titleConfig = {title: `${user.firstName}'s Profile`, tintColor: 'white'};
     let back = this._renderBackButton();
     let splitGroups = []
-    if (groups.length != 0){
+    if (groups && groups.length != 0){
       groups.forEach((group, idx)=>{
         if (idx & 1) { _.last(splitGroups).push(group);}
         else { splitGroups.push([group]) }

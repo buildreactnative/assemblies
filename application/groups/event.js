@@ -2,6 +2,7 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import CommentList from './comment_list';
+import EventLocation from './event_location';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';
@@ -35,6 +36,7 @@ class Event extends React.Component{
       going: !! props.event.attending[props.currentUser.id],
       signedUp: false,
       message: '',
+      showCommentForm: false,
     }
   }
   componentDidMount(){
@@ -112,6 +114,55 @@ class Event extends React.Component{
       </View>
     )
   }
+  _renderCommentForm(){
+    return (
+      <View style={styles.inputBox}>
+        <TextInput
+          ref="input"
+          value={this.state.message}
+          placeholder='Say something...'
+          onChange={(e) => {this.setState({message: e.nativeEvent.text}); }}
+          style={styles.input}
+          />
+        <TouchableOpacity
+          style={this.state.message ? styles.buttonActive : styles.buttonInactive}
+          underlayColor={Colors.brandPrimaryDark}
+          onPress={()=>{
+            let {currentUser} = this.props;
+            let {message, event} = this.state;
+            this.setState({message: ''});
+            // console.log('SUBMIT COMMENT', this.state.message, this.props.currentUser)
+            let {comments} = event;
+            let comment = {
+              avatarUrl: currentUser.avatarUrl,
+              name: `${currentUser.firstName} ${currentUser.lastName}`,
+              timestamp: new Date().valueOf(),
+              text: message,
+              replies: [],
+              likes: {},
+            };
+            console.log('COMMENT', comment);
+            fetch(`http://localhost:2403/events/${this.props.event.id}`, {
+              method: "PUT",
+              headers: {
+                'Accept':'application/json',
+                'Content-Type':'application/json',
+              },
+              body: JSON.stringify({comments: comments.concat(comment)})
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('DATA', data);
+              event.comments = comments.concat(comment);
+              this.setState({event: event})
+            })
+          }}
+        >
+          <Text style={styles.buttonText}>Comment</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
   render(){
     let {group, currentUser, events} = this.props;
     let {event, members} = this.state;
@@ -128,14 +179,7 @@ class Event extends React.Component{
         leftButton={backButton}
       />
         <ScrollView style={styles.scrollView}>
-        <Image source={{uri: group.imageUrl}} style={styles.topImage}>
-          <View style={styles.overlayBlur}>
-            <Text style={styles.h1}>{event.name}</Text>
-          </View>
-          <View style={styles.bottomPanel}>
-            <Text style={styles.memberText}>{Object.keys(event.attending).length} going</Text>
-          </View>
-        </Image>
+        <EventLocation event={event} group={group}/>
         <Text style={styles.h2}>Summary</Text>
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(event.summary, 140)}</Text>
         <Text style={styles.h2}>Address</Text>
@@ -145,52 +189,11 @@ class Event extends React.Component{
         {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
         <View style={styles.commentTitleContainer}>
           <Text style={styles.h2}>Comments </Text>
-        </View>
-        <View style={styles.inputBox}>
-          <TextInput
-            ref="input"
-            value={this.state.message}
-            placeholder='Say something...'
-            onChange={(e) => {this.setState({message: e.nativeEvent.text}); }}
-            style={styles.input}
-            />
-          <TouchableOpacity
-            style={this.state.message ? styles.buttonActive : styles.buttonInactive}
-            underlayColor={Colors.brandPrimaryDark}
-            onPress={()=>{
-              let {currentUser} = this.props;
-              let {message, event} = this.state;
-              this.setState({message: ''});
-              // console.log('SUBMIT COMMENT', this.state.message, this.props.currentUser)
-              let {comments} = event;
-              let comment = {
-                avatarUrl: currentUser.avatarUrl,
-                name: `${currentUser.firstName} ${currentUser.lastName}`,
-                timestamp: new Date().valueOf(),
-                text: message,
-                replies: [],
-                likes: {},
-              };
-              console.log('COMMENT', comment);
-              fetch(`http://localhost:2403/events/${this.props.event.id}`, {
-                method: "PUT",
-                headers: {
-                  'Accept':'application/json',
-                  'Content-Type':'application/json',
-                },
-                body: JSON.stringify({comments: comments.concat(comment)})
-              })
-              .then((response) => response.json())
-              .then((data) => {
-                console.log('DATA', data);
-                event.comments = comments.concat(comment);
-                this.setState({event: event})
-              })
-            }}
-          >
-            <Text style={styles.buttonText}>Comment</Text>
+          <TouchableOpacity onPress={()=>this.setState({showCommentForm: ! this.state.showCommentForm})}>
+            <Icon name="plus-circled" size={30} color="#bbb"/>
           </TouchableOpacity>
         </View>
+        {this.state.showCommentForm ? this._renderCommentForm() : null}
         <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} {...this.props}/>
         <View style={styles.break}></View>
         <Text style={styles.h2}>Going</Text>
