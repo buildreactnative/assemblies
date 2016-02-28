@@ -123,7 +123,7 @@ class Event extends React.Component{
     return (
       <View style={styles.container}>
       <NavigationBar
-        title={{title: group.name, tintColor: 'white'}}
+        title={{title: event.name, tintColor: 'white'}}
         tintColor={Colors.brandPrimary}
         leftButton={backButton}
       />
@@ -138,8 +138,10 @@ class Event extends React.Component{
         </Image>
         <Text style={styles.h2}>Summary</Text>
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(event.summary, 140)}</Text>
-        <Text style={styles.h2}>Technologies</Text>
-        <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
+        <Text style={styles.h2}>Address</Text>
+        <Text style={styles.h3}>{event.location ? event.location.city : ''}</Text>
+        <Text style={styles.h2}>Date</Text>
+        <Text style={styles.h3}>{moment(event.start).format('dddd, MMM Do, h:mm')}</Text>
         {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
         <View style={styles.commentTitleContainer}>
           <Text style={styles.h2}>Comments </Text>
