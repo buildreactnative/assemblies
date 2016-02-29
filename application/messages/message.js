@@ -62,7 +62,7 @@ class Message extends React.Component{
           <View style={styles.messageBox}>
             <View style={styles.row}>
               <Text style={styles.author}>{message.senderName}</Text>
-              <Text style={styles.sent}>{moment(new Date(message.createdAt)).fromNow()}</Text>
+              <Text style={styles.sent}>{moment(new Date(parseInt(message.createdAt))).fromNow()}</Text>
             </View>
             <View style={styles.messageView}>
               <Text style={styles.messageText}>{message.text}</Text>

@@ -36,7 +36,8 @@ class MessagesView extends React.Component{
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 != r2
       })
-      .cloneWithRows([])
+      .cloneWithRows([]),
+      conversations: {},
     }
   }
   componentDidMount(){
@@ -54,7 +55,7 @@ class MessagesView extends React.Component{
       console.log('MESSAGES', data);
       let conversations = {};
       data.forEach((msg) => {
-        let key = msg.participants.join(':');
+        let key = msg.participants.sort().join(':');
         if (conversations[key]){
           conversations[key].push(msg)
         } else {
@@ -71,7 +72,8 @@ class MessagesView extends React.Component{
         dataSource: new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 != r2
         })
-        .cloneWithRows(dataBlob.map((d) => d[0]))
+        .cloneWithRows(dataBlob.map((d) => d[0])),
+        conversations: conversations
       })
     })
     .catch((err) => {console.log('ERR: ', err)})
@@ -93,8 +95,15 @@ class MessagesView extends React.Component{
                 <MessagesList dataSource={this.state.dataSource} navigator={navigator} />
               )
             } else if (route.name == 'Message'){
+              let {userIds} = route;
+              let otherUserIds = _.reject(userIds, (id) => id == this.props.currentUser.id)
               return (
-                <MessageBox message={route.message} navigator={navigator}/>
+                <MessageBox
+                  userIds={otherUserIds}
+                  {...this.props}
+                  messages={this.state.conversations[userIds.sort().join(':')]}
+                  navigator={navigator}
+                />
               )
             } else if (route.name == 'Profile') {
               return (

@@ -44,7 +44,7 @@ class MessagesList extends React.Component{
       <TouchableOpacity onPress={()=>{
         this.props.navigator.push({
           name: 'Message',
-          message: rowData,
+          userIds: rowData.participants,
         })
       }}>
         <View style={styles.messageContainer}>
@@ -52,7 +52,7 @@ class MessagesList extends React.Component{
           <View style={styles.messageTextContainer}>
             <View style={styles.fromContainer}>
               <Text style={styles.fromText}>{rowData.senderName}</Text>
-              <Text style={styles.sentText}>{moment(rowData.createdAt).fromNow()}</Text>
+              <Text style={styles.sentText}>{moment(new Date(parseInt(rowData.createdAt))).fromNow()}</Text>
             </View>
             <Text style={styles.messageText}>{rowData.text}</Text>
           </View>

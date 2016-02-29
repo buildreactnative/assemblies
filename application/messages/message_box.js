@@ -31,12 +31,12 @@ let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 class MessageBox extends React.Component{
   constructor(props){
     super(props);
-    let messages = JSON.parse(JSON.stringify(messageFixtures));
     this.state = {
       loading: true,
-      messages: messages,
+      messages: props.messages,
       newMessage: '',
       keyboardOffset: 0,
+      users: [],
     }
   }
   componentDidMount(){
@@ -44,6 +44,21 @@ class MessageBox extends React.Component{
       this.setState({loading: false});
     });
     this.refs.scroll.scrollTo(0);
+    console.log('USER IDS', this.props.userIds);
+    let url = `http://localhost:2403/users?{"id": {"$in": ${JSON.stringify(this.props.userIds)}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('USERS', data);
+      this.setState({users: data})
+    })
+    .catch((err) => {console.log('ERR: ', err)})
   }
   _keyboardWillShow(e){
     let newCoordinates = e.endCoordinates.height;
@@ -73,9 +88,10 @@ class MessageBox extends React.Component{
     )
   }
   render(){
-    let {user, currentUser,} = this.props;
-    let {messages} = this.state;
-    let titleConfig = {title: user.firstName, tintColor: 'white'}
+    let {currentUser,} = this.props;
+    let {messages, users,} = this.state;
+    let username = users.map((usr) => usr.firstName).join(', ');
+    let titleConfig = {title: username, tintColor: 'white'}
     let back = this._renderBackButton();
     return (
       <View style={styles.container}>
@@ -104,7 +120,7 @@ class MessageBox extends React.Component{
             onPress={()=>{
               let msg = {
                 text: this.state.newMessage,
-                participants: [user.id, currentUser.id],
+                participants: this.state.users.map((usr)=>usr.id).concat(currentUser.id),
                 createdAt: new Date().valueOf(),
                 senderName: `${currentUser.firstName} ${currentUser.lastName}`,
                 senderAvatar: currentUser.avatarUrl
