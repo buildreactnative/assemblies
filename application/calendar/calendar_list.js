@@ -54,8 +54,8 @@ class CalendarList extends React.Component{
     }
     let dates = {};
     events.forEach((evt) => {
-      let evtDate = new Date(evt.start)
-      let month = evtDate.getMonth();
+      let evtDate = new Date(parseInt(evt.start));
+      let month = evtDate.getMonth()+1;
       let date = evtDate.getDate();
       let year = evtDate.getFullYear();
       let dateString = `${month}/${date}/${year}`;
@@ -107,7 +107,7 @@ class CalendarList extends React.Component{
     console.log('SECTION DATA', sectionData, sectionID)
     return (
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{moment(sectionData).format('dddd MMM, do')}</Text>
+        <Text style={styles.sectionHeaderText}>{moment(sectionData).format('dddd MMM Do')}</Text>
       </View>
     )
   }
