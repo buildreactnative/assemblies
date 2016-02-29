@@ -3,6 +3,7 @@ import React from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
+import _ from 'underscore';
 
 let {
   AppRegistry,
@@ -48,8 +49,10 @@ class Message extends React.Component{
       >
         <View style={styles.container}>
           <TouchableOpacity onPress={()=>{
+            let {user} = this.props;
             this.props.navigator.push({
               name: 'Profile',
+              user: user,
               username: message.senderName,
               avatar: message.senderAvatar,
             })

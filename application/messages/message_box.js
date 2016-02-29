@@ -5,6 +5,7 @@ import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import Message from './message';
 import {messageFixtures} from '../fixtures/messages';
 import NavigationBar from 'react-native-navbar';
+import _ from 'underscore';
 
 import React, {
   ScrollView,
@@ -102,8 +103,10 @@ class MessageBox extends React.Component{
         />
         <InvertibleScrollView ref="scroll">
           {messages.map((msg, idx) => {
+            let user = _.find(this.state.users.concat(this.props.currentUser), (usr) => `${usr.firstName} ${usr.lastName}` == msg.senderName)
+            console.log('USER', user);
             return (
-              <Message message={msg} key={idx} navigator={this.props.navigator}/>
+              <Message message={msg} user={user} key={idx} navigator={this.props.navigator}/>
             )
           })}
         </InvertibleScrollView>

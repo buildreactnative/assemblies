@@ -24,6 +24,27 @@ import React, {
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class Profile extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      groups: []
+    }
+  }
+  componentDidMount(){
+    let url = `http://localhost:2403/groups?{"id": {"$in": ${JSON.stringify(this.props.user.groupIds)}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('GROUPS');
+      this.setState({groups: data})
+    })
+  }
   _renderBackButton(){
     return (
       <TouchableOpacity onPress={()=>{
@@ -34,9 +55,9 @@ class Profile extends React.Component{
     )
   }
   render(){
-    let {user, groups} = this.props;
-    // console.log('LOCATION', groups.length);
-    let titleConfig = {title: `${user.firstName}'s Profile`, tintColor: 'white'};
+    let {user,} = this.props;
+    let {groups} = this.state;
+    let titleConfig = {title: `${user ? user.firstName : 'User'}'s Profile`, tintColor: 'white'};
     let back = this._renderBackButton();
     let splitGroups = []
     if (groups && groups.length != 0){

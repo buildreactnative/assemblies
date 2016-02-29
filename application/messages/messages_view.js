@@ -107,7 +107,7 @@ class MessagesView extends React.Component{
               )
             } else if (route.name == 'Profile') {
               return (
-                <Profile navigator={navigator} username={route.username} avatar={route.avatar} />
+                <Profile navigator={navigator} user={route.user} username={route.username} avatar={route.avatar} />
               )
             }
           }}
