@@ -21,6 +21,7 @@ import React, {
 class UserProfile extends React.Component{
   render(){
     let titleConfig = {title: 'Profile', tintColor: 'white'}
+    let {currentUser} = this.props;
     return (
       <View style={styles.container}>
         <NavigationBar
@@ -29,11 +30,11 @@ class UserProfile extends React.Component{
         />
         <View style={styles.topProfileContainer}>
           <View style={styles.avatarContainer}>
-            <Image source={{uri: profileFixture.avatar}} style={styles.avatar}/>
+            <Image source={{uri: currentUser.avatarUrl}} style={styles.avatar}/>
           </View>
           <View style={styles.topProfileInfo}>
-            <Text style={styles.name}>{profileFixture.username}</Text>
-            <Text style={styles.location}>{profileFixture.city}, {profileFixture.state}</Text>
+            <Text style={styles.name}>{currentUser.firstName} {currentUser.lastName}</Text>
+            <Text style={styles.location}>{currentUser.location.city}, {currentUser.location.state}</Text>
           </View>
         </View>
         <View style={styles.formField}>
