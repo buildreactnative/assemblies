@@ -2,6 +2,7 @@ import Colors from '../styles/colors';
 import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
+import moment from 'moment';
 
 import React, {
   ScrollView,
@@ -19,17 +20,18 @@ import React, {
 
 class UpcomingAssembly extends React.Component{
   render(){
-    let {assembly} = this.props;
-    let {time, going, group, name,} = assembly;
+    let {event} = this.props;
+    let {name, attending, start} = event;
+    let startTime = new Date(start);
     return (
       <View style={styles.container}>
         <View style={styles.row}>
           <View style={styles.textRow}>
             <Text style={styles.subjectText}>{name}</Text>
-            <Text style={styles.going}> {going} going</Text>
+            <Text style={styles.going}> {Object.keys(attending).length} going</Text>
           </View>
           <View style={styles.timeContainer}>
-            <Text style={styles.timeText}>12:30PM</Text>
+            <Text style={styles.timeText}>{moment(startTime).format('h:mm')}</Text>
             <TouchableOpacity style={styles.timeLink}>
               <Text style={styles.timeLinkText}>
                 {' >'}
@@ -37,7 +39,7 @@ class UpcomingAssembly extends React.Component{
             </TouchableOpacity>
           </View>
         </View>
-        <Text style={styles.messageText}>{group}</Text>
+        <Text style={styles.messageText}>Group</Text>
       </View>
     )
   }

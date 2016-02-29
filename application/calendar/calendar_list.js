@@ -106,14 +106,14 @@ class CalendarList extends React.Component{
     console.log('SECTION DATA', sectionData, sectionID)
     return (
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>date</Text>
+        <Text style={styles.sectionHeaderText}>{moment(sectionData).format('dddd MMM, do')}</Text>
       </View>
     )
   }
   _renderRow(rowData, sectionID, rowID){
     console.log('ROW DATA', rowData);
     return (
-      <Text>{rowData.name}</Text>
+      <UpcomingAssembly event={rowData} />
     )
   }
   render(){
