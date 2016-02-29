@@ -20,7 +20,8 @@ import React, {
 
 class UpcomingAssembly extends React.Component{
   render(){
-    let {event} = this.props;
+    let {event, group} = this.props;
+    console.log('GROUP', group);
     let {name, attending, start} = event;
     let startTime = new Date(start);
     return (
@@ -39,7 +40,7 @@ class UpcomingAssembly extends React.Component{
             </TouchableOpacity>
           </View>
         </View>
-        <Text style={styles.messageText}>Group</Text>
+        <Text style={styles.messageText}>{group ? group.name : ''}</Text>
       </View>
     )
   }

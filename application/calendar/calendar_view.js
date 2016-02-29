@@ -41,7 +41,7 @@ class CalendarView extends React.Component{
       events: [],
     }
   }
-  componentDidMount(){
+  _loadEvents(){
     let groupIds = this.props.currentUser.groupIds;
     let url = `http://localhost:2403/events?{"groupId": {"$in": ${JSON.stringify(groupIds)}}}`
     fetch(url, {
@@ -58,6 +58,34 @@ class CalendarView extends React.Component{
         events: data
       })
     })
+    .catch((err) => {
+      console.log('ERR: ', err);
+    })
+  }
+  _loadGroups(){
+    let groupIds = this.props.currentUser.groupIds;
+    let url = `http://localhost:2403/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
+    fetch(url, {
+      method: "GET",
+      header: {
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('GROUPS', data);
+      this.setState({
+        groups: data
+      })
+    })
+    .catch((err) => {
+      console.log('ERR: ', err);
+    })
+  }
+  componentDidMount(){
+    this._loadEvents();
+    this._loadGroups();
   }
   render(){
     // console.log('THIS PROPS', this.props);
@@ -71,7 +99,7 @@ class CalendarView extends React.Component{
           renderScene={(route, navigator) => {
             if (route.name == 'CalendarList') {
               return (
-                <CalendarList events={this.state.events} navigator={navigator}/>
+                <CalendarList groups={this.state.groups} events={this.state.events} navigator={navigator}/>
               )
             }
           }}/>

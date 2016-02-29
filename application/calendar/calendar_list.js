@@ -4,6 +4,7 @@ import moment from 'moment';
 import UpcomingAssembly from '../activity/upcoming_assembly';
 import NavigationBar from 'react-native-navbar';
 import {calendarFixture} from '../fixtures/calendar_fixtures';
+import _ from 'underscore';
 
 import React, {
   ScrollView,
@@ -112,8 +113,12 @@ class CalendarList extends React.Component{
   }
   _renderRow(rowData, sectionID, rowID){
     console.log('ROW DATA', rowData);
+    let group = _.find(this.props.groups, (g) => {
+      return g.id == rowData.groupId
+    })
+    console.log('GROUP', group);
     return (
-      <UpcomingAssembly event={rowData} />
+      <UpcomingAssembly event={rowData} group={group}/>
     )
   }
   render(){
