@@ -97,7 +97,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <CalendarView />
+          <CalendarView {...this.props }/>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Activity"

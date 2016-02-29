@@ -19,17 +19,54 @@ import React, {
   NativeModules,
 } from 'react-native';
 
-class CalendarView extends React.Component{
+let getSectionData = (dataBlob, sectionID) => {
+  return dataBlob[sectionID];
+};
+let getRowData = (dataBlob, sectionID, rowID) => {
+  return dataBlob[`${sectionID}:${rowID}`]
+};
+
+class CalendarList extends React.Component{
   constructor(props){
     super(props);
-    let getSectionData = (dataBlob, sectionID) => {
-      return dataBlob[sectionID];
-    };
-    let getRowData = (dataBlob, sectionID, rowID) => {
-      return dataBlob[`${sectionID}:${rowID}`]
-    };
-    let sections = calendarFixture,
-    length = calendarFixture.length,
+    this.state = this._loadData(this.props.events)
+  }
+  componentDidMount(){
+    console.log('EVENTS', this.props.events);
+    let newState = this._loadData(this.props.events);
+    if (newState) {
+      this.setState(newState);
+    }
+  }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.events != this.props.events) {
+      let newState = this._loadData(nextProps.events)
+      if (newState){
+        this.setState(newState);
+      }
+    }
+  }
+  _loadData(events){
+    console.log('EVENTS DATA', events);
+    if (! events ) {
+      return;
+    }
+    let dates = {};
+    events.forEach((evt) => {
+      let evtDate = new Date(evt.start)
+      let month = evtDate.getMonth();
+      let date = evtDate.getDate();
+      let year = evtDate.getFullYear();
+      let dateString = `${month}/${date}/${year}`;
+      if (dates[dateString]) {
+        dates[dateString].push(evt);
+      } else {
+        dates[dateString] = [evt];
+      }
+    })
+    console.log('DATES', dates);
+    let sections = Object.keys(dates),
+    length = Object.keys(dates).length,
     dataBlob = {},
     sectionIDs = [],
     rowIDs = [],
@@ -41,20 +78,21 @@ class CalendarView extends React.Component{
     j;
 
     for (i=0; i < length; i++) {
-      section = sections[i];
-      sectionIDs.push(section.id);
+      section = {date: new Date(sections[i]), id: i.toString(), assemblies: dates[sections[i]]};
+      console.log('SECTION', section);
+      sectionIDs.push(i.toString());
       dataBlob[section.id] = section.date;
       assemblies = section.assemblies;
       assemblyLength = assemblies.length;
       rowIDs[i] = [];
       for (j=0; j < assemblyLength; j++) {
         assembly = assemblies[j];
-        rowIDs[i].push(assembly.id)
+        rowIDs[i].push(j.toString())
         dataBlob[section.id + ':' + j] = assembly;
       }
     }
-    // console.log('DATA BLOB', dataBlob);
-    this.state = {
+    console.log('DATA BLOB PRE', dataBlob, sectionIDs, rowIDs)
+    return {
       dataSource: new ListView.DataSource({
         getSectionData: getSectionData,
         getRowData: getRowData,
@@ -62,23 +100,25 @@ class CalendarView extends React.Component{
         sectionHeaderHasChanged: (s1, s2) => s1 != s2
       })
       .cloneWithRowsAndSections(dataBlob, sectionIDs, rowIDs)
-    }
+    };
   }
   _renderSectionHeader(sectionData, sectionID){
-    // console.log('SECTION DATA', sectionData, sectionID)
+    console.log('SECTION DATA', sectionData, sectionID)
     return (
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{moment(sectionData).format('dddd, MMM Do')} at {moment(sectionData).format('h:m')}</Text>
+        <Text style={styles.sectionHeaderText}>date</Text>
       </View>
     )
   }
   _renderRow(rowData, sectionID, rowID){
+    console.log('ROW DATA', rowData);
     return (
-      <UpcomingAssembly assembly={rowData} />
+      <Text>{rowData.name}</Text>
     )
   }
   render(){
     let titleConfig = {title: 'Calendar', tintColor: 'white'}
+    console.log('DATA SOURCES', this.state.dataSource)
     return (
       <View style={styles.container}>
         <NavigationBar
@@ -127,4 +167,4 @@ let styles = {
   },
   listView: {},
 }
-module.exports = CalendarView;
+module.exports = CalendarList;

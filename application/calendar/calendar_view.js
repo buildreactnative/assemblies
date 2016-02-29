@@ -33,15 +33,31 @@ import React, {
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 // console.log('GESTURES', CUSTOM_CONFIG.gestures);
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
-class GroupView extends React.Component{
+class CalendarView extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      events: []
+      groups: [],
+      events: [],
     }
   }
   componentDidMount(){
-    
+    let groupIds = this.props.currentUser.groupIds;
+    let url = `http://localhost:2403/events?{"groupId": {"$in": ${JSON.stringify(groupIds)}}}`
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type':'application/json'
+      },
+    })
+    .then((response)=>response.json())
+    .then((data) => {
+      console.log('EVENT DATA', data);
+      this.setState({
+        events: data
+      })
+    })
   }
   render(){
     // console.log('THIS PROPS', this.props);
@@ -55,43 +71,7 @@ class GroupView extends React.Component{
           renderScene={(route, navigator) => {
             if (route.name == 'CalendarList') {
               return (
-                <CalendarList {...this.props} navigator={navigator}/>
-              )
-            } else if (route.name == 'CreateGroup'){
-              return <CreateGroup {...this.props} navigator={navigator} />
-            } else if (route.name == 'Group') {
-              return (
-                <Group
-                  {...this.props}
-                  {...route}
-                  navigator={navigator}
-                />
-              )
-            } else if (route.name == 'Members') {
-              return <GroupMembers {...this.props} navigator={navigator} />
-            } else if (route.name == 'Events' ) {
-              return <GroupEvents {...this.props} navigator={navigator}  />
-            } else if (route.name == 'CreateEvent'){
-              return <CreateEvent {...this.props} {...route} navigator={navigator}  />
-            } else if (route.name == 'CreateEventConfirm'){
-              return (
-                <CreateEventConfirm {...this.props} {...route}
-                  navigator={navigator}
-                />
-              )
-            } else if (route.name == 'CreateGroupConfirm'){
-              return (
-                <CreateGroupConfirm {...this.props} {...route}
-                  navigator={navigator}
-                />
-              )
-            } else if (route.name == 'Profile') {
-              return (
-                <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
-              )
-            } else if (route.name == 'Event') {
-              return (
-                <Event {...route} {...this.props} {...this.state} navigator={navigator} />
+                <CalendarList events={this.state.events} navigator={navigator}/>
               )
             }
           }}/>
@@ -105,4 +85,4 @@ let styles = {
     flex: 1,
   }
 }
-module.exports = GroupView;
+module.exports = CalendarView;
