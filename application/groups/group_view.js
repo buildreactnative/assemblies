@@ -11,6 +11,8 @@ import CreateEventConfirm from './create_event_confirm';
 import CreateGroupConfirm from './create_group_confirm';
 import Profile from '../messages/profile';
 import Event from './event';
+import MessageList from '../messages/messages_list';
+import MessageBox from '../messages/message_box';
 import _ from 'underscore';
 
 import React, {
@@ -178,6 +180,10 @@ class GroupView extends React.Component{
             } else if (route.name == 'Event') {
               return (
                 <Event {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
+            } else if (route.name == 'Chat') {
+              return (
+                <MessageBox user={route.user} {...this.props} navigator={navigator}/>
               )
             }
           }}/>

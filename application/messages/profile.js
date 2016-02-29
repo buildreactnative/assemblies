@@ -62,10 +62,18 @@ class Profile extends React.Component{
           </View>
           <Text style={styles.username}>{user.firstName} {user.lastName}</Text>
           <Text style={styles.location}>{user.location.city}, {user.location.state}</Text>
-          <View style={styles.newMessageContainer}>
+          <TouchableOpacity style={styles.newMessageContainer}
+            onPress={()=>{
+              console.log('SEND CHAT', user)
+              this.props.navigator.push({
+                name: 'Chat',
+                user: user
+              })
+            }}
+          >
             <Icon name="chatbubbles" size={40} style={styles.chatBubble} color={Colors.brandPrimary}/>
             <Text style={styles.sendMessageText}>Send a Message</Text>
-          </View>
+          </TouchableOpacity>
           <View style={styles.break}></View>
           <Text style={styles.technologies}>Technologies</Text>
           <Text style={styles.technologyList}>{user.technologies.join(', ')}</Text>

@@ -19,6 +19,15 @@ import React, {
 } from 'react-native';
 
 class MessagesList extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 != r2
+      })
+      .cloneWithRows([])
+    }
+  }
   _renderRow(rowData){
     // console.log('DATA', rowData);
     return (
@@ -60,7 +69,7 @@ class MessagesList extends React.Component{
           title={titleConfig}
         />
         <ListView
-          dataSource={this.props.dataSource}
+          dataSource={this.state.dataSource}
           contentInset={{bottom: 49}}
           automaticallyAdjustContentInsets={false}
           ref="messagesList"

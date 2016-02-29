@@ -32,15 +32,6 @@ class MessageBox extends React.Component{
   constructor(props){
     super(props);
     let messages = JSON.parse(JSON.stringify(messageFixtures));
-    let {message} = props;
-
-    messages.push({
-      from: message.from,
-      message: message.message,
-      profileUrl: message.profileUrl,
-      timestamp: message.sent
-    });
-    
     this.state = {
       loading: true,
       messages: messages,
@@ -82,10 +73,9 @@ class MessageBox extends React.Component{
     )
   }
   render(){
-    let {message} = this.props;
-    let messages = JSON.parse(JSON.stringify(messageFixtures));
-    messages.push({from: message.from, message: message.message, profileUrl: message.profileUrl, timestamp: message.sent})
-    let titleConfig = {title: message.from, tintColor: 'white'}
+    let {user, currentUser,} = this.props;
+    let {messages} = this.state;
+    let titleConfig = {title: user.firstName, tintColor: 'white'}
     let back = this._renderBackButton();
     return (
       <View style={styles.container}>
@@ -110,7 +100,35 @@ class MessageBox extends React.Component{
             />
           <TouchableHighlight
             style={this.state.newMessage ? styles.buttonActive : styles.buttonInactive}
-            underlayColor='#D97573'>
+            underlayColor='#D97573'
+            onPress={()=>{
+              let msg = {
+                text: this.state.newMessage,
+                participants: [user.id, currentUser.id],
+                createdAt: new Date().valueOf(),
+                senderName: `${currentUser.firstName} ${currentUser.lastName}`,
+                senderAvatar: currentUser.avatarUrl
+              }
+              let url = `http://localhost:2403/messages`
+              fetch(url, {
+                method: "POST",
+                headers: {
+                  'Accept':'application/json',
+                  'Content-Type':'application/json'
+                },
+                body: JSON.stringify(msg)
+              })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log('MSG', data);
+                this.setState({
+                  messages: this.state.messages.concat(data),
+                  newMessage: '',
+                })
+              })
+              .catch((err) => {console.log('ERR: ', err)})
+            }}
+          >
             <Text style={styles.buttonText}>Send</Text>
           </TouchableHighlight>
         </View>

@@ -36,8 +36,30 @@ class MessagesView extends React.Component{
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 != r2
       })
-      .cloneWithRows(conversationFixtures)
+      .cloneWithRows([])
     }
+  }
+  componentDidMount(){
+    let {currentUser} = this.props;
+    let url = `http://localhost:2403/messages?{"participants":{"$in" : ${JSON.stringify(currentUser.id)}}}`
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('MESSAGES', data);
+      this.setState({
+        dataSource: new ListView.DataSource({
+          rowHasChanged: (r1, r2) => r1 != r2
+        })
+        .cloneWithRows(data)
+      })
+    })
+    .catch((err) => {console.log('ERR: ', err)})
   }
 
   render(){

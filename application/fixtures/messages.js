@@ -1,7 +1,7 @@
 const messageFixtures = [
-  {from: 'Tom', message: 'Hey', timestamp: new Date(), profileUrl: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400'},
-  {from: 'Tom', message: "What's up?", timestamp: new Date(), profileUrl: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400'},
-  {from: 'Tom', message: "What's good", timestamp: new Date(), profileUrl: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400'},
+  {senderName: 'Tom', text: 'Hey', createdAt: new Date(), senderAvatar: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400'},
+  {senderName: 'Tom', text: "What's up?", createdAt: new Date(), senderAvatar: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400'},
+  {senderName: 'Tom', text: "What's good", createdAt: new Date(), senderAvatar: 'https://avatars1.githubusercontent.com/u/10930134?v=3&s=400'},
 ]
 
 const conversationFixtures = [

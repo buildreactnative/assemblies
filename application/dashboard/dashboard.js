@@ -71,7 +71,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <MessagesView />
+          <MessagesView {...this.props}/>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Groups"

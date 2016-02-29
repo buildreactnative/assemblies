@@ -50,22 +50,22 @@ class Message extends React.Component{
           <TouchableOpacity onPress={()=>{
             this.props.navigator.push({
               name: 'Profile',
-              username: message.from,
-              avatar: message.profileUrl,
+              username: message.senderName,
+              avatar: message.senderAvatar,
             })
           }}>
             <Image
               style={styles.icon}
-              source={{uri: message.profileUrl}}
+              source={{uri: message.senderAvatar}}
             />
           </TouchableOpacity>
           <View style={styles.messageBox}>
             <View style={styles.row}>
-              <Text style={styles.author}>{message.from}</Text>
-              <Text style={styles.sent}>{moment(message.sent).fromNow()}</Text>
+              <Text style={styles.author}>{message.senderName}</Text>
+              <Text style={styles.sent}>{moment(message.createdAt).fromNow()}</Text>
             </View>
             <View style={styles.messageView}>
-              <Text style={styles.messageText}>{message.message}</Text>
+              <Text style={styles.messageText}>{message.text}</Text>
             </View>
           </View>
         </View>
