@@ -41,7 +41,7 @@ class MessagesView extends React.Component{
   }
   componentDidMount(){
     let {currentUser} = this.props;
-    let url = `http://localhost:2403/messages?{"participants":{"$in" : ${JSON.stringify(currentUser.id)}}}`
+    let url = `http://localhost:2403/messages`
     fetch(url, {
       method: "GET",
       headers: {
@@ -52,11 +52,26 @@ class MessagesView extends React.Component{
     .then((response) => response.json())
     .then((data) => {
       console.log('MESSAGES', data);
+      let conversations = {};
+      data.forEach((msg) => {
+        let key = msg.participants.join(':');
+        if (conversations[key]){
+          conversations[key].push(msg)
+        } else {
+          conversations[key] = [msg];
+        }
+      })
+      console.log('CONVERSATIONS', conversations);
+      let dataBlob = [];
+      Object.keys(conversations).forEach((c) => {
+        dataBlob.push(conversations[c])
+      })
+      console.log('DATA BLOB', dataBlob.map((d) => d[0]))
       this.setState({
         dataSource: new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 != r2
         })
-        .cloneWithRows(data)
+        .cloneWithRows(dataBlob.map((d) => d[0]))
       })
     })
     .catch((err) => {console.log('ERR: ', err)})

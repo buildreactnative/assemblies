@@ -25,11 +25,21 @@ class MessagesList extends React.Component{
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 != r2
       })
-      .cloneWithRows([])
+      .cloneWithRows(props.dataSource)
+    }
+  }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.dataSource != this.props.dataSource){
+      this.setState({
+        dataSource: new ListView.DataSource({
+          rowHasChanged: (r1, r2) => r1 != r2
+        })
+        .cloneWithRows(nextProps.dataSource)
+      })
     }
   }
   _renderRow(rowData){
-    // console.log('DATA', rowData);
+    console.log('DATA', rowData);
     return (
       <TouchableOpacity onPress={()=>{
         this.props.navigator.push({
@@ -38,13 +48,13 @@ class MessagesList extends React.Component{
         })
       }}>
         <View style={styles.messageContainer}>
-          <Image style={styles.profile} source={{uri: rowData.profileUrl}}/>
+          <Image style={styles.profile} source={{uri: rowData.senderAvatar}}/>
           <View style={styles.messageTextContainer}>
             <View style={styles.fromContainer}>
-              <Text style={styles.fromText}>{rowData.from}</Text>
-              <Text style={styles.sentText}>{moment(rowData.sent).fromNow()}</Text>
+              <Text style={styles.fromText}>{rowData.senderName}</Text>
+              <Text style={styles.sentText}>{moment(rowData.createdAt).fromNow()}</Text>
             </View>
-            <Text style={styles.messageText}>{rowData.message}</Text>
+            <Text style={styles.messageText}>{rowData.text}</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -69,7 +79,7 @@ class MessagesList extends React.Component{
           title={titleConfig}
         />
         <ListView
-          dataSource={this.state.dataSource}
+          dataSource={this.props.dataSource}
           contentInset={{bottom: 49}}
           automaticallyAdjustContentInsets={false}
           ref="messagesList"
