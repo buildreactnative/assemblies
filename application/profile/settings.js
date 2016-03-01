@@ -37,16 +37,17 @@ class Settings extends React.Component{
           }}
           renderScene={(route, navigator) => {
             if (route.name == 'UserTechnologies') {
+              console.log('USER TECH')
               return (
-                <UserTechnologies navigator={navigator}/>
+                <UserTechnologies {...this.props} navigator={navigator} />
               )
             } else if (route.name == 'UserSettings'){
               return (
-                <UserSettings navigator={navigator} {...this.props}/>
+                <UserSettings {...this.props} navigator={navigator} />
               )
-            } else if (route.name == 'UserProfile') {
+            } else  {
               return (
-                <UserProfile navigator={navigator} {...this.props}/>
+                <UserProfile {...this.props} navigator={navigator}/>
               )
             }
           }}

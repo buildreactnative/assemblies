@@ -37,12 +37,18 @@ class UserProfile extends React.Component{
             <Text style={styles.location}>{currentUser.location.city}, {currentUser.location.state}</Text>
           </View>
         </View>
-        <View style={styles.formField}>
+        <TouchableOpacity
+          onPress={()=>{
+            this.props.navigator.push({
+              name: 'UserTechnologies',
+            })
+          }}
+          style={styles.formField}>
           <Text style={styles.formName}>My Technologies</Text>
-          <TouchableOpacity>
+          <View>
             <Icon name="ios-arrow-forward" size={30} color='#ccc' />
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
         <View style={styles.formField}>
           <Text style={styles.formName}>Settings</Text>
           <TouchableOpacity style={styles.forwardButton}>
