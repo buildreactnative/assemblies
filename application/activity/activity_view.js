@@ -21,10 +21,11 @@ class ActivityView extends React.Component{
     super(props);
     this.state = {
       tab: 'notifications',
-      notifications: []
+      notifications: [],
+      events: []
     }
   }
-  componentDidMount(){
+  _fetchNotifications(){
     let url = `http://localhost:2403/notifications`;
     fetch(url, {
       method: "GET",
@@ -39,9 +40,45 @@ class ActivityView extends React.Component{
       this.setState({notifications: data})
     })
   }
+  _fetchEvents(){
+    let {currentUser} = this.props;
+    let url = `http://localhost:2403/events?{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('FETCHED EVENTS', data);
+      let sortedEvents = data.sort((a, b) => {
+        return a.start > b.start;
+      })
+      let nextEvent = null;
+      let found = false;
+      for (i=0; i<sortedEvents.length; i++){
+        let sortedEvent = sortedEvents[i];
+        if (!! sortedEvent.attending[currentUser.id] && ! found) {
+          nextEvent = sortedEvent;
+          found = true;
+        }
+      }
+      this.setState({
+        events: sortedEvents,
+        nextEvent: nextEvent
+      })
+    })
+    .catch((err) => {console.log('ERR: ', err)})
+  }
+  componentDidMount(){
+    this._fetchNotifications();
+    this._fetchEvents();
+  }
   render(){
     let {tab,} = this.state;
-    let tabContent = tab == 'upcoming' ? <UpcomingAssemblies /> : <NotificationsHolder notifications={this.state.notifications}/>
+    let tabContent = tab == 'upcoming' ? <UpcomingAssemblies /> : <NotificationsHolder {...this.state}/>
     return (
       <View style={styles.container}>
         <View style={styles.topTab}>

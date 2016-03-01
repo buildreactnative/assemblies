@@ -110,7 +110,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <ActivityView />
+          <ActivityView {...this.props} />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Profile"

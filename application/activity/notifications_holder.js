@@ -3,6 +3,7 @@ import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
 import Notification from './notification';
+import moment from 'moment';
 
 import React, {
   ScrollView,
@@ -36,13 +37,25 @@ const MAP_REGION = {
 
 class NotificationsHolder extends React.Component{
   render(){
+    let {nextEvent} = this.props;
+    let mapRegion = MAP_REGION;
+    if (nextEvent) {
+      mapRegion = {
+        latitude: nextEvent.location.lat,
+        longitude: nextEvent.location.lng,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      }
+    }
+    console.log('NEXT EVENT', nextEvent)
     return (
       <View style={styles.container}>
-        <Text style={styles.bodyText}>Next Assembly</Text>
+        <Text style={styles.bodyText}>Next Assembly: {nextEvent ? nextEvent.name : ''}</Text>
+        <Text style={styles.dateText}>{nextEvent ? moment(new Date(parseInt(nextEvent.start))).format('dddd MMM Do, h:mm') : ''}</Text>
         <MapView
           style={Globals.map}
-          region={MAP_REGION}
-          annotations={[{latitude: MAP_REGION.latitude, longitude: MAP_REGION.longitude}]}
+          region={mapRegion}
+          annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
         />
         <View style={styles.notificationsContainer}>
           <Text style={styles.bodyText}>Notifications</Text>
@@ -67,6 +80,12 @@ let styles = {
 		fontSize: 16,
 		paddingHorizontal: 15,
     paddingVertical: 15,
+  },
+  dateText: {
+    fontSize: 14,
+    paddingBottom: 4,
+    paddingHorizontal: 15,
+    color: Colors.bodyText,
   },
   notificationsHolder:{},
   break: {
