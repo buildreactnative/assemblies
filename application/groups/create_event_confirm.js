@@ -60,10 +60,14 @@ class CreateEventConfirm extends React.Component{
     this.setState({date: date, choseDate: true, showCalendar: false})
   }
   _createNotification(data){
-    let {currentUser} = this.props;
+    let {currentUser, group} = this.props;
     let url = `http://localhost:2403/notifications`;
     let notification = {
-
+      type: 'event',
+      relatedUserIds: _.reject(Object.keys(group.members), (id) => id == currentUser.id),
+      message: `New event in ${group.name}`,
+      timestamp: new Date().valueOf(),
+      seen: false,
     }
     fetch(url, {
       method: "POST",
@@ -71,7 +75,11 @@ class CreateEventConfirm extends React.Component{
         'Accept':'application/json',
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify()
+      body: JSON.stringify(notification)
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('NOTIFICATION', data);
     })
   }
 

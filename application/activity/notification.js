@@ -1,6 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
+import moment from 'moment';
 
 import React, {
   ScrollView,
@@ -31,7 +32,7 @@ class Notification extends React.Component{
           {seen ? <View style={styles.emptySeen}></View> : this._renderUnseen()}
           <Text style={styles.subjectText}>new {type}</Text>
           <View style={styles.timeContainer}>
-            <Text style={styles.timeText}>12:30PM</Text>
+            <Text style={styles.timeText}>{moment(new Date(parseInt(notification.timestamp))).fromNow()}</Text>
             <TouchableOpacity style={styles.timeLink}>
               <Text style={styles.timeLinkText}>
                 {' >'}

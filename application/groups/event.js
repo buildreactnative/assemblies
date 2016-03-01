@@ -114,6 +114,29 @@ class Event extends React.Component{
       </View>
     )
   }
+  _createNotification(data){
+    let {currentUser, event} = this.props;
+    let url = `http://localhost:2403/notifications`;
+    let notification = {
+      type: 'comment',
+      relatedUserIds: _.reject(Object.keys(event.attending), (id) => id == currentUser.id),
+      message: `New comment in ${event.name}`,
+      timestamp: new Date().valueOf(),
+      seen: false,
+    }
+    fetch(url, {
+      method: "POST",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(notification)
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('NOTIFICATION', data);
+    })
+  }
   _renderCommentForm(){
     return (
       <View style={styles.inputBox}>
@@ -155,6 +178,7 @@ class Event extends React.Component{
               console.log('DATA', data);
               event.comments = comments.concat(comment);
               this.setState({event: event})
+              this._createNotification(data)
             })
           }}
         >
