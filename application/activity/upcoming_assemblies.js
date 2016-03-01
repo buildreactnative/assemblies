@@ -3,6 +3,7 @@ import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
 import UpcomingAssembly from './upcoming_assembly';
+import _ from 'underscore';
 
 import React, {
   ScrollView,
@@ -35,21 +36,38 @@ const UPCOMING_ASSEMBLIES = [
 
 class UpcomingAssemblies extends React.Component{
   render(){
+    let {events} = this.props
+    let mapRegion = MAP_REGION;
+    if (events) {
+      mapRegion = {
+        latitude        : events[0].location.lat,
+        longitude       : events[0].location.lng,
+        latitudeDelta   : 0.01,
+        longitudeDelta  : 0.01
+      }
+    }
     return (
       <View style={styles.container}>
         <Text style={styles.bodyText}>Assemblies Near Me</Text>
         <MapView
           style={Globals.map}
-          region={MAP_REGION}
-          annotations={[{latitude: MAP_REGION.latitude, longitude: MAP_REGION.longitude}]}
+          region={mapRegion}
+          annotations={events.map((evt) => {
+            return {
+              latitude: evt.location.lat ? evt.location.lat : mapRegion.latitude,
+              longitude: evt.location.lng ? evt.location.lng : mapRegion.longitude
+             }
+          })}
         />
         <View style={styles.notificationsContainer}>
           <Text style={styles.bodyText}>Today</Text>
           <View style={styles.break}></View>
           <ScrollView style={styles.notificationsHolder}>
-          {UPCOMING_ASSEMBLIES.map((assembly, idx) => {
+          {this.props.events.map((event, idx) => {
+            let {groups} = this.props;
+            let group = _.find(groups, (g) => g.id == event.groupId)
             return (
-              <UpcomingAssembly assembly={assembly} key={idx} />
+              <UpcomingAssembly event={event} key={idx} />
             )
           })}
           </ScrollView>

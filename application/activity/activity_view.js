@@ -22,7 +22,8 @@ class ActivityView extends React.Component{
     this.state = {
       tab: 'notifications',
       notifications: [],
-      events: []
+      events: [],
+      groups: [],
     }
   }
   _fetchNotifications(){
@@ -40,7 +41,7 @@ class ActivityView extends React.Component{
       this.setState({notifications: data})
     })
   }
-  _fetchEvents(){
+  _fetchLastEvent(){
     let {currentUser} = this.props;
     let url = `http://localhost:2403/events?{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}`;
     fetch(url, {
@@ -65,20 +66,57 @@ class ActivityView extends React.Component{
           found = true;
         }
       }
+      this._fetchGroups();
+      this._fetchAllEvents();
       this.setState({
-        events: sortedEvents,
         nextEvent: nextEvent
       })
     })
     .catch((err) => {console.log('ERR: ', err)})
   }
+  _fetchAllEvents(){
+    let d = new Date();
+    d.setHours(0);
+    d.setTime(0);
+    let url = `http://localhost:2403/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('EVENTS ALL', data);
+      this.setState({events: data});
+    })
+  }
+  _fetchGroups(){
+    let {currentUser} = this.props;
+    let url = `http://localhost:2403/groups?{"id": {"$in": ${JSON.stringify(currentUser.groupIds)}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('FETCHED GROUPS', data);
+      this.setState({groups: data})
+    })
+    .catch((err) => {console.log('ERR: ', err)})
+  }
   componentDidMount(){
     this._fetchNotifications();
-    this._fetchEvents();
+    this._fetchLastEvent();
+
   }
   render(){
     let {tab,} = this.state;
-    let tabContent = tab == 'upcoming' ? <UpcomingAssemblies /> : <NotificationsHolder {...this.state}/>
+    let tabContent = tab == 'upcoming' ? <UpcomingAssemblies {...this.props} {...this.state}/> : <NotificationsHolder {...this.state}/>
     return (
       <View style={styles.container}>
         <View style={styles.topTab}>
