@@ -34,9 +34,7 @@ class Notification extends React.Component{
           <View style={styles.timeContainer}>
             <Text style={styles.timeText}>{moment(new Date(parseInt(notification.timestamp))).fromNow()}</Text>
             <TouchableOpacity style={styles.timeLink}>
-              <Text style={styles.timeLinkText}>
-                {' >'}
-              </Text>
+              <Icon name="ios-arrow-forward" color="#777" size={20}/>
             </TouchableOpacity>
           </View>
         </View>
@@ -54,7 +52,8 @@ let styles = {
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
+    justifyContent: 'space-between',
     marginVertical: 8,
     flex: 1,
   },
@@ -76,12 +75,15 @@ let styles = {
     fontWeight: '500',
   },
   timeContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
-    flex: 2,
+    justifyContent: 'center',
+    flexDirection: 'row',
+    paddingRight: 10,
   },
   timeText: {},
-  timeLink: {},
+  timeLink: {
+    paddingHorizontal: 10,
+  },
   timeLinkText: {},
   messageContainer: {
     flex: 1,
