@@ -39,7 +39,7 @@ class UserTechnologies extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      technologies: [],
+      technologies: props.currentUser.technologies,
       avatarSource: 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png',
       summary: '',
     }

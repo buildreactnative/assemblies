@@ -23,12 +23,13 @@ class Notification extends React.Component{
   }
   render(){
     let {notification} = this.props;
-    let {subject, message, time, seen} = notification;
+    let {type, message, seen} = notification;
+    console.log('RENDERED NOTIFICATION', message);
     return (
       <View style={styles.container}>
         <View style={styles.row}>
           {seen ? <View style={styles.emptySeen}></View> : this._renderUnseen()}
-          <Text style={styles.subjectText}>{subject}</Text>
+          <Text style={styles.subjectText}>new {type}</Text>
           <View style={styles.timeContainer}>
             <Text style={styles.timeText}>12:30PM</Text>
             <TouchableOpacity style={styles.timeLink}>
@@ -38,7 +39,9 @@ class Notification extends React.Component{
             </TouchableOpacity>
           </View>
         </View>
-        <Text style={styles.messageText}>{message}</Text>
+        <View style={styles.messageContainer}>
+          <Text style={styles.messageText}>{message}</Text>
+        </View>
       </View>
     )
   }
@@ -52,6 +55,7 @@ let styles = {
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 8,
+    flex: 1,
   },
   seenCircle: {
     backgroundColor: Colors.brandPrimary,
@@ -78,8 +82,14 @@ let styles = {
   timeText: {},
   timeLink: {},
   timeLinkText: {},
+  messageContainer: {
+    flex: 1,
+  },
   messageText: {
+    color: 'black',
     marginLeft: 25,
+    fontSize: 16,
+    fontWeight: '300',
   },
 }
 module.exports = Notification;

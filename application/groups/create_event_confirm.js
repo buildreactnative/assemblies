@@ -59,6 +59,21 @@ class CreateEventConfirm extends React.Component{
   onDateChange(date){
     this.setState({date: date, choseDate: true, showCalendar: false})
   }
+  _createNotification(data){
+    let {currentUser} = this.props;
+    let url = `http://localhost:2403/notifications`;
+    let notification = {
+
+    }
+    fetch(url, {
+      method: "POST",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify()
+    })
+  }
 
   _renderBackButton(){
     return (
@@ -217,6 +232,7 @@ class CreateEventConfirm extends React.Component{
             .then((response) => response.json())
             .then((data) => {
               console.log('EVENT CREATION DATA', data);
+              this._createNotification(data);
               this.props.addEvent(data);
               this.props.navigator.push({
                 name: 'Group',

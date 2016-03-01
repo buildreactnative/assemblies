@@ -88,6 +88,30 @@ class MessageBox extends React.Component{
       </TouchableOpacity>
     )
   }
+  _createNotification(data){
+    let {currentUser} = this.props;
+    let url = `http://localhost:2403/notifications`;
+    let notification = {
+      type: 'message',
+      relatedUserIds: _.reject(data.participants, (p)=> p == currentUser.id),
+      message: `You have a new message from ${data.senderName}`,
+      timestamp: new Date().valueOf(),
+      seen: false,
+    }
+    console.log('PARAMS', notification)
+    fetch(url, {
+      method: "POST",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify(notification)
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('NOTIFICATION', data);
+    })
+  }
   render(){
     let {currentUser,} = this.props;
     let {messages, users,} = this.state;
@@ -144,6 +168,7 @@ class MessageBox extends React.Component{
                   messages: this.state.messages.concat(data),
                   newMessage: '',
                 })
+                this._createNotification(data)
               })
               .catch((err) => {console.log('ERR: ', err)})
             }}

@@ -28,6 +28,9 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 class EventLocation extends React.Component{
   render(){
     let {event, group} = this.props;
+    if (! event.location || ! event.location.lat || ! event.location.lng) {
+      return <View style={[Globals.map, {backgroundColor: Colors.inactive}]}></View>
+    }
     const mapRegion = {
       latitude        : event.location.lat,
       longitude       : event.location.lng,

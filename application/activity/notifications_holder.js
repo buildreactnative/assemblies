@@ -18,6 +18,8 @@ import React, {
   MapView,
 } from 'react-native';
 
+let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
 const NOTIFICATIONS = [
   {time: new Date(), message: 'new message from Chris', subject: 'Message', seen: false, redirect: '/'},
   {time: new Date(), message: 'comment in React Native NYC', subject: 'Event', seen: false, redirect: '/'},
@@ -46,11 +48,12 @@ class NotificationsHolder extends React.Component{
           <Text style={styles.bodyText}>Notifications</Text>
           <View style={styles.break}></View>
           <ScrollView style={styles.notificationsHolder}>
-            {NOTIFICATIONS.map((notification, idx) => {
+            {this.props.notifications.map((notification, idx) => {
               return (
                 <Notification notification={notification} key={idx}/>
               )
             })}
+            <View style={styles.emptySpace}></View>
           </ScrollView>
         </View>
       </View>
@@ -71,7 +74,9 @@ let styles = {
     borderColor: '#ddd',
     marginHorizontal: 10,
   },
-  notificationsContainer: {},
+  notificationsContainer: {
+    height: deviceHeight - 70 - 20 - 250 - 40,
+  },
   container: {},
 }
 module.exports = NotificationsHolder;

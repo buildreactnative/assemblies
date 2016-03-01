@@ -21,11 +21,27 @@ class ActivityView extends React.Component{
     super(props);
     this.state = {
       tab: 'notifications',
+      notifications: []
     }
+  }
+  componentDidMount(){
+    let url = `http://localhost:2403/notifications`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('NOTIFICATIONS', data);
+      this.setState({notifications: data})
+    })
   }
   render(){
     let {tab,} = this.state;
-    let tabContent = tab == 'upcoming' ? <UpcomingAssemblies /> : <NotificationsHolder />
+    let tabContent = tab == 'upcoming' ? <UpcomingAssemblies /> : <NotificationsHolder notifications={this.state.notifications}/>
     return (
       <View style={styles.container}>
         <View style={styles.topTab}>
