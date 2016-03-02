@@ -29,9 +29,15 @@ class UserProfile extends React.Component{
           title={titleConfig}
         />
         <View style={styles.topProfileContainer}>
-          <View style={styles.avatarContainer}>
+          <TouchableOpacity
+            onPress={()=>{
+              this.props.navigator.push({
+                name: 'UserAvatar'
+              })
+            }}
+            style={styles.avatarContainer}>
             <Image source={{uri: currentUser.avatarUrl}} style={styles.avatar}/>
-          </View>
+          </TouchableOpacity>
           <View style={styles.topProfileInfo}>
             <Text style={styles.name}>{currentUser.firstName} {currentUser.lastName}</Text>
             <Text style={styles.location}>{currentUser.location.city}, {currentUser.location.state}</Text>

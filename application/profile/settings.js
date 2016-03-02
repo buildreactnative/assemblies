@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import UserProfile from './user_profile';
 import UserSettings from './user_settings';
 import UserTechnologies from './user_technologies';
+import UserAvatar from './user_avatar';
 
 import React, {
   ScrollView,
@@ -53,6 +54,10 @@ class Settings extends React.Component{
             } else if (route.name == 'UserSettings'){
               return (
                 <UserSettings {...this.props} currentUser={this.state.user} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
+              )
+            } else if (route.name == 'UserAvatar'){
+              return (
+                <UserAvatar {...this.props} currentUser={this.state.user} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
               )
             } else  {
               return (
