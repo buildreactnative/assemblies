@@ -167,7 +167,7 @@ class MessageBox extends React.Component{
             onPress={()=>{
               let msg = {
                 text: this.state.newMessage,
-                participants: this.state.users.map((usr)=>usr.id).concat(currentUser.id),
+                participants: _.uniq(this.state.users.map((usr)=>usr.id).concat(currentUser.id)),
                 createdAt: new Date().valueOf(),
                 senderName: `${currentUser.firstName} ${currentUser.lastName}`,
                 senderAvatar: currentUser.avatarUrl

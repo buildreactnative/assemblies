@@ -109,7 +109,7 @@ class MessagesView extends React.Component{
               let otherUserIds = _.reject(userIds, (id) => id == this.props.currentUser.id)
               return (
                 <MessageBox
-                  userIds={otherUserIds}
+                  userIds={userIds}
                   {...this.props}
                   messages={this.state.conversations[userIds.sort().join(':')]}
                   navigator={navigator}
@@ -170,7 +170,7 @@ class MessagesView extends React.Component{
               return (
                 <MessageBox
                   user={route.user}
-                  userIds={otherUserIds}
+                  userIds={userIds}
                   messages={this.state.conversations[userIds.sort().join(':')]}
                   {...this.props}
                   navigator={navigator}/>
