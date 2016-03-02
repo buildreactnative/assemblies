@@ -105,6 +105,10 @@ class CalendarView extends React.Component{
               return (
                 <Event {...route} {...this.props} {...this.state} navigator={navigator} />
               )
+            } else if (route.name == 'Profile') {
+              return (
+                <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
             }
           }}/>
       </View>
