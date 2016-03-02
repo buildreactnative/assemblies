@@ -128,70 +128,26 @@ class UserTechnologies extends React.Component{
 
         </ScrollView>
         <TouchableOpacity style={styles.submitButton} onPress={()=> {
-          let {avatarSource, technologies, summary,} = this.state;
-          // let {firstName, lastName, email, password, location,} = this.props;
-          // let user = {
-          //   location: location || {},
-          //   firstName: firstName,
-          //   lastName: lastName,
-          //   username: email,
-          //   avatarUrl: avatarSource,
-          //   technologies: technologies,
-          //   password: password,
-          //   groupIds: [],
-          //   eventIds: [],
-          //   messageIds: [],
-          //   suggestedEventIds: [],
-          //   summary: summary,
-          // }
-          console.log('USER PARAMS', user);
-          fetch("http://localhost:2403/users", {
-            method: "POST",
+          let {technologies, summary,} = this.state;
+          let {currentUser} = this.props;
+          fetch(`http://localhost:2403/users/${currentUser.id}`, {
+            method: "PUT",
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(user)
+            body: JSON.stringify({technologies: technologies})
           })
           .then((response) => response.json())
           .then((data) => {
-              if (data.errors) {
-                console.log(data.errors);
-              }
-              else {
-                console.log('DATA', data);
-                let user = {username: email, password: password};
-                fetch("http://localhost:2403/users/login", {
-                  method: "POST",
-                  headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(user)
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                  if (data.errors || data.status == 401) {
-                    console.log(data.errors);
-                    errors = 'Login failed'
-                  }
-                  else {
-                    console.log('DATA', data);
-                    AsyncStorage.setItem('sid', data.id)
-                    this.props.navigator.push({
-                      name: 'Dashboard'
-                    })
-                  }
-                })
-                .catch((error) => console.log(error))
-                .done();
-              }
+            console.log('UPDATED USER', data);
+            this.props.changeProfile(data);
+            this.props.navigator.pop();
           })
           .catch((error) => console.log(error))
           .done();
-
         }}>
-          <Text style={styles.buttonText}>Create Account</Text>
+          <Text style={styles.buttonText}>Save Changes</Text>
         </TouchableOpacity>
       </View>
     )
@@ -231,6 +187,7 @@ let styles = {
     alignItems: 'center',
     backgroundColor: Colors.brandPrimary,
     height: 80,
+    marginBottom: 50,
   },
   buttonText: {
     color: 'white',

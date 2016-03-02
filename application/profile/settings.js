@@ -25,6 +25,15 @@ let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 
 class Settings extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      user: props.currentUser
+    }
+  }
+  _changeProfile(user){
+    this.setState({user: user})
+  }
   render(){
     return (
       <View style={styles.container}>
@@ -39,7 +48,7 @@ class Settings extends React.Component{
             if (route.name == 'UserTechnologies') {
               console.log('USER TECH')
               return (
-                <UserTechnologies {...this.props} navigator={navigator} />
+                <UserTechnologies {...this.props} currentUser={this.state.user} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
               )
             } else if (route.name == 'UserSettings'){
               return (
