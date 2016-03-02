@@ -2,9 +2,11 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NotificationsHolder from './notifications_holder';
 import UpcomingAssemblies from './upcoming_assemblies';
+import ActivityHolder from './activity_holder';
 import MessageList from '../messages/messages_list';
 import MessageBox from '../messages/message_box';
 import {BASE_URL} from '../utilities/fixtures';
+import Event from '../groups/event';
 
 import React, {
   ScrollView,
@@ -17,7 +19,14 @@ import React, {
   TouchableOpacity,
   Dimensions,
   NativeModules,
+  Navigator,
+  InteractionManager,
+  ActivityIndicatorIOS,
 } from 'react-native';
+
+const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
+// console.log('GESTURES', CUSTOM_CONFIG.gestures);
+CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
 
 class ActivityView extends React.Component{
   constructor(props){
@@ -121,28 +130,80 @@ class ActivityView extends React.Component{
     let tabContent = tab == 'upcoming' ? <UpcomingAssemblies {...this.props} {...this.state}/> : <NotificationsHolder {...this.state}/>
     return (
       <View style={styles.container}>
-        <View style={styles.topTab}>
-          <TouchableOpacity
-            style={[
-              styles.leftSelectTab,
-              styles.selectTab,
-              this.state.tab == 'upcoming' ? styles.leftActiveTab : styles.leftInactiveTab]
+        <Navigator
+          initialRoute={{ name: 'ActivityHolder' }}
+          configureScene={(route, routeStack) => {
+            return CUSTOM_CONFIG;
+          }}
+          renderScene={(route, navigator) => {
+            if (route.name == 'ActivityHolder'){
+              return (
+                <ActivityHolder
+                  {...this.props}
+                  {...this.state}
+                  navigator={navigator}
+                />
+              )
+            } else if (route.name == 'Groups') {
+              return (
+                <Groups
+                  {...this.props}
+                  {...this.state}
+                  navigator={navigator}
+                  addUserToGroup={this.addUserToGroup.bind(this)}
+                />
+              )
+            } else if (route.name == 'CreateGroup'){
+              return <CreateGroup {...this.props} navigator={navigator} />
+            } else if (route.name == 'Group') {
+              return (
+                <Group
+                  addUserToGroup={this.addUserToGroup.bind(this)}
+                  {...this.props}
+                  {...route}
+                  {...this.state}
+                  setUpcoming={()=>this.setState({tab: 'upcoming'})}
+                  setNotifications={()=>this.setState({tab: 'notifications'})}
+                  navigator={navigator}
+                />
+              )
+            } else if (route.name == 'Members') {
+              return <GroupMembers {...this.props} navigator={navigator} />
+            } else if (route.name == 'Events' ) {
+              return <GroupEvents {...this.props} navigator={navigator}  />
+            } else if (route.name == 'CreateEvent'){
+              return <CreateEvent {...this.props} {...route} navigator={navigator}  />
+            } else if (route.name == 'CreateEventConfirm'){
+              return (
+                <CreateEventConfirm {...this.props} {...route}
+                  navigator={navigator}
+                  addEvent={()=>{console.log('ADD EVENT')}}
+                />
+              )
+            } else if (route.name == 'CreateGroupConfirm'){
+              return (
+                <CreateGroupConfirm {...this.props} {...route}
+                  createGroup={()=>{console.log('CREATE GROUP')}}
+                  navigator={navigator}
+                />
+              )
+            } else if (route.name == 'Profile') {
+              return (
+                <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
+            } else if (route.name == 'event' || route.name == 'comment') {
+              console.log('ROUTE', route)
+              return (
+                <Event {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
+            } else if (route.name == 'message') {
+              console.log(route, this.state, this.props)
+              let userIds = Object.keys(route.notification.relatedUserIds)
+              return (
+                <MessageBox user={route.user} userIds={userIds} {...this.props} navigator={navigator}/>
+              )
             }
-            onPress={()=>{this.setState({tab: 'upcoming'})}}>
-            <Text
-              style={this.state.tab == 'upcoming' ? styles.activeTabText : styles.inactiveTabText}>Nearby</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.rightSelectTab,
-              styles.selectTab,
-              this.state.tab == 'notifications' ? styles.rightActiveTab : styles.rightInactiveTab]}
-            onPress={()=>{this.setState({tab: 'notifications'})}}>
-            <Text
-              style={this.state.tab == 'notifications' ? styles.activeTabText : styles.inactiveTabText}>Notifications</Text>
-          </TouchableOpacity>
-        </View>
-        {tabContent}
+          }}/>
       </View>
     )
   }

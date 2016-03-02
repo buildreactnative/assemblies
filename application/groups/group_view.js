@@ -184,7 +184,7 @@ class GroupView extends React.Component{
               )
             } else if (route.name == 'Chat') {
               return (
-                <MessageBox user={route.user} {...this.props} navigator={navigator}/>
+                <MessageBox user={route.user} userIds={[route.user.id, this.props.currentUser.id].sort()}{...this.props} navigator={navigator}/>
               )
             }
           }}/>

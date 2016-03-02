@@ -111,9 +111,14 @@ class MessageBox extends React.Component{
   _createNotification(data){
     let {currentUser} = this.props;
     let url = `${BASE_URL}/notifications`;
+    let relatedUserIds = {};
+    data.participants.forEach((p) => {
+      relatedUserIds[p] = {seen: false}
+    })
+    relatedUserIds[currentUser.id].seen = true;
     let notification = {
       type: 'message',
-      relatedUserIds: _.reject(data.participants, (p)=> p == currentUser.id),
+      relatedUserIds: relatedUserIds,
       message: `You have a new message from ${data.senderName}`,
       timestamp: new Date().valueOf(),
       seen: false,

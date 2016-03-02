@@ -62,9 +62,14 @@ class CreateEventConfirm extends React.Component{
   _createNotification(data){
     let {currentUser, group} = this.props;
     let url = `${BASE_URL}/notifications`;
+    let relatedUserIds = {};
+    Object.keys(group.members).forEach((m) => {
+      relatedUserIds[m] = {seen: false}
+    })
+    relatedUserIds[currentUser.id] = {seen: true};
     let notification = {
       type: 'event',
-      relatedUserIds: _.reject(Object.keys(group.members), (id) => id == currentUser.id),
+      relatedUserIds: relatedUserIds,
       message: `New event in ${group.name}`,
       timestamp: new Date().valueOf(),
       seen: false,

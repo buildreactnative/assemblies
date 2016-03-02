@@ -63,7 +63,7 @@ class NotificationsHolder extends React.Component{
           <ScrollView style={styles.notificationsHolder}>
             {this.props.notifications.map((notification, idx) => {
               return (
-                <Notification notification={notification} key={idx}/>
+                <Notification {...this.props} notification={notification} key={idx}/>
               )
             })}
             <View style={styles.emptySpace}></View>
