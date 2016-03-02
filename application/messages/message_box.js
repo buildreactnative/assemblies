@@ -5,6 +5,7 @@ import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import Message from './message';
 import {messageFixtures} from '../fixtures/messages';
 import NavigationBar from 'react-native-navbar';
+import {BASE_URL} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -34,19 +35,38 @@ class MessageBox extends React.Component{
     super(props);
     this.state = {
       loading: true,
-      messages: props.messages,
+      messages: props.messages || [],
       newMessage: '',
       keyboardOffset: 0,
       users: [],
     }
   }
+  _fetchMessages(){
+    let {userIds} = this.props;
+    let url = `${BASE_URL}/messages?{"participants":${JSON.stringify(userIds.sort())}}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('MESSAGES', data);
+      this.setState({messages: data})
+    })
+  }
   componentDidMount(){
+    if (this.state.messages = []){
+      this._fetchMessages()
+    }
     InteractionManager.runAfterInteractions(() => {
       this.setState({loading: false});
     });
     this.refs.scroll.scrollTo(0);
     console.log('USER IDS', this.props.userIds);
-    let url = `http://localhost:2403/users?{"id": {"$in": ${JSON.stringify(this.props.userIds)}}}`;
+    let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(this.props.userIds)}}}`;
     fetch(url, {
       method: "GET",
       headers: {
@@ -90,7 +110,7 @@ class MessageBox extends React.Component{
   }
   _createNotification(data){
     let {currentUser} = this.props;
-    let url = `http://localhost:2403/notifications`;
+    let url = `${BASE_URL}/notifications`;
     let notification = {
       type: 'message',
       relatedUserIds: _.reject(data.participants, (p)=> p == currentUser.id),
@@ -152,7 +172,7 @@ class MessageBox extends React.Component{
                 senderName: `${currentUser.firstName} ${currentUser.lastName}`,
                 senderAvatar: currentUser.avatarUrl
               }
-              let url = `http://localhost:2403/messages`
+              let url = `${BASE_URL}/messages`
               fetch(url, {
                 method: "POST",
                 headers: {

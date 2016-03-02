@@ -11,6 +11,8 @@ import CreateEventConfirm from '../groups/create_event_confirm';
 import CreateGroupConfirm from '../groups/create_group_confirm';
 import Profile from '../messages/profile';
 import Event from '../groups/event';
+import MessageList from '../messages/messages_list';
+import MessageBox from '../messages/message_box';
 import CalendarList from './calendar_list';
 import _ from 'underscore';
 import {BASE_URL} from '../utilities/fixtures';
@@ -109,6 +111,15 @@ class CalendarView extends React.Component{
             } else if (route.name == 'Profile') {
               return (
                 <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
+            } else if (route.name == 'Chat') {
+              return (
+                <MessageBox
+                  {...this.props}
+                  userIds={[route.user.id, this.props.currentUser.id]}
+                  user={route.user}
+                  navigator={navigator}
+                />
               )
             }
           }}/>
