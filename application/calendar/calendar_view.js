@@ -101,6 +101,10 @@ class CalendarView extends React.Component{
               return (
                 <CalendarList groups={this.state.groups} events={this.state.events} navigator={navigator}/>
               )
+            } else if (route.name == 'Event') {
+              return (
+                <Event {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
             }
           }}/>
       </View>

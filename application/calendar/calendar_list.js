@@ -118,7 +118,15 @@ class CalendarList extends React.Component{
     })
     console.log('GROUP', group);
     return (
-      <UpcomingAssembly event={rowData} group={group}/>
+      <TouchableOpacity onPress={()=>{
+        this.props.navigator.push({
+          name: 'Event',
+          event: rowData,
+          group: group,
+        })
+      }}>
+        <UpcomingAssembly event={rowData} group={group}/>
+      </TouchableOpacity>
     )
   }
   render(){
