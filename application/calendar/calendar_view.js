@@ -112,6 +112,47 @@ class CalendarView extends React.Component{
               return (
                 <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
               )
+            } else if (route.name == 'Groups') {
+              return (
+                <Groups
+                  {...this.props}
+                  {...this.state}
+                  navigator={navigator}
+                  addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
+                />
+              )
+            } else if (route.name == 'CreateGroup'){
+              return <CreateGroup {...this.props} navigator={navigator} />
+            } else if (route.name == 'Group') {
+              return (
+                <Group
+                  addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
+                  {...this.props}
+                  {...route}
+                  {...this.state}
+                  navigator={navigator}
+                />
+              )
+            } else if (route.name == 'Members') {
+              return <GroupMembers {...this.props} navigator={navigator} />
+            } else if (route.name == 'Events' ) {
+              return <GroupEvents {...this.props} navigator={navigator}  />
+            } else if (route.name == 'CreateEvent'){
+              return <CreateEvent {...this.props} {...route} navigator={navigator}  />
+            } else if (route.name == 'CreateEventConfirm'){
+              return (
+                <CreateEventConfirm {...this.props} {...route}
+                  navigator={navigator}
+                  addEvent={()=>{console.log('ADD EVENT')}}
+                />
+              )
+            } else if (route.name == 'CreateGroupConfirm'){
+              return (
+                <CreateGroupConfirm {...this.props} {...route}
+                  createGroup={()=> {console.log('CREATE GROUP')}}
+                  navigator={navigator}
+                />
+              )
             } else if (route.name == 'Chat') {
               return (
                 <MessageBox
