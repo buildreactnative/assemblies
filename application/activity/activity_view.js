@@ -2,6 +2,8 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NotificationsHolder from './notifications_holder';
 import UpcomingAssemblies from './upcoming_assemblies';
+import MessageList from '../messages/messages_list';
+import MessageBox from '../messages/message_box';
 import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
