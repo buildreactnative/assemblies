@@ -4,6 +4,15 @@ import moment from 'moment';
 import MessagesList from './messages_list';
 import MessageBox from './message_box';
 import Profile from './profile';
+import Groups from '../groups/groups';
+import Group from '../groups/group';
+import CreateGroup from '../groups/create_group';
+import CreateEvent from '../groups/create_event';
+import GroupMembers from '../groups/group_members';
+import GroupEvents from '../groups/group_events';
+import CreateEventConfirm from '../groups/create_event_confirm';
+import CreateGroupConfirm from '../groups/create_group_confirm';
+import Event from '../groups/event';
 import _ from 'underscore';
 import {conversationFixtures,} from '../fixtures/messages';
 
@@ -108,6 +117,62 @@ class MessagesView extends React.Component{
             } else if (route.name == 'Profile') {
               return (
                 <Profile navigator={navigator} user={route.user} username={route.username} avatar={route.avatar} />
+              )
+            } if (route.name == 'Groups') {
+              return (
+                <Groups
+                  {...this.props}
+                  {...this.state}
+                  navigator={navigator}
+                  addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
+                />
+              )
+            } else if (route.name == 'CreateGroup'){
+              return <CreateGroup {...this.props} navigator={navigator} />
+            } else if (route.name == 'Group') {
+              return (
+                <Group
+                  addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
+                  {...this.props}
+                  {...route}
+                  {...this.state}
+                  navigator={navigator}
+                />
+              )
+            } else if (route.name == 'Members') {
+              return <GroupMembers {...this.props} navigator={navigator} />
+            } else if (route.name == 'Events' ) {
+              return <GroupEvents {...this.props} navigator={navigator}  />
+            } else if (route.name == 'CreateEvent'){
+              return <CreateEvent {...this.props} {...route} navigator={navigator}  />
+            } else if (route.name == 'CreateEventConfirm'){
+              return (
+                <CreateEventConfirm {...this.props} {...route}
+                  navigator={navigator}
+                  addEvent={()=>{console.log('ADD EVENT')}}
+                />
+              )
+            } else if (route.name == 'CreateGroupConfirm'){
+              return (
+                <CreateGroupConfirm {...this.props} {...route}
+                  createGroup={()=> {console.log('CREATE GROUP')}}
+                  navigator={navigator}
+                />
+              )
+            } else if (route.name == 'Event') {
+              return (
+                <Event {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
+            } else if (route.name == 'Chat') {
+              let userIds = [this.props.currentUser.id, route.user.id]
+              let otherUserIds = _.reject(userIds, (id) => id == this.props.currentUser.id)
+              return (
+                <MessageBox
+                  user={route.user}
+                  userIds={otherUserIds}
+                  messages={this.state.conversations[userIds.sort().join(':')]}
+                  {...this.props}
+                  navigator={navigator}/>
               )
             }
           }}
