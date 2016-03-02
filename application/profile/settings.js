@@ -52,11 +52,11 @@ class Settings extends React.Component{
               )
             } else if (route.name == 'UserSettings'){
               return (
-                <UserSettings {...this.props} navigator={navigator} />
+                <UserSettings {...this.props} currentUser={this.state.user} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
               )
             } else  {
               return (
-                <UserProfile {...this.props} navigator={navigator}/>
+                <UserProfile {...this.props} currentUser={this.state.user} navigator={navigator}/>
               )
             }
           }}

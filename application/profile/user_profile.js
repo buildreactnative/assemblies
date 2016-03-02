@@ -49,12 +49,18 @@ class UserProfile extends React.Component{
             <Icon name="ios-arrow-forward" size={30} color='#ccc' />
           </View>
         </TouchableOpacity>
-        <View style={styles.formField}>
+        <TouchableOpacity
+          onPress={()=> {
+            this.props.navigator.push({
+              name: 'UserSettings'
+            })
+          }}
+          style={styles.formField}>
           <Text style={styles.formName}>Settings</Text>
-          <TouchableOpacity style={styles.forwardButton}>
+          <View>
             <Icon name="ios-arrow-forward" size={30} color='#ccc' />
-          </TouchableOpacity>
-        </View>
+          </View>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={()=>{
             // console.log('PROPS', this.props)
