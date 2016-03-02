@@ -10,6 +10,7 @@ import Dashboard from './application/dashboard/dashboard';
 import Register from './application/welcome/register';
 import RegisterConfirm from './application/welcome/register_confirm';
 import Login from './application/welcome/login';
+import {BASE_URL} from './application/utilities/fixtures';
 import DeviceInfo from 'react-native-device-info';
 
 import React, {
@@ -50,7 +51,7 @@ class assembly extends Component {
       var sid = await AsyncStorage.getItem('sid');
       console.log('SID', sid);
       if (sid !== null && sid !== 'false'){
-        fetch("http://localhost:2403/users/me", {
+        fetch(`${BASE_URL}/users/me`, {
           method: "GET",
           headers: {
               'Set-Cookie': `sid=${sid}`,
@@ -61,7 +62,7 @@ class assembly extends Component {
         .then((response) => response.json())
         .then((data) => {
           if (data.errors) {
-            console.log(data.errors);
+            console.log('ERRORS', data.errors);
             this.setState({foundUser: true})
           }
           else {

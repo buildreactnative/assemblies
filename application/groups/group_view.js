@@ -14,6 +14,7 @@ import Event from './event';
 import MessageList from '../messages/messages_list';
 import MessageBox from '../messages/message_box';
 import _ from 'underscore';
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -46,7 +47,7 @@ class GroupView extends React.Component{
   componentDidMount(){
     let {currentUser} = this.props;
     let groupIds = currentUser ? currentUser.groupIds : [];
-    let url = `http://localhost:2403/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
+    let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
     console.log('URL', url)
     fetch(url, {
       method: "GET",
@@ -63,7 +64,7 @@ class GroupView extends React.Component{
     .catch((error) => {console.log(error)})
 
     console.log('URL', url)
-    fetch(`http://localhost:2403/groups`, {
+    fetch(`${BASE_URL}/groups`, {
       method: "GET",
       headers: {
         'Accept': 'application/json',
@@ -108,7 +109,7 @@ class GroupView extends React.Component{
       }
     })
     console.log('UPDATED GROUPS', groups)
-    fetch(`http://localhost:2403/groups/${event.groupId}`, {
+    fetch(`${BASE_URL}/groups/${event.groupId}`, {
       method: "PUT",
       headers: {
         'Accept': 'application/json',

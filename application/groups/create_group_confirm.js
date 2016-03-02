@@ -5,7 +5,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
-import {TECHNOLOGIES, IMAGE_OPTIONS} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -52,19 +52,11 @@ class CreateGroupConfirm extends React.Component{
   }
   showImagePicker(){
     UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
-      // console.log('Response = ', response);
       if (response.didCancel) { console.log('User cancelled image picker');}
       else if (response.error) { console.log('UIImagePickerManager Error: ', response.error);}
       else if (response.customButton) {console.log('User tapped custom button: ', response.customButton);}
       else {
-        // You can display the image using either data:
-        // const source = 'data:image/jpeg;base64,' + response.data;
-
-        // uri (on iOS)
-        // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-        // uri (on android)
         const source = response.uri;
-
         this.setState({
           imageUrl: source
         });
@@ -187,7 +179,7 @@ class CreateGroupConfirm extends React.Component{
               }
             }
             // create group
-            fetch("http://localhost:2403/groups", {
+            fetch(`${BASE_URL}/groups`, {
               method: "POST",
               headers: {
                   'Accept': 'application/json',
@@ -200,7 +192,7 @@ class CreateGroupConfirm extends React.Component{
               console.log('DATA', data);
               this.props.createGroup(data);
               // update groupIds array in user profile
-              fetch(`http://localhost:2403/users/${currentUser.id}`, {
+              fetch(`${BASE_URL}/users/${currentUser.id}`, {
                 method: "PUT",
                 headers: {
                     'Accept': 'application/json',

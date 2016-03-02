@@ -4,6 +4,7 @@ import moment from 'moment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';
 import CommentReplies from './comment_replies';
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -72,7 +73,7 @@ class Comment extends React.Component{
             foundComments.push(comment);
 
             console.log('COMMENT', reply);
-            fetch(`http://localhost:2403/events/${this.props.event.id}`, {
+            fetch(`${BASE_URL}/events/${this.props.event.id}`, {
               method: "PUT",
               headers: {
                 'Accept':'application/json',
@@ -132,7 +133,7 @@ class Comment extends React.Component{
             comment.likes[currentUser.id] = true;
             foundComments.push(comment);
 
-            fetch(`http://localhost:2403/events/${this.props.event.id}`, {
+            fetch(`${BASE_URL}/events/${this.props.event.id}`, {
               method: "PUT",
               headers: {
                 'Accept':'application/json',

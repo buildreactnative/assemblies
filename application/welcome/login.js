@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
+import {BASE_URL} from '../utilities/fixtures';
 
 const autocompleteStyles = {
   container: {
@@ -134,24 +135,25 @@ class Login extends React.Component{
           let {email, password,} = this.state;
           let user = {username: email, password: password};
           let errors = null;
-          fetch("http://localhost:2403/users/login", {
+          console.log("LOGIN", `${BASE_URL}/users/login`)
+          fetch(`${BASE_URL}/users/login`, {
             method: "POST",
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify(user)
           })
           .then((response) => response.json())
           .then((data) => {
-            if (data.errors || data.status == 401) {
-              // console.log(data.errors);
+            if (data.errors || data.status == 404) {
+              console.log(data);
               errors = 'Login failed'
             }
             else {
               console.log('DATA', data);
               AsyncStorage.setItem('sid', data.id)
-              fetch("http://localhost:2403/users/me", {
+              fetch(`${BASE_URL}/users/me`, {
                 method: "GET",
                 headers: {
                     'Set-Cookie': `sid=${data.id}`,

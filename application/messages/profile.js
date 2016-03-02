@@ -2,9 +2,9 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import _ from 'underscore';
-// import {profileFixture} from '../fixtures/users';
 import NavigationBar from 'react-native-navbar';
 import GroupBox from '../groups/group_box';
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -31,7 +31,7 @@ class Profile extends React.Component{
     }
   }
   componentDidMount(){
-    let url = `http://localhost:2403/groups?{"id": {"$in": ${JSON.stringify(this.props.user.groupIds)}}}`;
+    let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(this.props.user.groupIds)}}}`;
     fetch(url, {
       method: "GET",
       headers: {

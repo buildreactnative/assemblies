@@ -1,7 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import {TECHNOLOGIES, IMAGE_OPTIONS,} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -159,7 +159,7 @@ class RegisterConfirm extends React.Component{
             summary: summary,
           }
           console.log('USER PARAMS', user);
-          fetch("http://localhost:2403/users", {
+          fetch(`${BASE_URL}/users`, {
             method: "POST",
             headers: {
                 'Accept': 'application/json',
@@ -175,7 +175,7 @@ class RegisterConfirm extends React.Component{
               else {
                 console.log('DATA', data);
                 let user = {username: email, password: password};
-                fetch("http://localhost:2403/users/login", {
+                fetch(`${BASE_URL}/users/login`, {
                   method: "POST",
                   headers: {
                       'Accept': 'application/json',

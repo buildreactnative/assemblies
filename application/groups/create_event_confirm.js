@@ -7,7 +7,7 @@ import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
 import CalendarPicker from 'react-native-calendar-picker';
 import Picker from 'react-native-picker';
-import {TECHNOLOGIES,} from '../utilities/fixtures';
+import {TECHNOLOGIES, BASE_URL} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -61,7 +61,7 @@ class CreateEventConfirm extends React.Component{
   }
   _createNotification(data){
     let {currentUser, group} = this.props;
-    let url = `http://localhost:2403/notifications`;
+    let url = `${BASE_URL}/notifications`;
     let notification = {
       type: 'event',
       relatedUserIds: _.reject(Object.keys(group.members), (id) => id == currentUser.id),
@@ -229,7 +229,7 @@ class CreateEventConfirm extends React.Component{
             };
             event.attending[currentUser.id] = true;
             console.log('EVENT', event);
-            fetch("http://localhost:2403/events", {
+            fetch(`${BASE_URL}/events`, {
               method: "POST",
               headers: {
                   'Accept': 'application/json',

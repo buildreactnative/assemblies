@@ -4,6 +4,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities'
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -44,7 +45,7 @@ class UserSettings extends React.Component{
   }
   _updateUser(user){
     let {currentUser} = this.props;
-    fetch(`http://localhost:2403/users/${currentUser.id}`, {
+    fetch(`${BASE_URL}/users/${currentUser.id}`, {
       method: "PUT",
       headers: {
           'Accept': 'application/json',

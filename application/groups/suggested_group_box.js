@@ -1,6 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import _ from 'underscore';
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -34,7 +35,7 @@ class SuggestedGroupBox extends React.Component{
           owner: false,
           notifications: true
         }
-        fetch(`http://localhost:2403/groups/${group.id}`, {
+        fetch(`${BASE_URL}/groups/${group.id}`, {
           method: "PUT",
           headers: {
               'Accept': 'application/json',
@@ -45,7 +46,7 @@ class SuggestedGroupBox extends React.Component{
         .then((response) => response.json())
         .then((data) => {
           console.log('ADD USER TO GROUP', data);
-          fetch(`http://localhost:2403/users/${currentUser.id}`, {
+          fetch(`${BASE_URL}/users/${currentUser.id}`, {
             method: "PUT",
             headers: {
                 'Accept': 'application/json',

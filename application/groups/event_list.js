@@ -6,6 +6,7 @@ import {truncate} from 'underscore.string';
 import _ from 'underscore';
 import EventItem from './event_item';
 import Swipeout from 'react-native-swipeout';
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -111,7 +112,7 @@ class EventList extends React.Component{
       delete maybe[currentUser.id]
     }
     attending[currentUser.id] = true;
-    fetch(`http://localhost:2403/events/${event.id}`, {
+    fetch(`${BASE_URL}/events/${event.id}`, {
       method: "PUT",
       headers: {
           'Accept': 'application/json',
@@ -144,7 +145,7 @@ class EventList extends React.Component{
       delete notAttending[currentUser.id]
     }
     maybe[currentUser.id] = true;
-    fetch(`http://localhost:2403/events/${event.id}`, {
+    fetch(`${BASE_URL}/events/${event.id}`, {
       method: "PUT",
       headers: {
           'Accept': 'application/json',
@@ -178,7 +179,7 @@ class EventList extends React.Component{
       delete maybe[currentUser.id]
     }
     notAttending[currentUser.id] = true;
-    fetch(`http://localhost:2403/events/${event.id}`, {
+    fetch(`${BASE_URL}/events/${event.id}`, {
       method: "PUT",
       headers: {
           'Accept': 'application/json',

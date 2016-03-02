@@ -15,6 +15,7 @@ import CreateGroupConfirm from '../groups/create_group_confirm';
 import Event from '../groups/event';
 import _ from 'underscore';
 import {conversationFixtures,} from '../fixtures/messages';
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -51,7 +52,7 @@ class MessagesView extends React.Component{
   }
   componentDidMount(){
     let {currentUser} = this.props;
-    let url = `http://localhost:2403/messages`
+    let url = `${BASE_URL}/messages`
     fetch(url, {
       method: "GET",
       headers: {

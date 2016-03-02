@@ -5,6 +5,7 @@ import EventList from './event_list';
 import FakeEvent from './fake_event';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
+import {BASE_URL} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -41,7 +42,7 @@ class Group extends React.Component{
     if (groupEvents.length == eventIds ){
       this.setState({events: groupEvents})
     } else {
-      fetch(`http://localhost:2403/events?{"id": {"$in": ${JSON.stringify(eventIds)}}}`, {
+      fetch(`${BASE_URL}/events?{"id": {"$in": ${JSON.stringify(eventIds)}}}`, {
         method: "GET",
         headers: {
           'Accept': 'application/json',
@@ -56,7 +57,7 @@ class Group extends React.Component{
       .catch((error) => {console.log(error)})
     }
     let userIds = Object.keys(group.members);
-    let url = `http://localhost:2403/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`
+    let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`
     fetch(url, {
       method: "GET",
       headers: {
@@ -143,7 +144,7 @@ class Group extends React.Component{
               owner: false,
               notifications: true
             }
-            fetch(`http://localhost:2403/groups/${group.id}`, {
+            fetch(`${BASE_URL}/groups/${group.id}`, {
               method: "PUT",
               headers: {
                   'Accept': 'application/json',
@@ -154,7 +155,7 @@ class Group extends React.Component{
             .then((response) => response.json())
             .then((data) => {
               console.log('ADD USER TO GROUP', data);
-              fetch(`http://localhost:2403/users/${currentUser.id}`, {
+              fetch(`${BASE_URL}/users/${currentUser.id}`, {
                 method: "PUT",
                 headers: {
                     'Accept': 'application/json',

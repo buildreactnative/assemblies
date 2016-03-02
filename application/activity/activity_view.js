@@ -2,6 +2,7 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NotificationsHolder from './notifications_holder';
 import UpcomingAssemblies from './upcoming_assemblies';
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -27,7 +28,7 @@ class ActivityView extends React.Component{
     }
   }
   _fetchNotifications(){
-    let url = `http://localhost:2403/notifications`;
+    let url = `${BASE_URL}/notifications`;
     fetch(url, {
       method: "GET",
       headers: {
@@ -43,7 +44,7 @@ class ActivityView extends React.Component{
   }
   _fetchLastEvent(){
     let {currentUser} = this.props;
-    let url = `http://localhost:2403/events?{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}`;
+    let url = `${BASE_URL}/events?{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}`;
     fetch(url, {
       method: "GET",
       headers: {
@@ -78,7 +79,7 @@ class ActivityView extends React.Component{
     let d = new Date();
     d.setHours(0);
     d.setTime(0);
-    let url = `http://localhost:2403/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
+    let url = `${BASE_URL}/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
     fetch(url, {
       method: "GET",
       headers: {
@@ -94,7 +95,7 @@ class ActivityView extends React.Component{
   }
   _fetchGroups(){
     let {currentUser} = this.props;
-    let url = `http://localhost:2403/groups?{"id": {"$in": ${JSON.stringify(currentUser.groupIds)}}}`;
+    let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(currentUser ? currentUser.groupIds : '')}}}`;
     fetch(url, {
       method: "GET",
       headers: {
@@ -112,7 +113,6 @@ class ActivityView extends React.Component{
   componentDidMount(){
     this._fetchNotifications();
     this._fetchLastEvent();
-
   }
   render(){
     let {tab,} = this.state;

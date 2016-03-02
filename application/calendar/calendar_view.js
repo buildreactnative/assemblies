@@ -13,6 +13,7 @@ import Profile from '../messages/profile';
 import Event from '../groups/event';
 import CalendarList from './calendar_list';
 import _ from 'underscore';
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -43,7 +44,7 @@ class CalendarView extends React.Component{
   }
   _loadEvents(){
     let groupIds = this.props.currentUser.groupIds;
-    let url = `http://localhost:2403/events?{"groupId": {"$in": ${JSON.stringify(groupIds)}}}`
+    let url = `${BASE_URL}/events?{"groupId": {"$in": ${JSON.stringify(groupIds)}}}`
     fetch(url, {
       method: "GET",
       headers: {
@@ -64,7 +65,7 @@ class CalendarView extends React.Component{
   }
   _loadGroups(){
     let groupIds = this.props.currentUser.groupIds;
-    let url = `http://localhost:2403/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
+    let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
     fetch(url, {
       method: "GET",
       header: {

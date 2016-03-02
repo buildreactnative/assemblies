@@ -5,6 +5,7 @@ import CommentList from './comment_list';
 import EventLocation from './event_location';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
+import {BASE_URL} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -42,7 +43,7 @@ class Event extends React.Component{
   componentDidMount(){
     let {group, event,} = this.props;
     let attending = Object.keys(event.attending)
-    fetch(`http://localhost:2403/users?{"id": {"$in": ${JSON.stringify(attending)}}}`, {
+    fetch(`${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(attending)}}}`, {
       method: "GET",
       headers: {
         'Accept': 'application/json',
@@ -87,7 +88,7 @@ class Event extends React.Component{
           onPress={()=>{
             let attending = event.attending;
             attending[currentUser.id] = true;
-            fetch(`http://localhost:2403/events/${event.id}`, {
+            fetch(`${BASE_URL}/events/${event.id}`, {
               method: "PUT",
               headers: {
                   'Accept': 'application/json',
@@ -116,7 +117,7 @@ class Event extends React.Component{
   }
   _createNotification(data){
     let {currentUser, event} = this.props;
-    let url = `http://localhost:2403/notifications`;
+    let url = `${BASE_URL}/notifications`;
     let notification = {
       type: 'comment',
       relatedUserIds: _.reject(Object.keys(event.attending), (id) => id == currentUser.id),
@@ -165,7 +166,7 @@ class Event extends React.Component{
               likes: {},
             };
             console.log('COMMENT', comment);
-            fetch(`http://localhost:2403/events/${this.props.event.id}`, {
+            fetch(`${BASE_URL}/events/${this.props.event.id}`, {
               method: "PUT",
               headers: {
                 'Accept':'application/json',

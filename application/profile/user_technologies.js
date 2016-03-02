@@ -1,7 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import {TECHNOLOGIES, IMAGE_OPTIONS,} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -130,7 +130,7 @@ class UserTechnologies extends React.Component{
         <TouchableOpacity style={styles.submitButton} onPress={()=> {
           let {technologies, summary,} = this.state;
           let {currentUser} = this.props;
-          fetch(`http://localhost:2403/users/${currentUser.id}`, {
+          fetch(`${BASE_URL}/users/${currentUser.id}`, {
             method: "PUT",
             headers: {
                 'Accept': 'application/json',
