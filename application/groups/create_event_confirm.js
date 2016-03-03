@@ -72,6 +72,7 @@ class CreateEventConfirm extends React.Component{
       relatedUserIds: relatedUserIds,
       message: `New event in ${group.name}`,
       timestamp: new Date().valueOf(),
+      eventId: data.id,
       seen: false,
     }
     fetch(url, {

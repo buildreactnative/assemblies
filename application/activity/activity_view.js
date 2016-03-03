@@ -9,6 +9,7 @@ import {BASE_URL} from '../utilities/fixtures';
 import Event from '../groups/event';
 import Profile from '../messages/profile';
 import Group from '../groups/group';
+import _ from 'underscore';
 
 import React, {
   ScrollView,
@@ -143,6 +144,8 @@ class ActivityView extends React.Component{
                 <ActivityHolder
                   {...this.props}
                   {...this.state}
+                  setUpcoming={()=>this.setState({tab: 'upcoming'})}
+                  setNotifications={()=>this.setState({tab: 'notifications'})}
                   navigator={navigator}
                 />
               )
@@ -191,10 +194,19 @@ class ActivityView extends React.Component{
               return (
                 <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
               )
-            } else if (route.name == 'event' || route.name == 'comment' || route.name == 'Event') {
+            } else if (route.name == 'event' || route.name == 'comment') {
               console.log('ROUTE', route)
+              let {events, groups} = this.state;
+              let eventId = route.notification.eventId;
+              let event = _.find(events, (e) => e.id == eventId);
+              let group = _.find(groups, (g) => g.id == event.groupId);
+              console.log('EVENT NOW', event, group, route.notification, this.state);
               return (
-                <Event {...route} {...this.props} {...this.state} navigator={navigator} />
+                <Event event={event} group={group} {...route} {...this.props} {...this.state} navigator={navigator} />
+              )
+            } else if (route.name == 'Event'){
+              return (
+                <Event {...route} {...this.props} {...this.state} navigator={navigator}/>
               )
             } else if (route.name == 'message') {
               console.log(route, this.state, this.props)
