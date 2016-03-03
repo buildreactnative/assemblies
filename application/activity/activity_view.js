@@ -7,6 +7,8 @@ import MessageList from '../messages/messages_list';
 import MessageBox from '../messages/message_box';
 import {BASE_URL} from '../utilities/fixtures';
 import Event from '../groups/event';
+import Profile from '../messages/profile';
+import Group from '../groups/group';
 
 import React, {
   ScrollView,
@@ -150,7 +152,7 @@ class ActivityView extends React.Component{
                   {...this.props}
                   {...this.state}
                   navigator={navigator}
-                  addUserToGroup={this.addUserToGroup.bind(this)}
+                  addUserToGroup={()=>{console.log('ADD USER')}}
                 />
               )
             } else if (route.name == 'CreateGroup'){
@@ -158,12 +160,10 @@ class ActivityView extends React.Component{
             } else if (route.name == 'Group') {
               return (
                 <Group
-                  addUserToGroup={this.addUserToGroup.bind(this)}
+                  addUserToGroup={()=>{console.log('ADD USER')}}
                   {...this.props}
                   {...route}
                   {...this.state}
-                  setUpcoming={()=>this.setState({tab: 'upcoming'})}
-                  setNotifications={()=>this.setState({tab: 'notifications'})}
                   navigator={navigator}
                 />
               )
@@ -191,7 +191,7 @@ class ActivityView extends React.Component{
               return (
                 <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
               )
-            } else if (route.name == 'event' || route.name == 'comment') {
+            } else if (route.name == 'event' || route.name == 'comment' || route.name == 'Event') {
               console.log('ROUTE', route)
               return (
                 <Event {...route} {...this.props} {...this.state} navigator={navigator} />
