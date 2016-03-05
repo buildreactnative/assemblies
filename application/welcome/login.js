@@ -146,11 +146,10 @@ class Login extends React.Component{
           })
           .then((response) => response.json())
           .then((data) => {
-            if (data.errors || data.status == 404) {
-              console.log(data);
+            if (data.errors || data.status == 401) {
+              console.log('LOGIN FAILED', data);
               errors = 'Login failed'
-            }
-            else {
+            } else {
               console.log('DATA', data);
               AsyncStorage.setItem('sid', data.id)
               fetch(`${BASE_URL}/users/me`, {

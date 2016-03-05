@@ -192,6 +192,7 @@ class RegisterConfirm extends React.Component{
                   else {
                     console.log('DATA', data);
                     AsyncStorage.setItem('sid', data.id)
+                    this.props.updateUser(data);
                     this.props.navigator.push({
                       name: 'Dashboard'
                     })

@@ -41,6 +41,12 @@ class ActivityView extends React.Component{
       groups: [],
     }
   }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.currentUser != this.props.currentUser){
+      this._fetchNotifications();
+      this._fetchLastEvent();
+    }
+  }
   _fetchNotifications(){
     let url = `${BASE_URL}/notifications`;
     fetch(url, {
@@ -125,8 +131,10 @@ class ActivityView extends React.Component{
     .catch((err) => {console.log('ERR: ', err)})
   }
   componentDidMount(){
-    this._fetchNotifications();
-    this._fetchLastEvent();
+    if (!! this.props.currentUser){
+      this._fetchNotifications();
+      this._fetchLastEvent();
+    }
   }
   render(){
     let {tab,} = this.state;

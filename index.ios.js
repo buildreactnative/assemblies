@@ -54,9 +54,9 @@ class assembly extends Component {
         fetch(`${BASE_URL}/users/me`, {
           method: "GET",
           headers: {
-              'Set-Cookie': `sid=${sid}`,
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
+            'Set-Cookie': `sid=${sid}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
           },
         })
         .then((response) => response.json())
@@ -132,6 +132,7 @@ class assembly extends Component {
                 return (
                   <RegisterConfirm
                     navigator={navigator}
+                    updateUser={this.updateUser.bind(this)}
                     {...route}
                   />
                 )
