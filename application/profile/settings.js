@@ -26,14 +26,8 @@ let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 
 class Settings extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      user: props.currentUser
-    }
-  }
   _changeProfile(user){
-    this.setState({user: user})
+    this.props.changeState({currentUser: user})
   }
   render(){
     return (
@@ -49,19 +43,19 @@ class Settings extends React.Component{
             if (route.name == 'UserTechnologies') {
               console.log('USER TECH')
               return (
-                <UserTechnologies {...this.props} currentUser={this.state.user} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
+                <UserTechnologies currentUser={this.props.currentUser} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
               )
             } else if (route.name == 'UserSettings'){
               return (
-                <UserSettings {...this.props} currentUser={this.state.user} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
+                <UserSettings currentUser={this.props.currentUser} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
               )
             } else if (route.name == 'UserAvatar'){
               return (
-                <UserAvatar {...this.props} currentUser={this.state.user} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
+                <UserAvatar currentUser={this.props.currentUser} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
               )
             } else  {
               return (
-                <UserProfile {...this.props} currentUser={this.state.user} navigator={navigator}/>
+                <UserProfile currentUser={this.props.currentUser} navigator={navigator}/>
               )
             }
           }}

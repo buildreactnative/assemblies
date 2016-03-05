@@ -26,18 +26,34 @@ import React, {
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class Dashboard extends Component {
-  constructor(){
-    super();
+  constructor(props){
+    super(props);
     this.state = {
       selectedTab: 'Activity',
       loading: true,
+      groups: [],
+      events: [],
+      messages: [],
+      notifications: [],
+      suggestedGroups: [],
+      suggestedEvents: [],
+      conversations: [],
+      currentUser: props.currentUser,
     }
+  }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.currentUser != this.props.currentUser){
+      this.setState({currentUser: nextProps.currentUser})
+    }
+  }
+  _mutateState(newState, callback){
+    this.setState(newState, callback)
   }
   _logout(){
     AsyncStorage.setItem('sid', 'false');
     this.props.navigator.push({
       name: 'Welcome'
-    })
+    });
   }
   _setTab(tabId){
     this.setState({selectedTab: tabId})
@@ -110,7 +126,11 @@ class Dashboard extends Component {
             })
           }}
           >
-          <ActivityView {...this.props} />
+          <ActivityView
+            {...this.props}
+            {...this.state}
+            changeState={this._mutateState.bind(this)}
+          />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Profile"
@@ -123,7 +143,11 @@ class Dashboard extends Component {
             })
           }}
           >
-          <Settings {...this.props} logout={this._logout.bind(this)}/>
+          <Settings
+            changeState={this._mutateState.bind(this)}
+            logout={this._logout.bind(this)}
+            {...this.state}
+          />
         </Icon.TabBarItem>
 
       </TabBarIOS>
