@@ -163,14 +163,14 @@ class Login extends React.Component{
               .then((response) => response.json())
               .then((data) => {
                 this.props.updateUser(data);
+                this.props.navigator.push({
+                  name: 'Dashboard'
+                });
               })
               .catch((error) => {
                 console.log(error)
               })
               .done();
-              this.props.navigator.push({
-                name: 'Dashboard'
-              })
             }
           })
           .catch((error) => console.log(error))

@@ -86,7 +86,8 @@ class RegisterConfirm extends React.Component{
       // uri (on iOS)
       // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
       // uri (on android)
-      const source = response.uri;
+      const source = 'data:image/png;base64,' + response.data;
+      console.log('SRC', source);
 
       this.setState({
         avatarSource: source
@@ -178,8 +179,8 @@ class RegisterConfirm extends React.Component{
                 fetch(`${BASE_URL}/users/login`, {
                   method: "POST",
                   headers: {
-                      'Accept': 'application/json',
-                      'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
                   },
                   body: JSON.stringify(user)
                 })
@@ -192,10 +193,25 @@ class RegisterConfirm extends React.Component{
                   else {
                     console.log('DATA', data);
                     AsyncStorage.setItem('sid', data.id)
-                    this.props.updateUser(data);
-                    this.props.navigator.push({
-                      name: 'Dashboard'
+                    fetch(`${BASE_URL}/users/me`, {
+                      method: "GET",
+                      headers: {
+                        'Set-Cookie': `sid=${data.id}`,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                      },
                     })
+                    .then((response) => response.json())
+                    .then((data) => {
+                      this.props.updateUser(data);
+                      this.props.navigator.push({
+                        name: 'Dashboard'
+                      });
+                    })
+                    .catch((error) => {
+                      console.log(error)
+                    })
+                    .done();
                   }
                 })
                 .catch((error) => console.log(error))

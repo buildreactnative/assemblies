@@ -2,7 +2,7 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {profileFixture} from '../fixtures/users';
-import {TECHNOLOGIES, IMAGE_OPTIONS,} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL,} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -51,7 +51,9 @@ class UserAvatar extends React.Component{
         console.log('User tapped custom button: ', response.customButton);
       }
       else {
-        const source = response.uri;
+        const source = 'data:image/png;base64,' + response.data;
+        // const source = response.uri;
+        console.log('SRC', source);
         this.setState({
           avatarSource: source
         });
@@ -63,11 +65,11 @@ class UserAvatar extends React.Component{
     let updatedUser = {
       avatarUrl: this.state.avatarSource
     }
-    fetch(`http://localhost:2403/users/${currentUser.id}`, {
+    fetch(`${BASE_URL}/users/${currentUser.id}`, {
       method: "PUT",
       headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(updatedUser)
     })
