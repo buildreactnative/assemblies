@@ -7,6 +7,7 @@ import Profile from '../messages/profile';
 import Settings from '../profile/settings';
 import GroupView from '../groups/group_view';
 import {BASE_URL} from '../utilities/fixtures';
+import _ from 'underscore';
 
 import React, {
   ScrollView,
@@ -33,6 +34,7 @@ class Dashboard extends Component {
       selectedTab: 'Activity',
       loading: true,
       groups: [],
+      allEvents: [],
       events: [],
       messages: [],
       notifications: [],
@@ -92,7 +94,8 @@ class Dashboard extends Component {
       this._fetchGroups();
       this._fetchAllEvents();
       this.setState({
-        nextEvent: nextEvent
+        nextEvent: nextEvent,
+        events: data,
       })
     })
     .catch((err) => {console.log('ERR: ', err)})
@@ -112,8 +115,46 @@ class Dashboard extends Component {
     .then((response) => response.json())
     .then((data) => {
       console.log('EVENTS ALL', data);
-      this.setState({events: data});
+      this.setState({allEvents: data});
     })
+  }
+  _fetchGroups(){
+    let {currentUser} = this.props;
+    let groupIds = currentUser ? currentUser.groupIds : [];
+    let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
+    console.log('URL', url)
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('DATA GROUPS', data)
+      this.setState({groups: data})
+    })
+    .catch((error) => {console.log(error)})
+
+    console.log('URL', url)
+    fetch(`${BASE_URL}/groups`, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('DATA SG GROUPS', data)
+      this.setState({
+        suggestedGroups: _.reject(data, (gp) => {
+          return _.contains(groupIds, gp.id)
+        })
+      })
+    })
+    .catch((error) => {console.log(error)})
   }
   _mutateState(newState, callback){
     this.setState(newState, callback)
@@ -200,7 +241,6 @@ class Dashboard extends Component {
           }}
           >
           <ActivityView
-            {...this.props}
             {...this.state}
             changeState={this._mutateState.bind(this)}
           />

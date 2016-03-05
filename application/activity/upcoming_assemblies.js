@@ -36,7 +36,8 @@ const UPCOMING_ASSEMBLIES = [
 
 class UpcomingAssemblies extends React.Component{
   render(){
-    let {events} = this.props;
+    console.log('ALL PROPS', this.props);
+    let events = this.props.allEvents;
     let mapRegion = MAP_REGION;
     if (events.length) {
       mapRegion = {
@@ -63,7 +64,7 @@ class UpcomingAssemblies extends React.Component{
           <Text style={styles.bodyText}>Today</Text>
           <View style={styles.break}></View>
           <ScrollView style={styles.notificationsHolder}>
-          {this.props.events.map((event, idx) => {
+          {this.props.allEvents.map((event, idx) => {
             let {groups} = this.props;
             let group = _.find(groups, (g) => g.id == event.groupId)
             return (
