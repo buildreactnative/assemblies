@@ -2,6 +2,7 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
+import Animatable from 'react-native-animatable';
 
 import React, {
   ScrollView,
@@ -69,22 +70,43 @@ class MessagesList extends React.Component{
       </TouchableOpacity>
     )
   }
+  _renderListView(){
+    return (
+      <ListView
+        dataSource={this.props.dataSource}
+        contentInset={{bottom: 49}}
+        automaticallyAdjustContentInsets={false}
+        ref="messagesList"
+        renderRow={this._renderRow.bind(this)}
+      />
+    )
+  }
+  _renderNoMessages(){
+    return(
+      <View style={{flex: 1, backgroundColor: '#f7f7f7',}}>
+        <Animatable.View animation="fadeIn" duration={500} style={{flex: 1, alignItems: 'stretch', backgroundColor: '#f7f7f7'}}>
+          <Animatable.View animation="slideInUp" duration={500} easing="ease-out" style={{flex: 1, alignItems: 'stretch', height: 50, backgroundColor: '#f7f7f7'}}>
+            <View style={{flex: 1, paddingTop: 100, paddingHorizontal: 40, alignItems: 'stretch',}}>
+              <Text style={{textAlign: 'center', fontSize: 20, color: Colors.bodyTextLight, lineHeight: 26}}>You havent added any favorite verses yet. Tap the heart icon next to a verse to save it here.</Text>
+            </View>
+          </Animatable.View>
+        </Animatable.View>
+        <View style={{flex: 3, backgroundColor: '#f7f7f7', opacity: 0,}}></View>
+      </View>
+    )
+  }
   render(){
     let titleConfig = {title: 'Messages', tintColor: 'white'};
     let back = this._renderBackButton();
+    let listView = this._renderListView();
     return (
       <View style={styles.container}>
         <NavigationBar
           tintColor={Colors.brandPrimary}
           title={titleConfig}
         />
-        <ListView
-          dataSource={this.props.dataSource}
-          contentInset={{bottom: 49}}
-          automaticallyAdjustContentInsets={false}
-          ref="messagesList"
-          renderRow={this._renderRow.bind(this)}
-        />
+
+        {this.props.dataSource.length ? this._renderListView() : this._renderNoMessages()}
       </View>
     )
   }
