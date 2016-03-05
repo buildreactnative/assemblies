@@ -90,6 +90,7 @@ class MessagesView extends React.Component{
   }
 
   render(){
+    console.log('DATA SOURCE', this.state.dataSource);
     return (
       <View style={styles.container}>
         <Navigator

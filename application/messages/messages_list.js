@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import Animatable from 'react-native-animatable';
+import _ from 'underscore';
 
 import React, {
   ScrollView,
@@ -87,7 +88,9 @@ class MessagesList extends React.Component{
         <Animatable.View animation="fadeIn" duration={500} style={{flex: 1, alignItems: 'stretch', backgroundColor: '#f7f7f7'}}>
           <Animatable.View animation="slideInUp" duration={500} easing="ease-out" style={{flex: 1, alignItems: 'stretch', height: 50, backgroundColor: '#f7f7f7'}}>
             <View style={{flex: 1, paddingTop: 100, paddingHorizontal: 40, alignItems: 'stretch',}}>
-              <Text style={{textAlign: 'center', fontSize: 20, color: Colors.bodyTextLight, lineHeight: 26}}>You havent added any favorite verses yet. Tap the heart icon next to a verse to save it here.</Text>
+              <Text style={{textAlign: 'center', fontSize: 20, color: Colors.bodyTextLight, lineHeight: 26}}>
+              You dont have any messages yet. You can start a conversation from within one of your groups.
+              </Text>
             </View>
           </Animatable.View>
         </Animatable.View>
@@ -106,7 +109,7 @@ class MessagesList extends React.Component{
           title={titleConfig}
         />
 
-        {this.props.dataSource.length ? this._renderListView() : this._renderNoMessages()}
+        {_.keys(this.props.dataSource._dataBlob).length ? this._renderListView() : this._renderNoMessages()}
       </View>
     )
   }
