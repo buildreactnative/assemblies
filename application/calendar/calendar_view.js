@@ -49,7 +49,12 @@ class CalendarView extends React.Component{
           renderScene={(route, navigator) => {
             if (route.name == 'CalendarList') {
               return (
-                <CalendarList groups={this.props.groups.concat(this.props.suggestedGroups)} events={this.props.allEvents} navigator={navigator}/>
+                <CalendarList
+                  groups={this.props.groups.concat(this.props.suggestedGroups)}
+                  changeState={this.props.changeState}
+                  events={this.props.allEvents}
+                  navigator={navigator}
+                />
               )
             } else if (route.name == 'Event') {
               return (

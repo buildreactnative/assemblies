@@ -214,7 +214,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <GroupView {...this.props}/>
+          <GroupView {...this.state}/>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Calendar"

@@ -36,54 +36,9 @@ const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 // console.log('GESTURES', CUSTOM_CONFIG.gestures);
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
 class GroupView extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      groups: [],
-      suggestedGroups: [],
-      events: [],
-    }
-  }
-  componentDidMount(){
-    let {currentUser} = this.props;
-    let groupIds = currentUser ? currentUser.groupIds : [];
-    let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
-    console.log('URL', url)
-    fetch(url, {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('DATA GROUPS', data)
-      this.setState({groups: data})
-    })
-    .catch((error) => {console.log(error)})
-
-    console.log('URL', url)
-    fetch(`${BASE_URL}/groups`, {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('DATA SG GROUPS', data)
-      this.setState({suggestedGroups: _.reject(data, (gp) => {
-          return _.contains(groupIds, gp.id)
-        })
-      })
-    })
-    .catch((error) => {console.log(error)})
-  }
   createGroup(group){
     if (! group) {return;}
-    this.setState({
+    this.props.changeState({
       groups: this.state.groups.concat(group),
     })
   }
@@ -97,7 +52,7 @@ class GroupView extends React.Component{
     })
     currentUser.groupIds.push(groupId)
     this.props.updateUser(currentUser)
-    this.setState({groups: groups})
+    this.props.changeState({groups: groups})
   }
   addEvent(event){
     let {groups} = this.state;
@@ -119,7 +74,7 @@ class GroupView extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      this.setState({events: this.state.events.concat(event), groups: groups})
+      this.props.changeState({events: this.state.events.concat(event), groups: groups})
       console.log('UPDATED GROUP EVENT DATA', data);
     });
   }
@@ -137,7 +92,6 @@ class GroupView extends React.Component{
               return (
                 <Groups
                   {...this.props}
-                  {...this.state}
                   navigator={navigator}
                   addUserToGroup={this.addUserToGroup.bind(this)}
                 />
@@ -150,7 +104,6 @@ class GroupView extends React.Component{
                   addUserToGroup={this.addUserToGroup.bind(this)}
                   {...this.props}
                   {...route}
-                  {...this.state}
                   navigator={navigator}
                 />
               )
@@ -176,15 +129,15 @@ class GroupView extends React.Component{
               )
             } else if (route.name == 'Profile') {
               return (
-                <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
+                <Profile {...route} {...this.props} navigator={navigator} />
               )
             } else if (route.name == 'Event') {
               return (
-                <Event {...route} {...this.props} {...this.state} navigator={navigator} />
+                <Event {...route} {...this.props} navigator={navigator} />
               )
             } else if (route.name == 'Chat') {
               return (
-                <MessageBox user={route.user} userIds={[route.user.id, this.props.currentUser.id].sort()}{...this.props} navigator={navigator}/>
+                <MessageBox user={route.user} userIds={[route.user.id, this.props.currentUser.id].sort()} {...this.props} navigator={navigator}/>
               )
             }
           }}/>
