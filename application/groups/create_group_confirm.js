@@ -51,12 +51,14 @@ class CreateGroupConfirm extends React.Component{
     }
   }
   showImagePicker(){
-    UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
+    let options = _.extend({}, IMAGE_OPTIONS, {aspectX: 2, maxWidth: deviceWidth, maxHeight: 300});
+    UIImagePickerManager.showImagePicker(options, (response) => {
       if (response.didCancel) { console.log('User cancelled image picker');}
       else if (response.error) { console.log('UIImagePickerManager Error: ', response.error);}
       else if (response.customButton) {console.log('User tapped custom button: ', response.customButton);}
       else {
-        const source = response.uri;
+        // const source = response.uri;
+        const source = 'data:image/png;base64,' + response.data;
         this.setState({
           imageUrl: source
         });
