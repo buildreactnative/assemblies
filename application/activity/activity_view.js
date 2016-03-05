@@ -106,7 +106,7 @@ class ActivityView extends React.Component{
               console.log('ROUTE', route)
               let {events, groups} = this.props;
               let eventId = route.notification.eventId;
-              let event = _.find(events, (e) => e.id == eventId);
+              let event = _.find(this.props.allEvents, (e) => e.id == eventId);
               let group = _.find(groups, (g) => g.id == event.groupId);
               console.log('EVENT NOW', event, group, route.notification, this.state);
               return (

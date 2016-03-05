@@ -123,6 +123,8 @@ class Event extends React.Component{
       relatedUserIds: _.reject(Object.keys(event.attending), (id) => id == currentUser.id),
       message: `New comment in ${event.name}`,
       timestamp: new Date().valueOf(),
+      eventId: event.id,
+      groupId: event.groupId,
       seen: false,
     }
     fetch(url, {
