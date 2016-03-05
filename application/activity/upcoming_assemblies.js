@@ -36,9 +36,9 @@ const UPCOMING_ASSEMBLIES = [
 
 class UpcomingAssemblies extends React.Component{
   render(){
-    let {events} = this.props
+    let {events} = this.props;
     let mapRegion = MAP_REGION;
-    if (events) {
+    if (events.length) {
       mapRegion = {
         latitude        : events[0].location.lat,
         longitude       : events[0].location.lng,

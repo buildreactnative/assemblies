@@ -6,6 +6,7 @@ import MessagesView from '../messages/messages_view';
 import Profile from '../messages/profile';
 import Settings from '../profile/settings';
 import GroupView from '../groups/group_view';
+import {BASE_URL} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -44,7 +45,75 @@ class Dashboard extends Component {
   componentWillReceiveProps(nextProps){
     if (nextProps.currentUser != this.props.currentUser){
       this.setState({currentUser: nextProps.currentUser})
+      this._fetchNotifications();
+      this._fetchLastEvent();
     }
+  }
+  _fetchNotifications(){
+    let url = `${BASE_URL}/notifications`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('NOTIFICATIONS', data);
+      this.setState({notifications: data})
+    })
+  }
+  _fetchLastEvent(){
+    let {currentUser} = this.props;
+    let url = `${BASE_URL}/events?{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept':'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('FETCHED EVENTS', data);
+      let sortedEvents = data.sort((a, b) => {
+        return a.start > b.start;
+      })
+      let nextEvent = null;
+      let found = false;
+      for (i=0; i<sortedEvents.length; i++){
+        let sortedEvent = sortedEvents[i];
+        if (!! sortedEvent.attending[currentUser.id] && ! found) {
+          nextEvent = sortedEvent;
+          found = true;
+        }
+      }
+      this._fetchGroups();
+      this._fetchAllEvents();
+      this.setState({
+        nextEvent: nextEvent
+      })
+    })
+    .catch((err) => {console.log('ERR: ', err)})
+  }
+  _fetchAllEvents(){
+    let d = new Date();
+    d.setHours(0);
+    d.setTime(0);
+    let url = `${BASE_URL}/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('EVENTS ALL', data);
+      this.setState({events: data});
+    })
   }
   _mutateState(newState, callback){
     this.setState(newState, callback)
@@ -61,6 +130,10 @@ class Dashboard extends Component {
   componentDidMount(){
     InteractionManager.runAfterInteractions(() => {
       this.setState({loading: false});
+      if (!! this.props.currentUser){
+        this._fetchNotifications();
+        this._fetchLastEvent();
+      }
     });
   }
   _renderLoading(){

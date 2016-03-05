@@ -36,104 +36,6 @@ class ActivityView extends React.Component{
     super(props);
     this.state = {
       tab: 'notifications',
-      notifications: [],
-      events: [],
-      groups: [],
-    }
-  }
-  componentWillReceiveProps(nextProps){
-    if (nextProps.currentUser != this.props.currentUser){
-      this._fetchNotifications();
-      this._fetchLastEvent();
-    }
-  }
-  _fetchNotifications(){
-    let url = `${BASE_URL}/notifications`;
-    fetch(url, {
-      method: "GET",
-      headers: {
-        'Accept':'application/json',
-        'Content-Type':'application/json'
-      }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('NOTIFICATIONS', data);
-      this.setState({notifications: data})
-    })
-  }
-  _fetchLastEvent(){
-    let {currentUser} = this.props;
-    let url = `${BASE_URL}/events?{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}`;
-    fetch(url, {
-      method: "GET",
-      headers: {
-        'Accept':'application/json',
-        'Content-Type':'application/json'
-      }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('FETCHED EVENTS', data);
-      let sortedEvents = data.sort((a, b) => {
-        return a.start > b.start;
-      })
-      let nextEvent = null;
-      let found = false;
-      for (i=0; i<sortedEvents.length; i++){
-        let sortedEvent = sortedEvents[i];
-        if (!! sortedEvent.attending[currentUser.id] && ! found) {
-          nextEvent = sortedEvent;
-          found = true;
-        }
-      }
-      this._fetchGroups();
-      this._fetchAllEvents();
-      this.setState({
-        nextEvent: nextEvent
-      })
-    })
-    .catch((err) => {console.log('ERR: ', err)})
-  }
-  _fetchAllEvents(){
-    let d = new Date();
-    d.setHours(0);
-    d.setTime(0);
-    let url = `${BASE_URL}/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
-    fetch(url, {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type':'application/json'
-      }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('EVENTS ALL', data);
-      this.setState({events: data});
-    })
-  }
-  _fetchGroups(){
-    let {currentUser} = this.props;
-    let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(currentUser ? currentUser.groupIds : '')}}}`;
-    fetch(url, {
-      method: "GET",
-      headers: {
-        'Accept':'application/json',
-        'Content-Type':'application/json'
-      }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('FETCHED GROUPS', data);
-      this.setState({groups: data})
-    })
-    .catch((err) => {console.log('ERR: ', err)})
-  }
-  componentDidMount(){
-    if (!! this.props.currentUser){
-      this._fetchNotifications();
-      this._fetchLastEvent();
     }
   }
   render(){
@@ -151,7 +53,7 @@ class ActivityView extends React.Component{
               return (
                 <ActivityHolder
                   {...this.props}
-                  {...this.state}
+                  tab={this.state.tab}
                   setUpcoming={()=>this.setState({tab: 'upcoming'})}
                   setNotifications={()=>this.setState({tab: 'notifications'})}
                   navigator={navigator}
@@ -161,7 +63,6 @@ class ActivityView extends React.Component{
               return (
                 <Groups
                   {...this.props}
-                  {...this.state}
                   navigator={navigator}
                   addUserToGroup={()=>{console.log('ADD USER')}}
                 />
@@ -174,7 +75,6 @@ class ActivityView extends React.Component{
                   addUserToGroup={()=>{console.log('ADD USER')}}
                   {...this.props}
                   {...route}
-                  {...this.state}
                   navigator={navigator}
                 />
               )
@@ -200,17 +100,17 @@ class ActivityView extends React.Component{
               )
             } else if (route.name == 'Profile') {
               return (
-                <Profile {...route} {...this.props} {...this.state} navigator={navigator} />
+                <Profile {...route} {...this.props} navigator={navigator} />
               )
             } else if (route.name == 'event' || route.name == 'comment') {
               console.log('ROUTE', route)
-              let {events, groups} = this.state;
+              let {events, groups} = this.props;
               let eventId = route.notification.eventId;
               let event = _.find(events, (e) => e.id == eventId);
               let group = _.find(groups, (g) => g.id == event.groupId);
               console.log('EVENT NOW', event, group, route.notification, this.state);
               return (
-                <Event event={event} group={group} {...route} {...this.props} {...this.state} navigator={navigator} />
+                <Event event={event} group={group} {...route} {...this.props} navigator={navigator} />
               )
             } else if (route.name == 'Event'){
               return (
