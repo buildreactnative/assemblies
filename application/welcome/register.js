@@ -18,6 +18,7 @@ import React, {
   Dimensions,
   NativeModules,
   InteractionManager,
+  DeviceEventEmitter,
   ActivityIndicatorIOS,
 } from 'react-native';
 
@@ -32,7 +33,18 @@ class Register extends React.Component{
       firstName: '',
       lastName: '',
       location: null,
+      height: deviceHeight,
     }
+  }
+  inputFocused (refName) {
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]),
+        110, //additionalOffset
+        true
+      );
+    }, 50);
   }
   _renderBackButton(){
     return (
@@ -53,7 +65,7 @@ class Register extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer}>
+        <ScrollView style={[styles.formContainer, {height: this.state.height}]} ref="scrollView">
           <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
           <GooglePlacesAutocomplete
             styles={autocompleteStyles}
@@ -96,6 +108,8 @@ class Register extends React.Component{
           <Text style={styles.h4}>Email</Text>
           <View style={styles.formField}>
             <TextInput
+              ref="email"
+              onFocus={this.inputFocused.bind(this, 'email')}
               onChangeText={(text)=> this.setState({email: text})}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -125,6 +139,8 @@ class Register extends React.Component{
           <View style={styles.formField}>
             <TextInput
               maxLength={140}
+              ref="lastName"
+              onFocus={this.inputFocused.bind(this, 'lastName')}
               onChangeText={(text) => this.setState({lastName: text})}
               placeholderTextColor='#bbb'
               style={styles.input}

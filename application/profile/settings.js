@@ -55,7 +55,7 @@ class Settings extends React.Component{
               )
             } else  {
               return (
-                <UserProfile currentUser={this.props.currentUser} navigator={navigator}/>
+                <UserProfile currentUser={this.props.currentUser} navigator={navigator} logout={this.props.logout}/>
               )
             }
           }}
