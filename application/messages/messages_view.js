@@ -40,57 +40,8 @@ const CUSTOM_CONFIG = BASE_CONFIG;
 // console.log(Navigator.SceneConfigs)
 
 class MessagesView extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 != r2
-      })
-      .cloneWithRows([]),
-      conversations: {},
-    }
-  }
-  componentDidMount(){
-    let {currentUser} = this.props;
-    let url = `${BASE_URL}/messages`
-    fetch(url, {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type':'application/json'
-      }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log('MESSAGES', data);
-      let conversations = {};
-      data.forEach((msg) => {
-        let key = msg.participants.sort().join(':');
-        if (conversations[key]){
-          conversations[key].push(msg)
-        } else {
-          conversations[key] = [msg];
-        }
-      })
-      console.log('CONVERSATIONS', conversations);
-      let dataBlob = [];
-      Object.keys(conversations).forEach((c) => {
-        dataBlob.push(conversations[c])
-      })
-      console.log('DATA BLOB', dataBlob.map((d) => d[0]))
-      this.setState({
-        dataSource: new ListView.DataSource({
-          rowHasChanged: (r1, r2) => r1 != r2
-        })
-        .cloneWithRows(dataBlob.map((d) => d[0])),
-        conversations: conversations
-      })
-    })
-    .catch((err) => {console.log('ERR: ', err)})
-  }
-
   render(){
-    console.log('DATA SOURCE', this.state.dataSource);
+    console.log('DATA SOURCE', this.props.dataSource);
     return (
       <View style={styles.container}>
         <Navigator
@@ -103,7 +54,7 @@ class MessagesView extends React.Component{
           renderScene={(route, navigator) => {
             if (route.name == 'MessageList') {
               return (
-                <MessagesList dataSource={this.state.dataSource} navigator={navigator} />
+                <MessagesList dataSource={this.props.dataSource} navigator={navigator} />
               )
             } else if (route.name == 'Message'){
               let {userIds} = route;
@@ -112,7 +63,7 @@ class MessagesView extends React.Component{
                 <MessageBox
                   userIds={userIds}
                   {...this.props}
-                  messages={this.state.conversations[userIds.sort().join(':')]}
+                  messages={this.props.conversations[userIds.sort().join(':')]}
                   navigator={navigator}
                 />
               )
@@ -124,7 +75,6 @@ class MessagesView extends React.Component{
               return (
                 <Groups
                   {...this.props}
-                  {...this.state}
                   navigator={navigator}
                   addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
                 />
@@ -137,7 +87,6 @@ class MessagesView extends React.Component{
                   addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
                   {...this.props}
                   {...route}
-                  {...this.state}
                   navigator={navigator}
                 />
               )
@@ -163,7 +112,7 @@ class MessagesView extends React.Component{
               )
             } else if (route.name == 'Event') {
               return (
-                <Event {...route} {...this.props} {...this.state} navigator={navigator} />
+                <Event {...route} {...this.props} navigator={navigator} />
               )
             } else if (route.name == 'Chat') {
               let userIds = [this.props.currentUser.id, route.user.id]
@@ -172,8 +121,8 @@ class MessagesView extends React.Component{
                 <MessageBox
                   user={route.user}
                   userIds={userIds}
-                  messages={this.state.conversations[userIds.sort().join(':')]}
                   {...this.props}
+                  messages={this.props.conversations[userIds.sort().join(':')]}
                   navigator={navigator}/>
               )
             }

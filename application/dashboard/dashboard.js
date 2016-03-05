@@ -17,6 +17,7 @@ import React, {
   Text,
   View,
   TabBarIOS,
+  ListView,
   Image,
   TouchableOpacity,
   Dimensions,
@@ -37,11 +38,15 @@ class Dashboard extends Component {
       allEvents: [],
       events: [],
       messages: [],
+      conversations: {},
       notifications: [],
       suggestedGroups: [],
       suggestedEvents: [],
-      conversations: [],
       currentUser: props.currentUser,
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 != r2
+      })
+      .cloneWithRows([]),
     }
   }
   componentWillReceiveProps(nextProps){
@@ -49,7 +54,47 @@ class Dashboard extends Component {
       this.setState({currentUser: nextProps.currentUser})
       this._fetchNotifications();
       this._fetchLastEvent();
+      this._fetchMessages();
     }
+  }
+  _fetchMessages(){
+    let {currentUser} = this.props;
+    let url = `${BASE_URL}/messages?{"participantsString": {"$regex": ".*${currentUser.id}.*"}}`;
+    console.log('MESSAGE URL', url);
+    fetch(url, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type':'application/json'
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('MESSAGES', data);
+      let conversations = {};
+      data.forEach((msg) => {
+        let key = msg.participants.sort().join(':');
+        if (conversations[key]){
+          conversations[key].push(msg)
+        } else {
+          conversations[key] = [msg];
+        }
+      })
+      console.log('CONVERSATIONS', conversations);
+      let dataBlob = [];
+      Object.keys(conversations).forEach((c) => {
+        dataBlob.push(conversations[c])
+      })
+      console.log('DATA BLOB', dataBlob.map((d) => d[0]))
+      this.setState({
+        dataSource: new ListView.DataSource({
+          rowHasChanged: (r1, r2) => r1 != r2
+        })
+        .cloneWithRows(dataBlob.map((d) => d[0])),
+        conversations: conversations
+      })
+    })
+    .catch((err) => {console.log('ERR: ', err)})
   }
   _fetchNotifications(){
     let url = `${BASE_URL}/notifications`;
@@ -174,6 +219,7 @@ class Dashboard extends Component {
       if (!! this.props.currentUser){
         this._fetchNotifications();
         this._fetchLastEvent();
+        this._fetchMessages();
       }
     });
   }
@@ -201,7 +247,7 @@ class Dashboard extends Component {
             })
           }}
           >
-          <MessagesView {...this.props}/>
+          <MessagesView {...this.state}/>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Groups"

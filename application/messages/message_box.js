@@ -173,6 +173,7 @@ class MessageBox extends React.Component{
               let msg = {
                 text: this.state.newMessage,
                 participants: _.uniq(this.state.users.map((usr)=>usr.id).concat(currentUser.id)),
+                participantsString: _.uniq(this.state.users.map((usr)=>usr.id).concat(currentUser.id)).join(':'),
                 createdAt: new Date().valueOf(),
                 senderName: `${currentUser.firstName} ${currentUser.lastName}`,
                 senderAvatar: currentUser.avatarUrl

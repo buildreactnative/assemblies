@@ -109,7 +109,7 @@ class MessagesList extends React.Component{
           title={titleConfig}
         />
 
-        {_.keys(this.props.dataSource._dataBlob).length ? this._renderListView() : this._renderNoMessages()}
+        {_.keys(this.props.dataSource._dataBlob.s1).length ? this._renderListView() : this._renderNoMessages()}
       </View>
     )
   }
