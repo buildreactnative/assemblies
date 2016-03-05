@@ -227,7 +227,10 @@ class Dashboard extends Component {
             })
           }}
           >
-          <CalendarView {...this.props }/>
+          <CalendarView
+            {...this.state }
+            changeState={this._mutateState.bind(this)}
+          />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Activity"
