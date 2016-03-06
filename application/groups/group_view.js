@@ -55,7 +55,11 @@ class GroupView extends React.Component{
     this.props.changeState({groups: groups})
   }
   addEvent(event){
-    let {groups} = this.state;
+    console.log('EVENT', event);
+    if (! event) {
+      return;
+    }
+    let {groups} = this.props;
     let group;
     groups.forEach((gp, id) => {
       if (gp.id == event.groupId){

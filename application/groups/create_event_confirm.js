@@ -93,7 +93,8 @@ class CreateEventConfirm extends React.Component{
       timestamp: new Date().valueOf(),
       eventId: data.id,
       seen: false,
-    }
+    };
+    console.log('NOTIFICATION PARAMS', notification);
     fetch(url, {
       method: "POST",
       headers: {
@@ -106,6 +107,7 @@ class CreateEventConfirm extends React.Component{
     .then((data) => {
       console.log('NOTIFICATION', data);
     })
+    .catch((err) => {console.log('ERR: ', err)})
   }
 
   _renderBackButton(){
@@ -153,7 +155,7 @@ class CreateEventConfirm extends React.Component{
         onPickerDone={()=>{
           this.setState({showCapacity: false, choseCapacity: true,})
         }}
-        onPickerCancer={()=>{
+        onPickerCancel={()=>{
           this.setState({showCapacity: false,})
         }}
       />
@@ -168,7 +170,7 @@ class CreateEventConfirm extends React.Component{
     )
   }
   _renderTime(){
-    console.log('TIMES', TIMES_RANGE);
+    // console.log('TIMES', TIMES_RANGE);
     return (
       <Picker
         ref="time"
@@ -176,7 +178,10 @@ class CreateEventConfirm extends React.Component{
         showDuration={300}
         pickerCancelBtnText='Cancel'
         pickerBtnText='Confirm'
-        onValueChange={(val)=>this.setState({time: val})}
+        onValueChange={(val)=>{
+          console.log('VAL', val);
+          this.setState({time: val[0]})
+        }}
         pickerTitle="Event Duration"
         pickerData={TIMES_RANGE}//picker`s value List
         selectedValue={this.state.time}//default to be selected value
@@ -247,8 +252,22 @@ class CreateEventConfirm extends React.Component{
             let {date, duration, capacity, time} = this.state;
             let {location, summary, eventName, group, currentUser,} = this.props;
             let dateVal = date.valueOf();
-            let start = new Date(dateVal + time*1000*60*60);
-            let end = new Date(dateVal + time*1000*60*60 + duration*1000*60*60)
+            console.log('TIME', time);
+            let timeParts = time.split(" ");
+            let timeType = timeParts[1];
+            let timeVal = parseInt(timeParts[0].split(":")[0]);
+            let minutes = parseInt(timeParts[0].split(":")[1]);
+            if (timeType == "pm"){
+              timeVal += 12;
+            }
+            if (timeType == "am" && timeVal == 12){
+              timeVal = 0;
+            }
+            if (minutes == 30){
+              timeVal += 0.5;
+            }
+            let start = new Date(dateVal + timeVal*1000*60*60);
+            let end = new Date(dateVal + timeVal*1000*60*60 + parseInt(duration)*1000*60*60)
             let event = {
               start: start.valueOf(),
               end: end.valueOf(),
@@ -260,15 +279,15 @@ class CreateEventConfirm extends React.Component{
               location: location || {},
               groupId: group.id,
               comments: [],
-              capacity: capacity,
+              capacity: parseInt(capacity),
             };
             event.attending[currentUser.id] = true;
             console.log('EVENT', event);
             fetch(`${BASE_URL}/events`, {
               method: "POST",
               headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
               },
               body: JSON.stringify(event)
             })
@@ -281,7 +300,8 @@ class CreateEventConfirm extends React.Component{
                 name: 'Group',
                 group: group,
               })
-            });
+            })
+            .catch((err) => {console.log('ERR: ', err)})
           }}
           style={styles.submitButton}
         >
