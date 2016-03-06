@@ -41,6 +41,16 @@ class CreateEvent extends React.Component{
       </TouchableOpacity>
     )
   }
+  inputFocused (refName) {
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]),
+        110, //additionalOffset
+        true
+      );
+    }, 50);
+  }
   render(){
     let titleConfig = {title: 'Create Event', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
@@ -51,24 +61,7 @@ class CreateEvent extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer}>
-          <Text style={styles.h4}>{"What's the event name?"}</Text>
-          <View style={styles.formField}>
-            <TextInput
-              onChangeText={(text)=> this.setState({name: text})}
-              placeholderTextColor='#bbb'
-              style={styles.input}
-              placeholder="Type a name"
-            />
-          </View>
-          <Text style={styles.h4}>{"What's happening at the event?"}</Text>
-          <TextInput
-            onChangeText={(text)=> this.setState({summary: text})}
-            placeholderTextColor='#bbb'
-            style={styles.largeInput}
-            multiline={true}
-            placeholder="Type a summary of the event..."
-          />
+        <ScrollView style={styles.formContainer} ref="scrollView">
           <Text style={styles.h4}>Where is the event?</Text>
           <GooglePlacesAutocomplete
             styles={autocompleteStyles}
@@ -101,6 +94,28 @@ class CreateEvent extends React.Component{
             filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
             predefinedPlaces={[]}
           />
+          <Text style={styles.h4}>{"What's the event name?"}</Text>
+          <View style={styles.formField}>
+            <TextInput
+              ref="name"
+              onFocus={this.inputFocused.bind(this, "name")}
+              onChangeText={(text)=> this.setState({name: text})}
+              placeholderTextColor='#bbb'
+              style={styles.input}
+              placeholder="Type a name"
+            />
+          </View>
+          <Text style={styles.h4}>{"What's happening at the event?"}</Text>
+          <TextInput
+            ref="summary"
+            onFocus={this.inputFocused.bind(this, "summary")}
+            onChangeText={(text)=> this.setState({summary: text})}
+            placeholderTextColor='#bbb'
+            style={styles.largeInput}
+            multiline={true}
+            placeholder="Type a summary of the event..."
+          />
+
         </ScrollView>
         <TouchableOpacity
           onPress={()=>{

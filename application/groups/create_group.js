@@ -48,26 +48,15 @@ class CreateGroup extends React.Component{
       events: {},
     }
   }
-  showImagePicker(){
-    UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
-      console.log('Response = ', response);
-      if (response.didCancel) { console.log('User cancelled image picker');}
-      else if (response.error) { console.log('UIImagePickerManager Error: ', response.error);}
-      else if (response.customButton) {console.log('User tapped custom button: ', response.customButton);}
-      else {
-        // You can display the image using either data:
-        // const source = 'data:image/jpeg;base64,' + response.data;
-
-        // uri (on iOS)
-        // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-        // uri (on android)
-        const source = response.uri;
-
-        this.setState({
-          imageUrl: source
-        });
-      }
-    });
+  inputFocused (refName) {
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]),
+        110, //additionalOffset
+        true
+      );
+    }, 50);
   }
   _technologies(tech){
     this.setState({
@@ -103,10 +92,12 @@ class CreateGroup extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer}>
+        <ScrollView style={styles.formContainer} ref="scrollView">
           <Text style={styles.h4}>Name of your assembly</Text>
           <View style={styles.formField}>
             <TextInput
+              ref="name"
+              onFocus={this.inputFocused.bind(this, 'name')}
               onChangeText={(text)=> this.setState({name: text})}
               placeholderTextColor='#bbb'
               style={styles.input}
@@ -149,6 +140,8 @@ class CreateGroup extends React.Component{
 
           <Text style={styles.h4}>Who should join and why?</Text>
           <TextInput
+            ref="summary"
+            onFocus={this.inputFocused.bind(this, 'summary')}
             onChangeText={(text)=> this.setState({summary: text})}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
