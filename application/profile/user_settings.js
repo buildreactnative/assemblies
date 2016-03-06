@@ -34,6 +34,16 @@ class UserSettings extends React.Component{
       location: props.currentUser.location,
     }
   }
+  inputFocused (refName) {
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]),
+        110, //additionalOffset
+        true
+      );
+    }, 50);
+  }
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=>{
@@ -72,7 +82,7 @@ class UserSettings extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer}>
+        <ScrollView style={styles.formContainer} ref="scrollView">
           <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
           <GooglePlacesAutocomplete
             styles={autocompleteStyles}
@@ -115,6 +125,8 @@ class UserSettings extends React.Component{
           <Text style={styles.h4}>First Name</Text>
           <View style={styles.formField}>
             <TextInput
+              ref="firstName"
+              onFocus={this.inputFocused.bind(this, 'firstName')}
               maxLength={140}
               onChangeText={(text)=> this.setState({firstName: text})}
               placeholderTextColor='#bbb'
@@ -127,6 +139,8 @@ class UserSettings extends React.Component{
           <View style={styles.formField}>
             <TextInput
               maxLength={140}
+              ref="lastName"
+              onFocus={this.inputFocused.bind(this, 'lastName')}
               onChangeText={(text) => this.setState({lastName: text})}
               placeholderTextColor='#bbb'
               style={styles.input}
@@ -136,6 +150,8 @@ class UserSettings extends React.Component{
           </View>
           <Text style={styles.h4}>{"Tell us a little about yourself"}</Text>
           <TextInput
+            ref="summary"
+            onFocus={this.inputFocused.bind(this, 'summary')}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
             multiline={true}
