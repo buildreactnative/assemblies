@@ -50,7 +50,7 @@ class CreateEventConfirm extends React.Component{
     this.state = {
       date: today,
       duration: '2 hours',
-      capacity: 100,
+      capacity: '100 people',
       time: '6:00 pm',
       showCalendar: false,
       showTime: false,
@@ -148,10 +148,13 @@ class CreateEventConfirm extends React.Component{
         pickerBtnText='Confirm'
         onValueChange={(val)=>this.setState({capacity: val})}
         pickerTitle="Event Duration"
-        pickerData={_.range(300)}//picker`s value List
+        pickerData={_.range(30).map((num) => `${(num+1)*10} people`)}//picker`s value List
         selectedValue={this.state.capacity}//default to be selected value
         onPickerDone={()=>{
           this.setState({showCapacity: false, choseCapacity: true,})
+        }}
+        onPickerCancer={()=>{
+          this.setState({showCapacity: false,})
         }}
       />
     )
