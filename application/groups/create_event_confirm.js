@@ -7,7 +7,7 @@ import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
 import CalendarPicker from '../third_party/calendar/CalendarPicker';
 import Picker from 'react-native-picker';
-import {TECHNOLOGIES, BASE_URL} from '../utilities/fixtures';
+import {TECHNOLOGIES, BASE_URL, TIMES_RANGE} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -51,7 +51,7 @@ class CreateEventConfirm extends React.Component{
       date: today,
       duration: 2,
       capacity: 100,
-      time: 20,
+      time: '6:00 pm',
       showCalendar: false,
       showTime: false,
       showDuration: false,
@@ -162,6 +162,7 @@ class CreateEventConfirm extends React.Component{
     )
   }
   _renderTime(){
+    console.log('TIMES', TIMES_RANGE);
     return (
       <Picker
         ref="time"
@@ -171,7 +172,7 @@ class CreateEventConfirm extends React.Component{
         pickerBtnText='Confirm'
         onValueChange={(val)=>this.setState({time: val})}
         pickerTitle="Event Duration"
-        pickerData={_.range(24)}//picker`s value List
+        pickerData={TIMES_RANGE}//picker`s value List
         selectedValue={this.state.time}//default to be selected value
         onPickerDone={()=>{
           this.setState({showTime: false, choseTime: true,})
