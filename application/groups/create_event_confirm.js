@@ -194,9 +194,9 @@ class CreateEventConfirm extends React.Component{
           <Text style={styles.h4}>When is the event date?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
-              onPress={()=>this.setState({showCalendar: true})}
+              onPress={()=>this.setState({showCalendar: ! this.state.showCalendar})}
               style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Text style={styles.input}>{this.state.choseDate ? this.state.date.toLocaleString() : 'Choose a date'}</Text>
+              <Text style={styles.input}>{this.state.choseDate ? moment(this.state.date).format('dddd, MMM Do') : 'Choose a date'}</Text>
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
             </TouchableOpacity>
           </View>
