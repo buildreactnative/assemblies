@@ -78,8 +78,7 @@ class Register extends React.Component{
               console.log(details);
               this.setState({
                 location: _.extend({}, details.geometry.location, {
-                  city: details.address_components[0].long_name,
-                  state: details.address_components[2].short_name,
+                  formatted_address: details.formatted_address,
                 })
               })
             }}
@@ -102,7 +101,7 @@ class Register extends React.Component{
               // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
               rankby: 'distance',
             }}
-            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+            filterReverseGeocodingByTypes={['street_address']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
             predefinedPlaces={[]}
           />
           <Text style={styles.h4}>Email</Text>
