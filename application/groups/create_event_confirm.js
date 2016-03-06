@@ -5,7 +5,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
-import CalendarPicker from 'react-native-calendar-picker';
+import CalendarPicker from '../third_party/calendar/CalendarPicker';
 import Picker from 'react-native-picker';
 import {TECHNOLOGIES, BASE_URL} from '../utilities/fixtures';
 import {
@@ -41,8 +41,14 @@ let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 class CreateEventConfirm extends React.Component{
   constructor(props){
     super(props);
+    let today = new Date();
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0);
+    today.setMilliseconds(0);
+
     this.state = {
-      date: new Date(),
+      date: today,
       duration: 2,
       capacity: 100,
       time: 20,
@@ -57,7 +63,20 @@ class CreateEventConfirm extends React.Component{
     }
   }
   onDateChange(date){
-    this.setState({date: date, choseDate: true, showCalendar: false})
+    let oldDate = this.state.date;
+    let month = oldDate.getMonth();
+    let year = oldDate.getFullYear();
+    let day = oldDate.getDate();
+    let nextDate = new Date(year, month, day);
+    nextDate.setMonth(nextDate.getMonth() + 1);
+    let prevDate = new Date(year, month, day);
+    prevDate.setMonth(prevDate.getMonth() - 1);
+    console.log('NEW DATE', this.state.date, date, nextDate, prevDate);
+    if (date.valueOf() != nextDate.valueOf() && date.valueOf() != prevDate.valueOf()){
+      this.setState({date: date, choseDate: true, showCalendar: false})
+    } else {
+      this.setState({date: date})
+    }
   }
   _createNotification(data){
     let {currentUser, group} = this.props;
