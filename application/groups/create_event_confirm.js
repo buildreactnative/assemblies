@@ -49,7 +49,7 @@ class CreateEventConfirm extends React.Component{
 
     this.state = {
       date: today,
-      duration: 2,
+      duration: '2 hours',
       capacity: 100,
       time: '6:00 pm',
       showCalendar: false,
@@ -127,10 +127,13 @@ class CreateEventConfirm extends React.Component{
         pickerBtnText='Confirm'
         onValueChange={(val)=>this.setState({duration: val})}
         pickerTitle="Event Duration"
-        pickerData={[1, 2, 3, 4, 5]}//picker`s value List
+        pickerData={['1 hour', '2 hours', '3 hours', '4 hours', '5 hours']}//picker`s value List
         selectedValue={this.state.duration}//default to be selected value
         onPickerDone={()=>{
           this.setState({showDuration: false, choseDuration: true,})
+        }}
+        onPickerCancel={()=>{
+          this.setState({showDuration: false,})
         }}
       />
     )
@@ -177,6 +180,9 @@ class CreateEventConfirm extends React.Component{
         onPickerDone={()=>{
           this.setState({showTime: false, choseTime: true,})
         }}
+        onPickerCancel={()=>{
+          this.setState({showTime: false})
+        }}
       />
     )
   }
@@ -205,7 +211,7 @@ class CreateEventConfirm extends React.Component{
           <Text style={styles.h4}>When does it start?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
-              onPress={()=>this.setState({showTime: true})}
+              onPress={()=>this.setState({showTime: ! this.state.showTime})}
               style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
               <Text style={styles.input}>{this.state.choseTime ? this.state.time : 'Choose a time'}</Text>
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
@@ -215,9 +221,9 @@ class CreateEventConfirm extends React.Component{
           <Text style={styles.h4}>How long will it last?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
-              onPress={()=>this.setState({showDuration: true})}
+              onPress={()=>this.setState({showDuration: ! this.state.showDuration})}
               style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              <Text style={styles.input}>{this.state.choseDuration ? this.state.duration : 'Choose a duration'}</Text>
+              <Text style={styles.input}>{this.state.choseDuration ? this.state.duration: 'Choose a duration'}</Text>
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
             </TouchableOpacity>
           </View>
@@ -225,7 +231,7 @@ class CreateEventConfirm extends React.Component{
           <Text style={styles.h4}>Attendee capacity</Text>
           <View style={styles.formField}>
             <TouchableOpacity
-              onPress={()=>this.setState({showCapacity: true})}
+              onPress={()=>this.setState({showCapacity: ! this.state.showCapacity})}
               style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
               <Text style={styles.input}>{this.state.choseCapacity ? this.state.capacity : 'Choose a duration'}</Text>
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
