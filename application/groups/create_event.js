@@ -4,7 +4,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
-import {DEV} from '../utilties/fixtures';
+import {DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,

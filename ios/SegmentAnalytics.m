@@ -15,7 +15,7 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(identify: (NSString*)userId){
-  [SEGAnalytics debug:YES];
+//  [SEGAnalytics debug:YES];
   [[SEGAnalytics sharedAnalytics] identify: userId];
 }
 
