@@ -1,7 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import _ from 'underscore';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -45,7 +45,7 @@ class SuggestedGroupBox extends React.Component{
         })
         .then((response) => response.json())
         .then((data) => {
-          console.log('ADD USER TO GROUP', data);
+          if (DEV) {console.log('ADD USER TO GROUP', data);}
           fetch(`${BASE_URL}/users/${currentUser.id}`, {
             method: "PUT",
             headers: {
@@ -56,7 +56,7 @@ class SuggestedGroupBox extends React.Component{
           })
           .then((response) => response.json())
           .then((data) => {
-            console.log('ADD GROUP_ID TO USER', data);
+            if (DEV) {console.log('ADD GROUP_ID TO USER', data);}
             this.props.addUserToGroup(group.id, currentUser.id)
           });
         });
@@ -67,7 +67,6 @@ class SuggestedGroupBox extends React.Component{
   }
   render(){
     let {group, currentUser,} = this.props;
-    // console.log('GROUP', group, currentUser.groupIds);
     let isSaved = _.contains(currentUser.groupIds, group.id)
     if (! group ) {
       return (

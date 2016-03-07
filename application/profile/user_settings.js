@@ -4,7 +4,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities'
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -65,11 +65,13 @@ class UserSettings extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('UPDATED USER', data);
+      if (DEV) {console.log('UPDATED USER', data);}
       this.props.changeProfile(data);
       this.props.navigator.pop();
     })
-    .catch((error) => console.log(error))
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+    })
     .done();
   }
   render(){
@@ -91,8 +93,6 @@ class UserSettings extends React.Component{
             autoFocus={true}
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-              console.log(data);
-              console.log(details);
               this.setState({
                 location: _.extend({}, details.geometry.location, {
                   city: details.address_components[0].long_name,

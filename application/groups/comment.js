@@ -4,7 +4,7 @@ import moment from 'moment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';
 import CommentReplies from './comment_replies';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -50,7 +50,7 @@ class Comment extends React.Component{
           style={this.state.message ? styles.buttonActive : styles.buttonInactive}
           underlayColor={Colors.brandPrimaryDark}
           onPress={()=>{
-            console.log('SUBMIT REPLY');
+            if (DEV) {console.log('SUBMIT REPLY');}
             let {currentUser, event} = this.props;
             let {message, comment} = this.state;
             this.setState({message: ''});
@@ -61,7 +61,6 @@ class Comment extends React.Component{
                 c.name      == comment.name
               )
             })
-            // console.log('SUBMIT COMMENT', this.state.message, this.props.currentUser)
             let reply = {
               avatarUrl: currentUser.avatarUrl,
               name: `${currentUser.firstName} ${currentUser.lastName}`,
@@ -72,7 +71,7 @@ class Comment extends React.Component{
             comment.replies.push(reply)
             foundComments.push(comment);
 
-            console.log('COMMENT', reply);
+            if (DEV) {console.log('COMMENT', reply);}
             fetch(`${BASE_URL}/events/${this.props.event.id}`, {
               method: "PUT",
               headers: {
@@ -83,7 +82,7 @@ class Comment extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('DATA', data);
+              if (DEV) {console.log('DATA', data);}
               this.setState({comment: comment, isReply: false})
             })
           }}
@@ -95,7 +94,7 @@ class Comment extends React.Component{
   }
   render(){
     let {comment} = this.props;
-    console.log('COMMENT', comment);
+    if (DEV) {console.log('COMMENT', comment);}
     return (
       <View style={styles.messageBox}>
         <View style={styles.messageContainer}>
@@ -117,7 +116,7 @@ class Comment extends React.Component{
         {this.state.isReply ? this._renderReplyForm() : null  }
         <View style={styles.reactionContainer}>
           <TouchableOpacity style={styles.reactionBox} onPress={()=>{
-            console.log('LIKE');
+            if (DEV) {console.log('LIKE');}
             let {currentUser, event} = this.props;
             let {message, comment} = this.state;
             this.setState({message: ''});
@@ -128,11 +127,8 @@ class Comment extends React.Component{
                 c.name      == comment.name
               )
             })
-            // console.log('SUBMIT COMMENT', this.state.message, this.props.currentUser)
-
             comment.likes[currentUser.id] = true;
             foundComments.push(comment);
-
             fetch(`${BASE_URL}/events/${this.props.event.id}`, {
               method: "PUT",
               headers: {
@@ -143,7 +139,7 @@ class Comment extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('DATA', data);
+              if (DEV) {console.log('DATA', data);}
               this.setState({comment: comment})
             })
           }}>

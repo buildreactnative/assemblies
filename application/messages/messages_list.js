@@ -41,7 +41,6 @@ class MessagesList extends React.Component{
     }
   }
   _renderRow(rowData){
-    console.log('DATA', rowData);
     return (
       <TouchableOpacity onPress={()=>{
         this.props.navigator.push({

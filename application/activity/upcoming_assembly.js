@@ -3,6 +3,7 @@ import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
 import moment from 'moment';
+import {DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -21,7 +22,7 @@ import React, {
 class UpcomingAssembly extends React.Component{
   render(){
     let {event, group} = this.props;
-    console.log('GROUP', group);
+    if (DEV) {console.log('GROUP', group);}
     let {name, attending, start} = event;
     let startTime = new Date(start);
     return (

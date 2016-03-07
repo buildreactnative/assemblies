@@ -4,6 +4,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
+import {DEV} from '../utilties/fixtures';
 
 import React, {
   ScrollView,
@@ -70,8 +71,8 @@ class CreateEvent extends React.Component{
             autoFocus={false}
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-              console.log(data);
-              console.log(details);
+              if (DEV) {console.log(data);}
+              if (DEV) {console.log(details);}
               this.setState({
                 location: _.extend({}, details.geometry.location, {
                   city: details.address_components[0].long_name,

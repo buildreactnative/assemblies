@@ -15,7 +15,7 @@ import CreateGroupConfirm from '../groups/create_group_confirm';
 import Event from '../groups/event';
 import _ from 'underscore';
 import {conversationFixtures,} from '../fixtures/messages';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -37,11 +37,10 @@ let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 const BASE_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 
 const CUSTOM_CONFIG = BASE_CONFIG;
-// console.log(Navigator.SceneConfigs)
 
 class MessagesView extends React.Component{
   render(){
-    console.log('DATA SOURCE', this.props.dataSource);
+    if (DEV) {console.log('DATA SOURCE', this.props.dataSource);}
     return (
       <View style={styles.container}>
         <Navigator
@@ -76,7 +75,9 @@ class MessagesView extends React.Component{
                 <Groups
                   {...this.props}
                   navigator={navigator}
-                  addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
+                  addUserToGroup={()=>{
+                    if (DEV) {console.log('ADD USER TO GROUP')}
+                  }}
                 />
               )
             } else if (route.name == 'CreateGroup'){
@@ -84,7 +85,9 @@ class MessagesView extends React.Component{
             } else if (route.name == 'Group') {
               return (
                 <Group
-                  addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
+                  addUserToGroup={()=>{
+                    if (DEV) {console.log('ADD USER TO GROUP')}
+                  }}
                   {...this.props}
                   {...route}
                   navigator={navigator}
@@ -100,13 +103,17 @@ class MessagesView extends React.Component{
               return (
                 <CreateEventConfirm {...this.props} {...route}
                   navigator={navigator}
-                  addEvent={()=>{console.log('ADD EVENT')}}
+                  addEvent={()=>{
+                    if (DEV) {console.log('ADD EVENT')}
+                  }}
                 />
               )
             } else if (route.name == 'CreateGroupConfirm'){
               return (
                 <CreateGroupConfirm {...this.props} {...route}
-                  createGroup={()=> {console.log('CREATE GROUP')}}
+                  createGroup={()=> {
+                    if (DEV) {console.log('CREATE GROUP')}
+                  }}
                   navigator={navigator}
                 />
               )

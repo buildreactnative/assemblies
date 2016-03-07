@@ -5,7 +5,7 @@ import InvertibleScrollView from 'react-native-invertible-scroll-view';
 import Message from './message';
 import {messageFixtures} from '../fixtures/messages';
 import NavigationBar from 'react-native-navbar';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -53,7 +53,7 @@ class MessageBox extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('MESSAGES', data);
+      if (DEV) {console.log('MESSAGES', data);}
       this.setState({messages: data})
     })
   }
@@ -65,7 +65,7 @@ class MessageBox extends React.Component{
       this.setState({loading: false});
     });
     this.refs.scroll.scrollTo(0);
-    console.log('USER IDS', this.props.userIds);
+    if (DEV) {console.log('USER IDS', this.props.userIds);}
     let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(this.props.userIds)}}}`;
     fetch(url, {
       method: "GET",
@@ -76,10 +76,12 @@ class MessageBox extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('USERS', data);
+      if (DEV) {console.log('USERS', data);}
       this.setState({users: data})
     })
-    .catch((err) => {console.log('ERR: ', err)})
+    .catch((err) => {
+      if (DEV) {console.log('ERR: ', err)}
+    })
   }
   _keyboardWillShow(e){
     let newCoordinates = e.endCoordinates.height;
@@ -123,7 +125,7 @@ class MessageBox extends React.Component{
       timestamp: new Date().valueOf(),
       seen: false,
     }
-    console.log('PARAMS', notification)
+    if (DEV) {console.log('PARAMS', notification)}
     fetch(url, {
       method: "POST",
       headers: {
@@ -134,7 +136,7 @@ class MessageBox extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('NOTIFICATION', data);
+      if (DEV) {console.log('NOTIFICATION', data);}
     })
   }
   render(){
@@ -153,7 +155,7 @@ class MessageBox extends React.Component{
         <InvertibleScrollView ref="scroll">
           {messages.map((msg, idx) => {
             let user = _.find(this.state.users.concat(this.props.currentUser), (usr) => `${usr.firstName} ${usr.lastName}` == msg.senderName)
-            console.log('USER', user);
+            if (DEV) {console.log('USER', user);}
             return (
               <Message message={msg} user={user} key={idx} navigator={this.props.navigator}/>
             )
@@ -189,14 +191,16 @@ class MessageBox extends React.Component{
               })
               .then((response) => response.json())
               .then((data) => {
-                console.log('MSG', data);
+                if (DEV) {console.log('MSG', data);}
                 this.setState({
                   messages: this.state.messages.concat(data),
                   newMessage: '',
                 })
                 this._createNotification(data)
               })
-              .catch((err) => {console.log('ERR: ', err)})
+              .catch((err) => {
+                if (DEV) {console.log('ERR: ', err)}
+              })
             }}
           >
             <Text style={styles.buttonText}>Send</Text>

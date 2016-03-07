@@ -2,7 +2,7 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
 import moment from 'moment';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -40,7 +40,7 @@ class Notification extends React.Component{
           })
           .then((response) => response.json())
           .then((data) => {
-            console.log('UPDATE NOTIFICATION', data);
+            if (DEV){console.log('UPDATE NOTIFICATION', data);}
             this.setState({notification: data})
           })
         }}
@@ -51,7 +51,7 @@ class Notification extends React.Component{
   render(){
     let {notification} = this.state;
     let {type, message, seen} = notification;
-    console.log('RENDERED NOTIFICATION', message);
+    if (DEV){console.log('RENDERED NOTIFICATION', message);}
     return (
       <View style={styles.container}>
         <View style={styles.row}>

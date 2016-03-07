@@ -10,6 +10,7 @@ import Event from '../groups/event';
 import Profile from '../messages/profile';
 import Group from '../groups/group';
 import _ from 'underscore';
+import {DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -64,7 +65,9 @@ class ActivityView extends React.Component{
                 <Groups
                   {...this.props}
                   navigator={navigator}
-                  addUserToGroup={()=>{console.log('ADD USER')}}
+                  addUserToGroup={()=>{
+                    if (DEV) {console.log('ADD USER')}
+                  }}
                 />
               )
             } else if (route.name == 'CreateGroup'){
@@ -72,7 +75,9 @@ class ActivityView extends React.Component{
             } else if (route.name == 'Group') {
               return (
                 <Group
-                  addUserToGroup={()=>{console.log('ADD USER')}}
+                  addUserToGroup={()=>{
+                    if (DEV) {console.log('ADD USER')}
+                  }}
                   {...this.props}
                   {...route}
                   navigator={navigator}
@@ -88,13 +93,17 @@ class ActivityView extends React.Component{
               return (
                 <CreateEventConfirm {...this.props} {...route}
                   navigator={navigator}
-                  addEvent={()=>{console.log('ADD EVENT')}}
+                  addEvent={()=>{
+                    if (DEV) {console.log('ADD EVENT')}
+                  }}
                 />
               )
             } else if (route.name == 'CreateGroupConfirm'){
               return (
                 <CreateGroupConfirm {...this.props} {...route}
-                  createGroup={()=>{console.log('CREATE GROUP')}}
+                  createGroup={()=>{
+                    if (DEV) {console.log('CREATE GROUP')}
+                  }}
                   navigator={navigator}
                 />
               )
@@ -103,12 +112,12 @@ class ActivityView extends React.Component{
                 <Profile {...route} {...this.props} navigator={navigator} />
               )
             } else if (route.name == 'event' || route.name == 'comment') {
-              console.log('ROUTE', route)
+              if (DEV){console.log('ROUTE', route)}
               let {events, groups} = this.props;
               let eventId = route.notification.eventId;
               let event = _.find(this.props.allEvents, (e) => e.id == eventId);
               let group = _.find(groups, (g) => g.id == event.groupId);
-              console.log('EVENT NOW', event, group, route.notification, this.state);
+              if (DEV) {console.log('EVENT NOW', event, group, route.notification, this.state);}
               return (
                 <Event event={event} group={group} {...route} {...this.props} navigator={navigator} />
               )
@@ -117,7 +126,7 @@ class ActivityView extends React.Component{
                 <Event {...route} {...this.props} {...this.state} navigator={navigator}/>
               )
             } else if (route.name == 'message') {
-              console.log(route, this.state, this.props)
+              if (DEV) {console.log(route, this.state, this.props)}
               let userIds = Object.keys(route.notification.relatedUserIds)
               return (
                 <MessageBox user={route.user} userIds={userIds} {...this.props} navigator={navigator}/>

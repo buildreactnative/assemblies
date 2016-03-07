@@ -14,7 +14,7 @@ import Event from './event';
 import MessageList from '../messages/messages_list';
 import MessageBox from '../messages/message_box';
 import _ from 'underscore';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -33,7 +33,7 @@ import React, {
 } from 'react-native';
 
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
-// console.log('GESTURES', CUSTOM_CONFIG.gestures);
+
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
 class GroupView extends React.Component{
   createGroup(group){
@@ -55,7 +55,7 @@ class GroupView extends React.Component{
     this.props.changeState({groups: groups})
   }
   addEvent(event){
-    console.log('EVENT', event);
+    if (DEV) {console.log('EVENT', event);}
     if (! event) {
       return;
     }
@@ -67,7 +67,7 @@ class GroupView extends React.Component{
         groups[id].events.push(event.id)
       }
     })
-    console.log('UPDATED GROUPS', groups)
+    if (DEV) {console.log('UPDATED GROUPS', groups)}
     fetch(`${BASE_URL}/groups/${event.groupId}`, {
       method: "PUT",
       headers: {
@@ -79,11 +79,10 @@ class GroupView extends React.Component{
     .then((response) => response.json())
     .then((data) => {
       this.props.changeState({events: this.state.events.concat(event), groups: groups})
-      console.log('UPDATED GROUP EVENT DATA', data);
+      if (DEV) {console.log('UPDATED GROUP EVENT DATA', data);}
     });
   }
   render(){
-    // console.log('THIS PROPS', this.props);
     return (
       <View style={styles.container}>
         <Navigator

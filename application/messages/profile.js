@@ -4,7 +4,7 @@ import moment from 'moment';
 import _ from 'underscore';
 import NavigationBar from 'react-native-navbar';
 import GroupBox from '../groups/group_box';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -41,7 +41,7 @@ class Profile extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('GROUPS');
+      if (DEV) {console.log('GROUPS');}
       this.setState({groups: data})
     })
   }
@@ -69,7 +69,7 @@ class Profile extends React.Component{
         _.last(splitGroups).push(null)
       }
     }
-    console.log('SPLIT', splitGroups);
+    if (DEV) {console.log('SPLIT', splitGroups);}
     return (
       <View style={styles.container}>
         <NavigationBar
@@ -85,7 +85,7 @@ class Profile extends React.Component{
           <Text style={styles.location}>{user.location.city}, {user.location.state}</Text>
           <TouchableOpacity style={styles.newMessageContainer}
             onPress={()=>{
-              console.log('SEND CHAT', user)
+              if (DEV) {console.log('SEND CHAT', user)}
               this.props.navigator.push({
                 name: 'Chat',
                 user: user
@@ -102,7 +102,7 @@ class Profile extends React.Component{
           <View style={{flex: 1}}>
 
           {splitGroups.map((groupDouble, i) => {
-            console.log('IDX', i);
+            if (DEV) {console.log('IDX', i);}
             return (
               <View style={styles.groupsContainer} key={i}>
               {groupDouble.map((group, idx) => {

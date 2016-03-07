@@ -5,7 +5,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
-import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -53,10 +53,13 @@ class CreateGroupConfirm extends React.Component{
   showImagePicker(){
     let options = _.extend({}, IMAGE_OPTIONS, {aspectX: 2, maxWidth: deviceWidth, maxHeight: 300});
     UIImagePickerManager.showImagePicker(options, (response) => {
-      if (response.didCancel) { console.log('User cancelled image picker');}
-      else if (response.error) { console.log('UIImagePickerManager Error: ', response.error);}
-      else if (response.customButton) {console.log('User tapped custom button: ', response.customButton);}
-      else {
+      if (response.didCancel) {
+        if (DEV) {console.log('User cancelled image picker');}
+      } else if (response.error) {
+        if (DEV) {console.log('UIImagePickerManager Error: ', response.error);}
+      } else if (response.customButton) {
+        if (DEV) {console.log('User tapped custom button: ', response.customButton);}
+      } else {
         // const source = response.uri;
         const source = 'data:image/png;base64,' + response.data;
         this.setState({
@@ -128,7 +131,6 @@ class CreateGroupConfirm extends React.Component{
             {COLOR_FIXTURES.slice(0, 4).map((color, idx)=>{
               let isSelected = color.code == this.state.backgroundColor;
               let bgColor = isSelected ? '#FFFF8D' : 'transparent';
-              // console.log('bg color', color.code, this.state.backgroundColor);
               return (
                 <TouchableOpacity
                   key={idx}
@@ -143,7 +145,6 @@ class CreateGroupConfirm extends React.Component{
             {COLOR_FIXTURES.slice(4, 8).map((color, idx)=>{
               let isSelected = color.code == this.state.backgroundColor;
               let bgColor = isSelected ? '#FFFF8D' : 'transparent';
-              // console.log('bg color', color.code, this.state.backgroundColor);
               return (
                 <TouchableOpacity
                   key={idx}
@@ -171,7 +172,6 @@ class CreateGroupConfirm extends React.Component{
               members: {},
               events: [],
             };
-            // console.log('GROUP', group)
             if (!! userId ){
               group.members[userId] = {
                 confirmed: true,
@@ -191,7 +191,7 @@ class CreateGroupConfirm extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('DATA', data);
+              if (DEV) {console.log('DATA', data);}
               this.props.createGroup(data);
               // update groupIds array in user profile
               fetch(`${BASE_URL}/users/${currentUser.id}`, {
@@ -204,7 +204,7 @@ class CreateGroupConfirm extends React.Component{
               })
               .then((response) => response.json())
               .then((data) => {
-                console.log('USER DATA', data);
+                if (DEV) {console.log('USER DATA', data);}
                 this.props.updateUser(data);
                 this.props.navigator.popToTop();
               })

@@ -6,7 +6,7 @@ import MessagesView from '../messages/messages_view';
 import Profile from '../messages/profile';
 import Settings from '../profile/settings';
 import GroupView from '../groups/group_view';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -60,7 +60,7 @@ class Dashboard extends Component {
   _fetchMessages(){
     let {currentUser} = this.props;
     let url = `${BASE_URL}/messages?{"participantsString": {"$regex": ".*${currentUser.id}.*"}}`;
-    console.log('MESSAGE URL', url);
+    if (DEV) {console.log('MESSAGE URL', url);}
     fetch(url, {
       method: "GET",
       headers: {
@@ -70,7 +70,7 @@ class Dashboard extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('MESSAGES', data);
+      if (DEV) {console.log('MESSAGES', data);}
       let conversations = {};
       data.forEach((msg) => {
         let key = msg.participants.sort().join(':');
@@ -80,12 +80,12 @@ class Dashboard extends Component {
           conversations[key] = [msg];
         }
       })
-      console.log('CONVERSATIONS', conversations);
+      if (DEV) {console.log('CONVERSATIONS', conversations);}
       let dataBlob = [];
       Object.keys(conversations).forEach((c) => {
         dataBlob.push(conversations[c])
       })
-      console.log('DATA BLOB', dataBlob.map((d) => d[0]))
+      if (DEV) {console.log('DATA BLOB', dataBlob.map((d) => d[0]))}
       this.setState({
         dataSource: new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 != r2
@@ -94,7 +94,9 @@ class Dashboard extends Component {
         conversations: conversations
       })
     })
-    .catch((err) => {console.log('ERR: ', err)})
+    .catch((err) => {
+      if (DEV) {console.log('ERR: ', err)}
+    })
   }
   _fetchNotifications(){
     let url = `${BASE_URL}/notifications`;
@@ -107,7 +109,7 @@ class Dashboard extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('NOTIFICATIONS', data);
+      if (DEV) {console.log('NOTIFICATIONS', data);}
       this.setState({notifications: data})
     })
   }
@@ -123,7 +125,7 @@ class Dashboard extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('FETCHED EVENTS', data);
+      if (DEV) {console.log('FETCHED EVENTS', data);}
       let sortedEvents = data.sort((a, b) => {
         return a.start > b.start;
       })
@@ -143,7 +145,9 @@ class Dashboard extends Component {
         events: data,
       })
     })
-    .catch((err) => {console.log('ERR: ', err)})
+    .catch((err) => {
+      if (DEV) {console.log('ERR: ', err)}
+    })
   }
   _fetchAllEvents(){
     let d = new Date();
@@ -159,7 +163,7 @@ class Dashboard extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('EVENTS ALL', data);
+      if (DEV) {console.log('EVENTS ALL', data);}
       this.setState({allEvents: data});
     })
   }
@@ -167,7 +171,7 @@ class Dashboard extends Component {
     let {currentUser} = this.props;
     let groupIds = currentUser ? currentUser.groupIds : [];
     let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
-    console.log('URL', url)
+    if (DEV) {console.log('URL', url)}
     fetch(url, {
       method: "GET",
       headers: {
@@ -177,12 +181,14 @@ class Dashboard extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('DATA GROUPS', data)
+      if (DEV) {console.log('DATA GROUPS', data)}
       this.setState({groups: data})
     })
-    .catch((error) => {console.log(error)})
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+    })
 
-    console.log('URL', url)
+    if (DEV) {console.log('URL', url)}
     fetch(`${BASE_URL}/groups`, {
       method: "GET",
       headers: {
@@ -192,14 +198,16 @@ class Dashboard extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('DATA SG GROUPS', data)
+      if (DEV) {console.log('DATA SG GROUPS', data)}
       this.setState({
         suggestedGroups: _.reject(data, (gp) => {
           return _.contains(groupIds, gp.id)
         })
       })
     })
-    .catch((error) => {console.log(error)})
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+    })
   }
   _mutateState(newState, callback){
     this.setState(newState, callback)

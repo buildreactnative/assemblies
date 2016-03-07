@@ -5,7 +5,7 @@ import CommentList from './comment_list';
 import EventLocation from './event_location';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -30,7 +30,7 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 class Event extends React.Component{
   constructor(props){
     super(props);
-    console.log('SUPER', props.event.attending, props.currentUser.id)
+    if (DEV) {console.log('SUPER', props.event.attending, props.currentUser.id)}
     this.state = {
       event: props.event,
       members: [],
@@ -52,15 +52,17 @@ class Event extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('DATA USERS', data)
+      if (DEV) {console.log('DATA USERS', data)}
       this.setState({members: data})
     })
-    .catch((error) => {console.log(error)})
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+    })
   }
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=> {
-        console.log('Routes', this.props.navigator.getCurrentRoutes());
+        if (DEV) {console.log('Routes', this.props.navigator.getCurrentRoutes());}
         this.props.navigator.pop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
@@ -98,7 +100,7 @@ class Event extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('RES', data);
+              if (DEV) {console.log('RES', data);}
               this.setState({
                 event: data,
                 going: true,
@@ -137,7 +139,7 @@ class Event extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('NOTIFICATION', data);
+      if (DEV) {console.log('NOTIFICATION', data);}
     })
   }
   _renderCommentForm(){
@@ -157,7 +159,6 @@ class Event extends React.Component{
             let {currentUser} = this.props;
             let {message, event} = this.state;
             this.setState({message: ''});
-            // console.log('SUBMIT COMMENT', this.state.message, this.props.currentUser)
             let {comments} = event;
             let comment = {
               avatarUrl: currentUser.avatarUrl,
@@ -167,7 +168,7 @@ class Event extends React.Component{
               replies: [],
               likes: {},
             };
-            console.log('COMMENT', comment);
+            if (DEV) {console.log('COMMENT', comment);}
             fetch(`${BASE_URL}/events/${this.props.event.id}`, {
               method: "PUT",
               headers: {
@@ -178,7 +179,7 @@ class Event extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('DATA', data);
+              if (DEV) {console.log('DATA', data);}
               event.comments = comments.concat(comment);
               this.setState({event: event})
               this._createNotification(data)
@@ -196,7 +197,7 @@ class Event extends React.Component{
     let isMember = _.contains(currentUser.groupIds, group.id);
     let isAdmin = isMember && group.members[currentUser.id].admin;
     let isOwner = isMember && group.members[currentUser.id].owner;
-    console.log('EVENTS', events, group.events);
+    if (DEV) {console.log('EVENTS', events, group.events);}
     let backButton = this._renderBackButton();
     return (
       <View style={styles.container}>
@@ -226,7 +227,7 @@ class Event extends React.Component{
         <Text style={styles.h2}>Going</Text>
         <View style={styles.break}></View>
         {this.state.members.map((member, idx) => {
-          console.log('MEMBER', member)
+          if (DEV) {console.log('MEMBER', member)}
           let isOwner = group.members[member.id].owner;
           let isAdmin = group.members[member.id].admin;
           let status = isOwner ? 'owner' : isAdmin ? 'admin' : 'member'

@@ -1,6 +1,8 @@
 const BASE_URL = 'http://162.243.209.229:5000'; // comment out to run locally
 // const BASE_URL = 'http://localhost:2403';
 
+const DEV = false;
+
 const TIMES_RANGE = [
   '12:00 am',
   '12:30 am',
@@ -89,4 +91,4 @@ const IMAGE_OPTIONS = {
     path: 'images' // will save image at /Documents/images rather than the root
   }
 };
-module.exports = {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, TIMES_RANGE,}
+module.exports = {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, TIMES_RANGE, DEV}

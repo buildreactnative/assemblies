@@ -1,7 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -68,32 +68,32 @@ class RegisterConfirm extends React.Component{
   }
   showImagePicker(){
     UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
-    console.log('Response = ', response);
+      if (DEV) {console.log('Response = ', response);}
 
-    if (response.didCancel) {
-      console.log('User cancelled image picker');
-    }
-    else if (response.error) {
-      console.log('UIImagePickerManager Error: ', response.error);
-    }
-    else if (response.customButton) {
-      console.log('User tapped custom button: ', response.customButton);
-    }
-    else {
-      // You can display the image using either data:
-      // const source = 'data:image/jpeg;base64,' + response.data;
+      if (response.didCancel) {
+        if (DEV) {console.log('User cancelled image picker');}
+      }
+      else if (response.error) {
+        if (DEV) {console.log('UIImagePickerManager Error: ', response.error);}
+      }
+      else if (response.customButton) {
+        if (DEV) {console.log('User tapped custom button: ', response.customButton);}
+      }
+      else {
+        // You can display the image using either data:
+        // const source = 'data:image/jpeg;base64,' + response.data;
 
-      // uri (on iOS)
-      // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-      // uri (on android)
-      const source = 'data:image/png;base64,' + response.data;
-      console.log('SRC', source);
+        // uri (on iOS)
+        // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
+        // uri (on android)
+        const source = 'data:image/png;base64,' + response.data;
+        if (DEV) {console.log('SRC', source);}
 
-      this.setState({
-        avatarSource: source
-      });
-    }
-  });
+        this.setState({
+          avatarSource: source
+        });
+      }
+    });
   }
   render(){
     let {technologies} = this.state;
@@ -159,7 +159,7 @@ class RegisterConfirm extends React.Component{
             suggestedEventIds: [],
             summary: summary,
           }
-          console.log('USER PARAMS', user);
+          if (DEV) {console.log('USER PARAMS', user);}
           fetch(`${BASE_URL}/users`, {
             method: "POST",
             headers: {
@@ -171,10 +171,10 @@ class RegisterConfirm extends React.Component{
           .then((response) => response.json())
           .then((data) => {
               if (data.errors) {
-                console.log(data.errors);
+                if (DEV) {console.log(data.errors);}
               }
               else {
-                console.log('DATA', data);
+                if (DEV) {console.log('DATA', data);}
                 let user = {username: email, password: password};
                 fetch(`${BASE_URL}/users/login`, {
                   method: "POST",
@@ -187,11 +187,11 @@ class RegisterConfirm extends React.Component{
                 .then((response) => response.json())
                 .then((data) => {
                   if (data.errors || data.status == 401) {
-                    console.log(data.errors);
+                    if (DEV) {console.log(data.errors);}
                     errors = 'Login failed'
                   }
                   else {
-                    console.log('DATA', data);
+                    if (DEV) {console.log('DATA', data);}
                     AsyncStorage.setItem('sid', data.id)
                     fetch(`${BASE_URL}/users/me`, {
                       method: "GET",
@@ -209,16 +209,20 @@ class RegisterConfirm extends React.Component{
                       });
                     })
                     .catch((error) => {
-                      console.log(error)
+                      if (DEV) {console.log(error)}
                     })
                     .done();
                   }
                 })
-                .catch((error) => console.log(error))
+                .catch((error) => {
+                  if (DEV) {console.log(error)}
+                })
                 .done();
               }
           })
-          .catch((error) => console.log(error))
+          .catch((error) => {
+            if (DEV) {console.log(error)}
+          })
           .done();
 
         }}>

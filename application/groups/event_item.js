@@ -5,6 +5,7 @@ import moment from 'moment';
 import {truncate} from 'underscore.string';
 import Swipeout from 'react-native-swipeout';
 import _ from 'underscore';
+import {DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -27,7 +28,7 @@ const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 class EventList extends React.Component{
   render(){
     let {group, event, attending, going, navigator} = this.props;
-    console.log('EVENT', event);
+    if (DEV) {console.log('EVENT', event);}
     return (
       <TouchableOpacity
         onPress={()=>{

@@ -7,6 +7,7 @@ import _ from 'underscore';
 import GroupBox from './group_box';
 import SuggestedGroupBox from './suggested_group_box';
 import AddGroupBox from './add_group_box';
+import {DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -33,7 +34,7 @@ suggestedGroups.forEach((group, idx) => {
 
 class Groups extends React.Component{
   componentDidMount(){
-    console.log('ROUTES', this.props.navigator.getCurrentRoutes())
+    if (DEV) {console.log('ROUTES', this.props.navigator.getCurrentRoutes())}
     let routes = this.props.navigator.getCurrentRoutes();
   }
   _renderAddButton(){
@@ -56,7 +57,7 @@ class Groups extends React.Component{
     if (_.last(splitGroups).length == 1){
       _.last(splitGroups).push(null)
     }
-    console.log('SPLIT GROUPS', splitGroups)
+    if (DEV) {console.log('SPLIT GROUPS', splitGroups)}
     return (
       <View style={styles.assemblyBoxContainer}>
         {splitGroups.map((groupDouble, idx) => {
@@ -94,7 +95,7 @@ class Groups extends React.Component{
     if (_.last(splitGroups).length == 1){
       _.last(splitGroups).push(null)
     }
-    console.log('SPLIT GROUPS', splitGroups)
+    if (DEV) {console.log('SPLIT GROUPS', splitGroups)}
     return (
       <View style={styles.assemblyBoxContainer}>
         {splitGroups.map((groupDouble, idx) => {
@@ -145,7 +146,7 @@ class Groups extends React.Component{
   }
   render(){
     let {groups, suggestedGroups,} = this.props;
-    console.log('NAV', this.props.navigator);
+    if (DEV) {console.log('NAV', this.props.navigator);}
     let rightButtonConfig = this._renderAddButton()
     let titleConfig = {title: 'My Groups', tintColor: 'white'}
     return (

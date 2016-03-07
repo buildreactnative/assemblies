@@ -6,7 +6,7 @@ import {truncate} from 'underscore.string';
 import _ from 'underscore';
 import EventItem from './event_item';
 import Swipeout from 'react-native-swipeout';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -57,7 +57,7 @@ class EventList extends React.Component{
         ]
       }
     })
-    console.log('ROWS', rows, props.events);
+    if (DEV) {console.log('ROWS', rows, props.events);}
     let ds = new ListView.DataSource({rowHasChanged: (row1, row2) => true})
     this.state = {
       dataSource: ds.cloneWithRows(rows),
@@ -126,7 +126,7 @@ class EventList extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('RES', data);
+      if (DEV) {console.log('RES', data);}
       let {events} = this.props;
       let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
       events[eventIndex] = data;
@@ -159,7 +159,7 @@ class EventList extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('RES', data);
+      if (DEV) {console.log('RES', data);}
       let {events} = this.props;
       let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
       events[eventIndex] = data;
@@ -167,7 +167,7 @@ class EventList extends React.Component{
     });
   }
   _notGoing(event){
-    console.log('NOT GOING EVENT', event);
+    if (DEV) {console.log('NOT GOING EVENT', event);}
     let {currentUser} = this.props;
     let attending = event.attending;
     let maybe = event.maybe;
@@ -193,7 +193,7 @@ class EventList extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('RES', data);
+      if (DEV) {console.log('RES', data);}
       let {events} = this.props;
       let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
       events[eventIndex] = data;
@@ -201,7 +201,7 @@ class EventList extends React.Component{
     });
   }
   _updateEvent(evt, type){
-    console.log('UPDATE EVENT', evt, type);
+    if (DEV) {console.log('UPDATE EVENT', evt, type);}
     switch(type) {
       case 'going':
         this._going(evt);
@@ -268,7 +268,7 @@ class EventList extends React.Component{
   }
   render(){
     let {group, currentUser, events, navigator} = this.props;
-    console.log('EVENT LIST', this.state.dataSource);
+    if (DEV) {console.log('EVENT LIST', this.state.dataSource);}
     return (
       <View style={styles.container}>
         <View style={styles.statusbar}/>

@@ -7,7 +7,7 @@ import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
 import CalendarPicker from '../third_party/calendar/CalendarPicker';
 import Picker from 'react-native-picker';
-import {TECHNOLOGIES, BASE_URL, TIMES_RANGE} from '../utilities/fixtures';
+import {TECHNOLOGIES, BASE_URL, TIMES_RANGE, DEV} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -71,7 +71,7 @@ class CreateEventConfirm extends React.Component{
     nextDate.setMonth(nextDate.getMonth() + 1);
     let prevDate = new Date(year, month, day);
     prevDate.setMonth(prevDate.getMonth() - 1);
-    console.log('NEW DATE', this.state.date, date, nextDate, prevDate);
+    if (DEV) {console.log('NEW DATE', this.state.date, date, nextDate, prevDate);}
     if (date.valueOf() != nextDate.valueOf() && date.valueOf() != prevDate.valueOf()){
       this.setState({date: date, choseDate: true, showCalendar: false})
     } else {
@@ -94,7 +94,7 @@ class CreateEventConfirm extends React.Component{
       eventId: data.id,
       seen: false,
     };
-    console.log('NOTIFICATION PARAMS', notification);
+    if (DEV) {console.log('NOTIFICATION PARAMS', notification);}
     fetch(url, {
       method: "POST",
       headers: {
@@ -105,9 +105,11 @@ class CreateEventConfirm extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('NOTIFICATION', data);
+      if (DEV) {console.log('NOTIFICATION', data);}
     })
-    .catch((err) => {console.log('ERR: ', err)})
+    .catch((err) => {
+      if (DEV) {console.log('ERR: ', err)}
+    })
   }
 
   _renderBackButton(){
@@ -170,7 +172,6 @@ class CreateEventConfirm extends React.Component{
     )
   }
   _renderTime(){
-    // console.log('TIMES', TIMES_RANGE);
     return (
       <Picker
         ref="time"
@@ -179,7 +180,7 @@ class CreateEventConfirm extends React.Component{
         pickerCancelBtnText='Cancel'
         pickerBtnText='Confirm'
         onValueChange={(val)=>{
-          console.log('VAL', val);
+          if (DEV) {console.log('VAL', val);}
           this.setState({time: val[0]})
         }}
         pickerTitle="Event Duration"
@@ -195,7 +196,7 @@ class CreateEventConfirm extends React.Component{
     )
   }
   render(){
-    console.log('RENDER')
+    if (DEV) {console.log('RENDER')}
     let titleConfig = {title: 'Create Assembly', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
     return (
@@ -252,7 +253,7 @@ class CreateEventConfirm extends React.Component{
             let {date, duration, capacity, time} = this.state;
             let {location, summary, eventName, group, currentUser,} = this.props;
             let dateVal = date.valueOf();
-            console.log('TIME', time);
+            if (DEV) {console.log('TIME', time);}
             let timeParts = time.split(" ");
             let timeType = timeParts[1];
             let timeVal = parseInt(timeParts[0].split(":")[0]);
@@ -282,7 +283,7 @@ class CreateEventConfirm extends React.Component{
               capacity: parseInt(capacity),
             };
             event.attending[currentUser.id] = true;
-            console.log('EVENT', event);
+            if (DEV) {console.log('EVENT', event);}
             fetch(`${BASE_URL}/events`, {
               method: "POST",
               headers: {
@@ -293,7 +294,7 @@ class CreateEventConfirm extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('EVENT CREATION DATA', data);
+              if (DEV) {console.log('EVENT CREATION DATA', data);}
               this._createNotification(data);
               this.props.addEvent(data);
               this.props.navigator.push({
@@ -301,7 +302,9 @@ class CreateEventConfirm extends React.Component{
                 group: group,
               })
             })
-            .catch((err) => {console.log('ERR: ', err)})
+            .catch((err) => {
+              if (DEV) {console.log('ERR: ', err)}
+            })
           }}
           style={styles.submitButton}
         >
@@ -404,4 +407,4 @@ let styles = {
   },
 }
 
-module.exports = CreateEventConfirm
+module.exports = CreateEventConfirm;

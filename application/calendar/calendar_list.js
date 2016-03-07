@@ -4,6 +4,7 @@ import moment from 'moment';
 import UpcomingAssembly from '../activity/upcoming_assembly';
 import NavigationBar from 'react-native-navbar';
 import {calendarFixture} from '../fixtures/calendar_fixtures';
+import {DEV} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -33,7 +34,7 @@ class CalendarList extends React.Component{
     this.state = this._loadData(this.props.events)
   }
   componentDidMount(){
-    console.log('EVENTS', this.props.events);
+    if (DEV) {console.log('EVENTS', this.props.events);}
     let newState = this._loadData(this.props.events);
     if (newState) {
       this.setState(newState);
@@ -48,7 +49,7 @@ class CalendarList extends React.Component{
     }
   }
   _loadData(events){
-    console.log('EVENTS DATA', events);
+    if (DEV) {console.log('EVENTS DATA', events);}
     if (! events ) {
       return;
     }
@@ -65,7 +66,7 @@ class CalendarList extends React.Component{
         dates[dateString] = [evt];
       }
     })
-    console.log('DATES', dates);
+    if (DEV) {console.log('DATES', dates);}
     let sections = Object.keys(dates),
     length = Object.keys(dates).length,
     dataBlob = {},
@@ -80,7 +81,7 @@ class CalendarList extends React.Component{
 
     for (i=0; i < length; i++) {
       section = {date: new Date(sections[i]), id: i.toString(), assemblies: dates[sections[i]]};
-      console.log('SECTION', section);
+      if (DEV) {console.log('SECTION', section);}
       sectionIDs.push(i.toString());
       dataBlob[section.id] = section.date;
       assemblies = section.assemblies;
@@ -92,7 +93,7 @@ class CalendarList extends React.Component{
         dataBlob[section.id + ':' + j] = assembly;
       }
     }
-    console.log('DATA BLOB PRE', dataBlob, sectionIDs, rowIDs)
+    if (DEV) {console.log('DATA BLOB PRE', dataBlob, sectionIDs, rowIDs);}
     return {
       dataSource: new ListView.DataSource({
         getSectionData: getSectionData,
@@ -104,7 +105,7 @@ class CalendarList extends React.Component{
     };
   }
   _renderSectionHeader(sectionData, sectionID){
-    console.log('SECTION DATA', sectionData, sectionID)
+    if (DEV) {console.log('SECTION DATA', sectionData, sectionID)}
     return (
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionHeaderText}>{moment(sectionData).format('dddd MMM Do')}</Text>
@@ -112,11 +113,11 @@ class CalendarList extends React.Component{
     )
   }
   _renderRow(rowData, sectionID, rowID){
-    console.log('ROW DATA', rowData);
+    if (DEV) {console.log('ROW DATA', rowData);}
     let group = _.find(this.props.groups, (g) => {
       return g.id == rowData.groupId
     })
-    console.log('GROUP', group);
+    if (DEV) {console.log('GROUP', group);}
     return (
       <TouchableOpacity onPress={()=>{
         this.props.navigator.push({
@@ -131,7 +132,7 @@ class CalendarList extends React.Component{
   }
   render(){
     let titleConfig = {title: 'Calendar', tintColor: 'white'}
-    console.log('DATA SOURCES', this.state.dataSource)
+    if (DEV) {console.log('DATA SOURCES', this.state.dataSource)}
     return (
       <View style={styles.container}>
         <NavigationBar

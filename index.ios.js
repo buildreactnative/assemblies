@@ -10,7 +10,7 @@ import Dashboard from './application/dashboard/dashboard';
 import Register from './application/welcome/register';
 import RegisterConfirm from './application/welcome/register_confirm';
 import Login from './application/welcome/login';
-import {BASE_URL} from './application/utilities/fixtures';
+import {BASE_URL, DEV} from './application/utilities/fixtures';
 import DeviceInfo from 'react-native-device-info';
 
 import React, {
@@ -41,7 +41,7 @@ class assembly extends Component {
     }
   }
   componentDidMount(){
-    console.log('CLIENT ID', DeviceInfo)
+    if (DEV) {console.log('CLIENT ID', DeviceInfo)}
     NativeModules.SegmentAnalytics.identify(clientId);
     this._loadUser()
 
@@ -49,7 +49,7 @@ class assembly extends Component {
   async _loadUser(){
     try {
       var sid = await AsyncStorage.getItem('sid');
-      console.log('SID', sid);
+      if (DEV) {console.log('SID', sid);}
       if (sid !== null && sid !== 'false'){
         fetch(`${BASE_URL}/users/me`, {
           method: "GET",
@@ -62,11 +62,11 @@ class assembly extends Component {
         .then((response) => response.json())
         .then((data) => {
           if (data.errors) {
-            console.log('ERRORS', data.errors);
+            if (DEV) {console.log('ERRORS', data.errors);}
             this.setState({foundUser: true})
           }
           else {
-            console.log('DATA', data);
+            if (DEV) {console.log('DATA', data);}
             this.setState({
               foundUser: true,
               initialRoute: 'Dashboard',
@@ -76,7 +76,7 @@ class assembly extends Component {
           }
         })
         .catch((error) => {
-          console.log(error)
+          if (DEV) {console.log(error)}
           AsyncStorage.setItem('sid', 'false');
           this.setState({foundUser: true})
         })
@@ -86,7 +86,7 @@ class assembly extends Component {
         AsyncStorage.setItem('sid', 'false')
       }
     } catch (error) {
-      console.log('ERR: ', error)
+      if (DEV) {console.log('ERR: ', error)}
     }
   }
   updateUser(user){

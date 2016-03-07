@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
 import Notification from './notification';
 import moment from 'moment';
+import {DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -47,7 +48,7 @@ class NotificationsHolder extends React.Component{
         longitudeDelta: 0.01,
       }
     }
-    console.log('NEXT EVENT', nextEvent)
+    if (DEV){console.log('NEXT EVENT', nextEvent)}
     return (
       <View style={styles.container}>
         <Text style={styles.bodyText}>Next Assembly: {nextEvent ? nextEvent.name : ''}</Text>

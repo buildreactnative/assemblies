@@ -69,7 +69,6 @@ class UserProfile extends React.Component{
         </TouchableOpacity>
         <TouchableOpacity
           onPress={()=>{
-            // console.log('PROPS', this.props)
             this.props.logout();
           }}
           style={styles.logoutButton}

@@ -5,7 +5,7 @@ import EventList from './event_list';
 import FakeEvent from './fake_event';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -51,10 +51,12 @@ class Group extends React.Component{
       })
       .then((response) => response.json())
       .then((data) => {
-        console.log('DATA USERS', data)
+        if (DEV) {console.log('DATA USERS', data)}
         this.setState({events: data})
       })
-      .catch((error) => {console.log(error)})
+      .catch((error) => {
+        if (DEV) {console.log(error)}
+      })
     }
     let userIds = Object.keys(group.members);
     let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`
@@ -67,15 +69,17 @@ class Group extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('DATA USERS', data)
+      if (DEV) {console.log('DATA USERS', data)}
       this.setState({members: data})
     })
-    .catch((error) => {console.log(error)})
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+    })
   }
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=> {
-        console.log('Routes', this.props.navigator.getCurrentRoutes());
+        if (DEV) {console.log('Routes', this.props.navigator.getCurrentRoutes());}
         this.props.navigator.popToTop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
@@ -96,7 +100,7 @@ class Group extends React.Component{
   }
   _renderEvents(){
     let {currentUser, group, navigator} = this.props;
-    console.log('EVENTS GROUP', this.state.events);
+    if (DEV) {console.log('EVENTS GROUP', this.state.events);}
     return (
       <EventList
         currentUser={currentUser}
@@ -154,7 +158,7 @@ class Group extends React.Component{
             })
             .then((response) => response.json())
             .then((data) => {
-              console.log('ADD USER TO GROUP', data);
+              if (DEV) {console.log('ADD USER TO GROUP', data);}
               fetch(`${BASE_URL}/users/${currentUser.id}`, {
                 method: "PUT",
                 headers: {
@@ -165,7 +169,7 @@ class Group extends React.Component{
               })
               .then((response) => response.json())
               .then((data) => {
-                console.log('ADD GROUP_ID TO USER', data);
+                if (DEV) {console.log('ADD GROUP_ID TO USER', data);}
                 this.props.addUserToGroup(group.id, currentUser.id)
                 this.setState({joined: true, members: this.state.members.concat(currentUser)})
               });
@@ -185,7 +189,7 @@ class Group extends React.Component{
     let isMember = _.contains(currentUser.groupIds, group.id);
     let isAdmin = isMember && group.members[currentUser.id].admin;
     let isOwner = isMember && group.members[currentUser.id].owner;
-    console.log('EVENTS', events, group.events);
+    if (DEV) {console.log('EVENTS', events, group.events);}
     let backButton = this._renderBackButton();
     let addButton = isAdmin ? this._renderAddButton() : <View></View>;
     return (
@@ -217,7 +221,7 @@ class Group extends React.Component{
         <Text style={styles.h2}>Members</Text>
         <View style={styles.break}></View>
         {this.state.members.map((member, idx) => {
-          console.log('MEMBER', member)
+          if (DEV) {console.log('MEMBER', member)}
           let isOwner = group.members[member.id].owner;
           let isAdmin = group.members[member.id].admin;
           let status = isOwner ? 'owner' : isAdmin ? 'admin' : 'member'

@@ -2,7 +2,7 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {profileFixture} from '../fixtures/users';
-import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL,} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -40,20 +40,20 @@ class UserAvatar extends React.Component{
   }
   showImagePicker(){
     UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
-    console.log('Response = ', response);
+      if (DEV) {console.log('Response = ', response);}
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        if (DEV) {console.log('User cancelled image picker');}
       }
       else if (response.error) {
-        console.log('UIImagePickerManager Error: ', response.error);
+        if (DEV) {console.log('UIImagePickerManager Error: ', response.error);}
       }
       else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
+        if (DEV) {console.log('User tapped custom button: ', response.customButton);}
       }
       else {
         const source = 'data:image/png;base64,' + response.data;
         // const source = response.uri;
-        console.log('SRC', source);
+        if (DEV) {console.log('SRC', source);}
         this.setState({
           avatarSource: source
         });
@@ -75,11 +75,13 @@ class UserAvatar extends React.Component{
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log('UPDATED USER', data);
+      if (DEV) {console.log('UPDATED USER', data);}
       this.props.changeProfile(data);
       this.props.navigator.pop();
     })
-    .catch((error) => console.log(error))
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+    })
     .done();
   }
   render(){

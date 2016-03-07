@@ -112,8 +112,6 @@ class CreateGroup extends React.Component{
             autoFocus={false}
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-              // console.log(data);
-              // console.log(details);
               this.setState({
                 location: _.extend({}, details.geometry.location, {
                   city: details.address_components[0].long_name,

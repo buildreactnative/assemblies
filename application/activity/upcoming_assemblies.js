@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
 import UpcomingAssembly from './upcoming_assembly';
 import _ from 'underscore';
+import {DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -36,7 +37,7 @@ const UPCOMING_ASSEMBLIES = [
 
 class UpcomingAssemblies extends React.Component{
   render(){
-    console.log('ALL PROPS', this.props);
+    if (DEV) {console.log('ALL PROPS', this.props);}
     let events = this.props.allEvents;
     let mapRegion = MAP_REGION;
     if (events.length) {

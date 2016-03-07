@@ -1,7 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -66,34 +66,6 @@ class UserTechnologies extends React.Component{
       <Text style={styles.technologyList}>{this.state.technologies.join(', ')}</Text>
     )
   }
-  showImagePicker(){
-    UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
-    console.log('Response = ', response);
-
-    if (response.didCancel) {
-      console.log('User cancelled image picker');
-    }
-    else if (response.error) {
-      console.log('UIImagePickerManager Error: ', response.error);
-    }
-    else if (response.customButton) {
-      console.log('User tapped custom button: ', response.customButton);
-    }
-    else {
-      // You can display the image using either data:
-      // const source = 'data:image/jpeg;base64,' + response.data;
-
-      // uri (on iOS)
-      // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-      // uri (on android)
-      const source = response.uri;
-
-      this.setState({
-        avatarSource: source
-      });
-    }
-  });
-  }
   render(){
     let {technologies} = this.state;
     let titleConfig = {title: 'Create Account', tintColor: 'white'}
@@ -140,11 +112,13 @@ class UserTechnologies extends React.Component{
           })
           .then((response) => response.json())
           .then((data) => {
-            console.log('UPDATED USER', data);
+            if (DEV) {console.log('UPDATED USER', data);}
             this.props.changeProfile(data);
             this.props.navigator.pop();
           })
-          .catch((error) => console.log(error))
+          .catch((error) => {
+            if (DEV) {console.log(error)}
+          })
           .done();
         }}>
           <Text style={styles.buttonText}>Save Changes</Text>

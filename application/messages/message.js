@@ -34,7 +34,6 @@ class Message extends React.Component{
   // }
   render(){
     let {message} = this.props;
-    console.log('MSG', message);
     return (
       <Animated.View
         style={{

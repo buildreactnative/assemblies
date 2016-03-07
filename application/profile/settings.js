@@ -41,7 +41,6 @@ class Settings extends React.Component{
           }}
           renderScene={(route, navigator) => {
             if (route.name == 'UserTechnologies') {
-              console.log('USER TECH')
               return (
                 <UserTechnologies currentUser={this.props.currentUser} navigator={navigator} changeProfile={this._changeProfile.bind(this)}/>
               )

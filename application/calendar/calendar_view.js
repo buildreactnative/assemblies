@@ -15,7 +15,7 @@ import MessageList from '../messages/messages_list';
 import MessageBox from '../messages/message_box';
 import CalendarList from './calendar_list';
 import _ from 'underscore';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -34,11 +34,10 @@ import React, {
 } from 'react-native';
 
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
-// console.log('GESTURES', CUSTOM_CONFIG.gestures);
+
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
 class CalendarView extends React.Component{
   render(){
-    // console.log('THIS PROPS', this.props);
     return (
       <View style={styles.container}>
         <Navigator
@@ -69,7 +68,9 @@ class CalendarView extends React.Component{
                 <Groups
                   {...this.props}
                   navigator={navigator}
-                  addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
+                  addUserToGroup={()=>{
+                    if (DEV) {console.log('ADD USER TO GROUP')}
+                  }}
                 />
               )
             } else if (route.name == 'CreateGroup'){
@@ -77,7 +78,9 @@ class CalendarView extends React.Component{
             } else if (route.name == 'Group') {
               return (
                 <Group
-                  addUserToGroup={()=>{console.log('ADD USER TO GROUP')}}
+                  addUserToGroup={()=>{
+                    if (DEV) {console.log('ADD USER TO GROUP')}
+                  }}
                   {...this.props}
                   {...route}
                   navigator={navigator}
@@ -93,13 +96,17 @@ class CalendarView extends React.Component{
               return (
                 <CreateEventConfirm {...this.props} {...route}
                   navigator={navigator}
-                  addEvent={()=>{console.log('ADD EVENT')}}
+                  addEvent={()=>{
+                    if (DEV) {console.log('ADD EVENT')}
+                  }}
                 />
               )
             } else if (route.name == 'CreateGroupConfirm'){
               return (
                 <CreateGroupConfirm {...this.props} {...route}
-                  createGroup={()=> {console.log('CREATE GROUP')}}
+                  createGroup={()=> {
+                    if (DEV) {console.log('CREATE GROUP')}
+                  }}
                   navigator={navigator}
                 />
               )

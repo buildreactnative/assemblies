@@ -36,7 +36,6 @@ class CommentList extends React.Component{
     }
   }
   _renderRow(comment, idx){
-    // console.log('DATA', comment);
     return (
       <Comment comment={comment} key={idx} {...this.props} />
     )

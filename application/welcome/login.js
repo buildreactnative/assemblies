@@ -3,7 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
-import {BASE_URL} from '../utilities/fixtures';
+import {BASE_URL, DEV} from '../utilities/fixtures';
 
 const autocompleteStyles = {
   container: {
@@ -135,7 +135,7 @@ class Login extends React.Component{
           let {email, password,} = this.state;
           let user = {username: email, password: password};
           let errors = null;
-          console.log("LOGIN", `${BASE_URL}/users/login`)
+          if (DEV) {console.log("LOGIN", `${BASE_URL}/users/login`)}
           fetch(`${BASE_URL}/users/login`, {
             method: "POST",
             headers: {
@@ -147,10 +147,10 @@ class Login extends React.Component{
           .then((response) => response.json())
           .then((data) => {
             if (data.errors || data.status == 401) {
-              console.log('LOGIN FAILED', data);
+              if (DEV) {console.log('LOGIN FAILED', data);}
               errors = 'Login failed'
             } else {
-              console.log('DATA', data);
+              if (DEV) {console.log('DATA', data);}
               AsyncStorage.setItem('sid', data.id)
               fetch(`${BASE_URL}/users/me`, {
                 method: "GET",
@@ -168,12 +168,14 @@ class Login extends React.Component{
                 });
               })
               .catch((error) => {
-                console.log(error)
+                if (DEV) {console.log(error)}
               })
               .done();
             }
           })
-          .catch((error) => console.log(error))
+          .catch((error) => {
+            if (DEV) {console.log(error)}
+          })
           .done();
         }}>
           <Text style={styles.buttonText}>Login</Text>
