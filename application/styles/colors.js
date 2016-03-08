@@ -5,7 +5,8 @@ const Colors = {
   bodyText: '#222222',
   bodyTextLight: '#999',
   inactive: '#EBEEF5',
-  placeholderColor: '#8E8E93'
-}
+  placeholderColor: '#8E8E93',
+  brandDanger: '#e60000',
+};
 
 module.exports = Colors;

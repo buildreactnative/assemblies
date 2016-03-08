@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
+import ErrorMessage from '../ui_helpers/error_message';
 import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
@@ -30,13 +31,10 @@ class Login extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      keyboardSpace: 0,
       email: '',
       password: '',
-      firstName: '',
-      lastName: '',
-      location: null,
-    }
+      connectionError: '',
+    };
   }
   inputFocused(refName) {
     setTimeout(() => {
@@ -97,7 +95,11 @@ class Login extends React.Component{
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your password"
             />
           </View>
+          <View style={styles.error}>
+            <ErrorMessage error={this.state.connectionError}/>
+          </View>
         </ScrollView>
+
         <TouchableOpacity style={Globals.submitButton} onPress={()=>{
           let {email, password,} = this.state;
           let user = {username: email, password: password};
@@ -115,7 +117,7 @@ class Login extends React.Component{
           .then((data) => {
             if (data.errors || data.status == 401) {
               if (DEV) {console.log('LOGIN FAILED', data);}
-              errors = 'Login failed'
+              this.setState({connectionError: 'Email or password was incorrect.'})
             } else {
               if (DEV) {console.log('DATA', data);}
               AsyncStorage.setItem('sid', data.id)
@@ -175,6 +177,9 @@ let styles = {
     alignItems: 'center',
     backgroundColor: Colors.brandPrimary,
     height: 80,
+  },
+  error: {
+    backgroundColor: Colors.inactive,
   },
   buttonText: {
     color: 'white',
