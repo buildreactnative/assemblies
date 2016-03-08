@@ -1,4 +1,5 @@
 import Colors from '../styles/colors';
+import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
@@ -54,7 +55,7 @@ class RegisterConfirm extends React.Component{
   }
   _renderBackButton(){
     return (
-      <TouchableOpacity style={styles.backButton} onPress={()=>{
+      <TouchableOpacity style={Globals.backButton} onPress={()=>{
         this.props.navigator.pop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
@@ -142,7 +143,7 @@ class RegisterConfirm extends React.Component{
             <Image source={{uri: this.state.avatarSource}} style={styles.avatar}/>
           </View>
         </ScrollView>
-        <TouchableOpacity style={styles.submitButton} onPress={()=> {
+        <TouchableOpacity style={Globals.submitButton} onPress={()=> {
           let {avatarSource, technologies, summary,} = this.state;
           let {firstName, lastName, email, password, location,} = this.props;
           let user = {
@@ -226,7 +227,7 @@ class RegisterConfirm extends React.Component{
           .done();
 
         }}>
-          <Text style={styles.buttonText}>Create Account</Text>
+          <Text style={Globals.submitButtonText}>Create Account</Text>
         </TouchableOpacity>
       </View>
     )

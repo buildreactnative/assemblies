@@ -17,6 +17,15 @@ let globals = StyleSheet.create({
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 	},
+  backButton: {
+    paddingLeft: 20,
+    paddingRight: 20,
+    backgroundColor: 'transparent',
+    paddingBottom: 20,
+    paddingTop: 0,
+    width: 50,
+    height: 50,
+  },
 	inactiveContainer: {
 		flex: 1,
 		backgroundColor: Colors.inactive
@@ -44,6 +53,18 @@ let globals = StyleSheet.create({
 	inputContainer: {
 		paddingBottom: 30
 	},
+  submitButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.brandPrimary,
+    height: 70,
+  },
+  submitButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 25,
+    fontWeight: '400'
+  },
 	input: {
 		borderWidth: 0,
 		backgroundColor: '#ffffff',

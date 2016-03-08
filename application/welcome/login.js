@@ -1,66 +1,11 @@
 import Colors from '../styles/colors';
+import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {BASE_URL, DEV} from '../utilities/fixtures';
 
-const autocompleteStyles = {
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  textInputContainer: {
-    backgroundColor: 'white',
-    height: 44,
-    borderTopColor: 'white',
-    borderBottomColor: 'white',
-  },
-  textInput: {
-    backgroundColor: 'white',
-    height: 28,
-    borderRadius: 5,
-    paddingTop: 4.5,
-    paddingBottom: 4.5,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginTop: 7.5,
-    marginLeft: 8,
-    marginRight: 8,
-    fontSize: 18,
-  },
-  poweredContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.inactive,
-  },
-  powered: {
-    marginTop: 15,
-  },
-  listView: {
-    // flex: 1,
-  },
-  row: {
-    padding: 13,
-    height: 44,
-    flexDirection: 'row',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: 'white',
-  },
-  description: {
-  },
-  loader: {
-    // flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    height: 20,
-  },
-  androidLoader: {
-    marginRight: -15,
-  },
-}
 import React, {
   ScrollView,
   Component,
@@ -103,7 +48,7 @@ class Login extends React.Component{
   }
   _renderBackButton(){
     return (
-      <TouchableOpacity style={styles.backButton} onPress={()=>{
+      <TouchableOpacity style={Globals.backButton} onPress={()=>{
         this.props.navigator.pop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc"/>
@@ -153,7 +98,7 @@ class Login extends React.Component{
             />
           </View>
         </ScrollView>
-        <TouchableOpacity style={styles.submitButton} onPress={()=>{
+        <TouchableOpacity style={Globals.submitButton} onPress={()=>{
           let {email, password,} = this.state;
           let user = {username: email, password: password};
           let errors = null;
@@ -200,7 +145,7 @@ class Login extends React.Component{
           })
           .done();
         }}>
-          <Text style={styles.buttonText}>Login</Text>
+          <Text style={Globals.submitButtonText}>Login</Text>
         </TouchableOpacity>
       </View>
     )

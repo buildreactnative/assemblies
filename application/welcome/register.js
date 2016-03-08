@@ -1,4 +1,5 @@
 import Colors from '../styles/colors';
+import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from '../third_party/google_places/autocomplete';
@@ -50,7 +51,7 @@ class Register extends React.Component{
   }
   _renderBackButton(){
     return (
-      <TouchableOpacity style={styles.backButton} onPress={()=>{
+      <TouchableOpacity style={Globals.backButton} onPress={()=>{
         this.props.navigator.pop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
@@ -180,7 +181,7 @@ class Register extends React.Component{
 
 
         </ScrollView>
-        <TouchableOpacity style={styles.submitButton} onPress={()=>{
+        <TouchableOpacity style={Globals.submitButton} onPress={()=>{
           this.props.navigator.push({
             name: 'RegisterConfirm',
             email: this.state.email,
@@ -190,7 +191,7 @@ class Register extends React.Component{
             password: this.state.password,
           })
         }}>
-          <Text style={styles.buttonText}>Next</Text>
+          <Text style={Globals.submitButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
     )
@@ -219,18 +220,6 @@ let styles = {
     backgroundColor: Colors.inactive,
     flex: 1,
     paddingTop: 15,
-  },
-  submitButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: Colors.brandPrimary,
-    height: 70,
-  },
-  buttonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontSize: 25,
-    fontWeight: '400'
   },
   contentContainerStyle: {
     flex: 1,
