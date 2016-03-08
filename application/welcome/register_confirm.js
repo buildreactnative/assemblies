@@ -64,7 +64,17 @@ class RegisterConfirm extends React.Component{
   }
   _renderTechnologies(){
     return (
-      <Text style={styles.technologyList}>{this.state.technologies.join(', ')}</Text>
+      <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
+        {this.state.technologies.map((technology, idx) => {
+          return (
+            <TouchableOpacity key={idx} style={styles.techContainer} onPress={()=>{
+              this.setState({technologies: [...this.state.technologies.slice(0, idx), ...this.state.technologies.slice(idx+1)]})
+            }}>
+              <Text style={styles.technologyList}>{technology}</Text>
+            </TouchableOpacity>
+          )
+        })}
+      </View>
     )
   }
   showImagePicker(){
@@ -81,15 +91,8 @@ class RegisterConfirm extends React.Component{
         if (DEV) {console.log('User tapped custom button: ', response.customButton);}
       }
       else {
-        // You can display the image using either data:
-        // const source = 'data:image/jpeg;base64,' + response.data;
-
-        // uri (on iOS)
-        // const source = {uri: response.uri.replace('file://', ''), isStatic: true};
-        // uri (on android)
         const source = 'data:image/png;base64,' + response.data;
         if (DEV) {console.log('SRC', source);}
-
         this.setState({
           avatarSource: source
         });
@@ -121,7 +124,11 @@ class RegisterConfirm extends React.Component{
             defaultValue="Add a technology"
             onSelect={this._technologies.bind(this)}>
             {TECHNOLOGIES.map((tech, idx) => {
-              return <Option style={optionStyles} styleText={optionTextStyles} key={idx}>{tech}</Option>
+              return (
+                  <Option style={optionStyles} styleText={optionTextStyles} key={idx}>
+                    {tech}
+                  </Option>
+              )
             })}
           </Select>
 
@@ -248,8 +255,9 @@ let styles = {
     textAlign: 'left',
     fontSize: 18,
     fontWeight: 'bold',
+    backgroundColor: 'transparent',
     color: Colors.brandPrimary,
-    paddingHorizontal: 20,
+    paddingHorizontal: 2,
     paddingVertical: 4,
   },
   backButton: {
@@ -287,6 +295,11 @@ let styles = {
     height: 50,
     paddingTop: 5,
     marginBottom: 10,
+  },
+  techContainer: {
+    paddingHorizontal: 10,
+    marginHorizontal: 2,
+    marginVertical: 4,
   },
   largeFormField: {
     backgroundColor: 'white',
