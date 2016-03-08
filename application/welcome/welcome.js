@@ -25,17 +25,17 @@ class Welcome extends Component {
           <Text style={styles.title}>assembly</Text>
           <Text style={styles.subTitle}>Where Developers Connect</Text>
         </View>
-        <TouchableOpacity style={styles.loginButton}
+        <TouchableOpacity style={styles.registerButton}
           onPress={()=> {
             this.props.navigator.push({
               name: 'Register'
             })
           }}
         >
-          <Icon style={styles.icon} name="person" size={36} color={Colors.facebookBlue} />
-          <Text style={styles.loginButtonText}>Create an Account</Text>
+          <Icon style={styles.icon} name="person" size={36} color="white" />
+          <Text style={styles.facebookButtonText}>Create an Account</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.registerButton}
+        {/*<TouchableOpacity style={styles.registerButton}
           onPress={()=> {
             this.props.navigator.push({
               name: 'Login'
@@ -44,7 +44,7 @@ class Welcome extends Component {
         >
           <Icon style={styles.icon} name="unlocked" size={36} color='white' />
           <Text style={styles.facebookButtonText}>Login</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>*/}
       </View>
     );
   }

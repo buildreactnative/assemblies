@@ -67,6 +67,15 @@ class Register extends React.Component{
           leftButton={leftButtonConfig}
         />
         <ScrollView style={[styles.formContainer, {height: this.state.height}]} ref="scrollView">
+          <TouchableOpacity onPress={()=>{
+            this.props.navigator.push({
+              name: 'Login'
+            })
+          }}>
+            <Text style={styles.h5}>
+              Already have an account? <Text style={styles.technologyList}>Login</Text>
+            </Text>
+          </TouchableOpacity>
           <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
           <GooglePlacesAutocomplete
             styles={autocompleteStyles}
@@ -176,6 +185,15 @@ let styles = {
     backgroundColor: 'transparent',
     paddingBottom: 10,
   },
+  technologyList:{
+    textAlign: 'left',
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.brandPrimary,
+    paddingHorizontal: 20,
+    marginLeft: 8,
+    paddingVertical: 4,
+  },
   formContainer: {
     backgroundColor: Colors.inactive,
     flex: 1,
@@ -199,6 +217,12 @@ let styles = {
     color: 'black',
     paddingHorizontal: 20,
     paddingVertical: 5,
+  },
+  h5: {
+    fontSize: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+    textAlign: 'center',
   },
   formField: {
     backgroundColor: 'white',

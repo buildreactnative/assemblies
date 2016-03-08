@@ -74,6 +74,7 @@ import React, {
   TouchableOpacity,
   Dimensions,
   NativeModules,
+  DeviceEventEmitter,
   InteractionManager,
   ActivityIndicatorIOS,
 } from 'react-native';
@@ -84,6 +85,7 @@ class Login extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      keyboardSpace: 0,
       email: '',
       password: '',
       firstName: '',
@@ -91,17 +93,25 @@ class Login extends React.Component{
       location: null,
     }
   }
+  inputFocused(refName) {
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]), 110, true
+      )
+    }, 50)
+  }
   _renderBackButton(){
     return (
       <TouchableOpacity style={styles.backButton} onPress={()=>{
         this.props.navigator.pop();
       }}>
-        <Icon name="ios-arrow-back" size={25} color="#ccc" />
+        <Icon name="ios-arrow-back" size={25} color="#ccc"/>
       </TouchableOpacity>
     )
   }
   render(){
-    let titleConfig = {title: 'Create Account', tintColor: 'white'}
+    let titleConfig = {title: 'Login', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
     return (
       <View style={styles.container}>
@@ -110,25 +120,37 @@ class Login extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer}>
+        <ScrollView
+          ref="scrollView"
+          keyboardDismissMode="interactive"
+          contentContainerStyle={styles.contentContainerStyle}
+          style={styles.formContainer}>
           <Text style={styles.h4}>{"Login with your email and password."}</Text>
           <Text style={styles.h4}>Email</Text>
-          <View style={styles.formField}>
+          <View style={styles.formField} ref="email">
             <TextInput
+              ref="email"
+              autoFocus={true}
+              returnKeyType="next"
+              onFocus={this.inputFocused.bind(this, "email")}
               onChangeText={(text)=> this.setState({email: text})}
               keyboardType="email-address"
               autoCapitalize="none"
               maxLength={140}
-              placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"/>
+              placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"
+            />
           </View>
           <Text style={styles.h4}>Password</Text>
-          <View style={styles.formField}>
+          <View style={styles.formField} ref="password">
             <TextInput
+              returnKeyType="next"
+              onFocus={this.inputFocused.bind(this, "password")}
               onChangeText={(text)=> this.setState({password: text})}
               secureTextEntry={true}
               autoCapitalize="none"
               maxLength={140}
-              placeholderTextColor='#bbb' style={styles.input} placeholder="Your password"/>
+              placeholderTextColor='#bbb' style={styles.input} placeholder="Your password"
+            />
           </View>
         </ScrollView>
         <TouchableOpacity style={styles.submitButton} onPress={()=>{
@@ -191,8 +213,12 @@ let styles = {
   },
   backButton: {
     paddingLeft: 20,
+    paddingRight: 20,
     backgroundColor: 'transparent',
-    paddingBottom: 10,
+    paddingBottom: 20,
+    paddingTop: 0,
+    width: 50,
+    height: 50,
   },
   formContainer: {
     backgroundColor: Colors.inactive,
