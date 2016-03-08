@@ -56,17 +56,33 @@ class Register extends React.Component{
       </TouchableOpacity>
     )
   }
+  focusLocation(){
+    console.log('FOCUSING');
+  }
+  inputFocused(refName) {
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]), 110, true
+      )
+    }, 50)
+  }
   render(){
     let titleConfig = {title: 'Create Account', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
     return (
       <View style={styles.container}>
         <NavigationBar
+          ref="navbar"
           title={titleConfig}
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={[styles.formContainer, {height: this.state.height}]} ref="scrollView">
+        <ScrollView
+          style={[styles.formContainer, {height: this.state.height}]}
+          ref="scrollView"
+          keyboardDismissMode="interactive"
+        >
           <TouchableOpacity onPress={()=>{
             this.props.navigator.push({
               name: 'Login'
@@ -77,47 +93,43 @@ class Register extends React.Component{
             </Text>
           </TouchableOpacity>
           <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
-          <GooglePlacesAutocomplete
-            styles={autocompleteStyles}
-            placeholder='Your city'
-            minLength={2} // minimum length of text to search
-            autoFocus={true}
-            fetchDetails={true}
-            onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-              if (DEV) {console.log(data);}
-              if (DEV) {console.log(details);}
-              this.setState({
-                location: _.extend({}, details.geometry.location, {
-                  formatted_address: details.formatted_address,
+          <View ref="location" style={{flex: 1,}}>
+            <GooglePlacesAutocomplete
+              styles={autocompleteStyles}
+              placeholder='Your city'
+              minLength={2} // minimum length of text to search
+              autoFocus={true}
+              onFocus={()=>this.focusLocation()}
+              fetchDetails={true}
+              onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                if (DEV) {console.log(data);}
+                if (DEV) {console.log(details);}
+                this.setState({
+                  location: _.extend({}, details.geometry.location, {
+                    formatted_address: details.formatted_address,
+                  })
                 })
-              })
-            }}
-            getDefaultValue={() => {
-              return ''; // text input default value
-            }}
-            query={{
-              // available options: https://developers.google.com/places/web-service/autocomplete
-              key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
-              language: 'en', // language of the results
-              types: '(cities)', // default: 'geocode'
-            }}
-            currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
-            currentLocationLabel="Current location"
-            nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-            GoogleReverseGeocodingQuery={{
-              // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-            }}
-            GooglePlacesSearchQuery={{
-              // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-              rankby: 'distance',
-            }}
-            filterReverseGeocodingByTypes={['street_address']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-            predefinedPlaces={[]}
-          />
+              }}
+              getDefaultValue={() => {return '';}}
+              query={{
+                key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
+                language: 'en', // language of the results
+                types: '(cities)', // default: 'geocode'
+              }}
+              currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
+              currentLocationLabel="Current location"
+              nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+              GoogleReverseGeocodingQuery={{}}
+              GooglePlacesSearchQuery={{
+                rankby: 'distance',
+              }}
+              filterReverseGeocodingByTypes={['street_address']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+              predefinedPlaces={[]}
+            />
+          </View>
           <Text style={styles.h4}>Email</Text>
-          <View style={styles.formField}>
+          <View ref="email" style={styles.formField}>
             <TextInput
-              ref="email"
               onFocus={this.inputFocused.bind(this, 'email')}
               onChangeText={(text)=> this.setState({email: text})}
               keyboardType="email-address"
@@ -126,8 +138,9 @@ class Register extends React.Component{
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"/>
           </View>
           <Text style={styles.h4}>Password</Text>
-          <View style={styles.formField}>
+          <View style={styles.formField} ref="password">
             <TextInput
+              onFocus={this.inputFocused.bind(this, "password")}
               onChangeText={(text)=> this.setState({password: text})}
               secureTextEntry={true}
               autoCapitalize="none"
@@ -135,8 +148,9 @@ class Register extends React.Component{
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your password"/>
           </View>
           <Text style={styles.h4}>First Name</Text>
-          <View style={styles.formField}>
+          <View style={styles.formField} ref="firstName">
             <TextInput
+              onFocus={this.inputFocused.bind(this, "firstName")}
               maxLength={140}
               onChangeText={(text)=> this.setState({firstName: text})}
               placeholderTextColor='#bbb'
@@ -145,7 +159,7 @@ class Register extends React.Component{
             />
           </View>
           <Text style={styles.h4}>Last name</Text>
-          <View style={styles.formField}>
+          <View style={styles.formField} ref="lastName">
             <TextInput
               maxLength={140}
               ref="lastName"
@@ -210,6 +224,9 @@ let styles = {
     textAlign: 'center',
     fontSize: 25,
     fontWeight: '400'
+  },
+  contentContainerStyle: {
+    flex: 1,
   },
   h4: {
     fontSize: 20,

@@ -237,6 +237,9 @@ let styles = {
     fontSize: 25,
     fontWeight: '400'
   },
+  contentContainerStyle: {
+    flex: 1,
+  },
   h4: {
     fontSize: 20,
     fontWeight: '300',
