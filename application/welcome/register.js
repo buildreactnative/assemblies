@@ -1,7 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from '../third_party/google_places/autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities'
 import {DEV} from '../utilities/fixtures';
@@ -38,6 +38,7 @@ class Register extends React.Component{
     }
   }
   inputFocused (refName) {
+    console.log('SCROLL', refName);
     setTimeout(() => {
       let scrollResponder = this.refs.scrollView.getScrollResponder();
       scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
@@ -58,6 +59,7 @@ class Register extends React.Component{
   }
   focusLocation(){
     console.log('FOCUSING');
+    this.refs.scrollView.scrollTo(100);
   }
   inputFocused(refName) {
     setTimeout(() => {
@@ -68,6 +70,7 @@ class Register extends React.Component{
     }, 50)
   }
   render(){
+    console.log('RENDER', this.props);
     let titleConfig = {title: 'Create Account', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
     return (
@@ -98,7 +101,7 @@ class Register extends React.Component{
               styles={autocompleteStyles}
               placeholder='Your city'
               minLength={2} // minimum length of text to search
-              autoFocus={true}
+              autoFocus={false}
               onFocus={()=>this.focusLocation()}
               fetchDetails={true}
               onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
@@ -130,28 +133,31 @@ class Register extends React.Component{
           <Text style={styles.h4}>Email</Text>
           <View ref="email" style={styles.formField}>
             <TextInput
+              returnKeyType="next"
               onFocus={this.inputFocused.bind(this, 'email')}
               onChangeText={(text)=> this.setState({email: text})}
               keyboardType="email-address"
               autoCapitalize="none"
-              maxLength={140}
+              maxLength={144}
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"/>
           </View>
           <Text style={styles.h4}>Password</Text>
           <View style={styles.formField} ref="password">
             <TextInput
+              returnKeyType="next"
               onFocus={this.inputFocused.bind(this, "password")}
               onChangeText={(text)=> this.setState({password: text})}
               secureTextEntry={true}
               autoCapitalize="none"
-              maxLength={140}
+              maxLength={20}
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your password"/>
           </View>
           <Text style={styles.h4}>First Name</Text>
           <View style={styles.formField} ref="firstName">
             <TextInput
+              returnKeyType="next"
               onFocus={this.inputFocused.bind(this, "firstName")}
-              maxLength={140}
+              maxLength={20}
               onChangeText={(text)=> this.setState({firstName: text})}
               placeholderTextColor='#bbb'
               style={styles.input}
@@ -161,7 +167,8 @@ class Register extends React.Component{
           <Text style={styles.h4}>Last name</Text>
           <View style={styles.formField} ref="lastName">
             <TextInput
-              maxLength={140}
+              returnKeyType="next"
+              maxLength={20}
               ref="lastName"
               onFocus={this.inputFocused.bind(this, 'lastName')}
               onChangeText={(text) => this.setState({lastName: text})}
@@ -217,7 +224,7 @@ let styles = {
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.brandPrimary,
-    height: 80,
+    height: 70,
   },
   buttonText: {
     color: 'white',
