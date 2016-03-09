@@ -76,6 +76,9 @@ class Login extends React.Component{
               autoFocus={true}
               returnKeyType="next"
               onFocus={this.inputFocused.bind(this, "email")}
+              onSubmitEditing={()=>{
+                this.refs.passwordField.focus();
+              }}
               onChangeText={(text)=> this.setState({email: text})}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -86,6 +89,7 @@ class Login extends React.Component{
           <Text style={styles.h4}>Password</Text>
           <View style={styles.formField} ref="password">
             <TextInput
+              ref="passwordField"
               returnKeyType="next"
               onFocus={this.inputFocused.bind(this, "password")}
               onChangeText={(text)=> this.setState({password: text})}

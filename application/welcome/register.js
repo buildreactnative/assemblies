@@ -46,7 +46,6 @@ class Register extends React.Component{
     }
   }
   inputFocused (refName) {
-    console.log('SCROLL', refName);
     setTimeout(() => {
       let scrollResponder = this.refs.scrollView.getScrollResponder();
       scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
@@ -66,7 +65,6 @@ class Register extends React.Component{
     )
   }
   focusLocation(){
-    console.log('FOCUSING');
     this.refs.scrollView.scrollTo(100);
   }
   inputFocused(refName) {
@@ -89,7 +87,6 @@ class Register extends React.Component{
     }
   }
   render(){
-    console.log('RENDER', this.props);
     let titleConfig = {title: 'Create Account', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
     return (

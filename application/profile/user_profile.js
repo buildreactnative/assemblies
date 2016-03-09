@@ -28,53 +28,55 @@ class UserProfile extends React.Component{
           tintColor={Colors.brandPrimary}
           title={titleConfig}
         />
-        <View style={styles.topProfileContainer}>
+        <ScrollView style={{flex: 1}}>
+          <View style={styles.topProfileContainer}>
+            <TouchableOpacity
+              onPress={()=>{
+                this.props.navigator.push({
+                  name: 'UserAvatar'
+                })
+              }}
+              style={styles.avatarContainer}>
+              <Image source={{uri: currentUser.avatarUrl}} style={styles.avatar}/>
+            </TouchableOpacity>
+            <View style={styles.topProfileInfo}>
+              <Text style={styles.name}>{currentUser.firstName} {currentUser.lastName}</Text>
+              <Text style={styles.location}>{currentUser.location.city}, {currentUser.location.state}</Text>
+            </View>
+          </View>
           <TouchableOpacity
             onPress={()=>{
               this.props.navigator.push({
-                name: 'UserAvatar'
+                name: 'UserTechnologies',
               })
             }}
-            style={styles.avatarContainer}>
-            <Image source={{uri: currentUser.avatarUrl}} style={styles.avatar}/>
+            style={styles.formField}>
+            <Text style={styles.formName}>My Technologies</Text>
+            <View>
+              <Icon name="ios-arrow-forward" size={30} color='#ccc' />
+            </View>
           </TouchableOpacity>
-          <View style={styles.topProfileInfo}>
-            <Text style={styles.name}>{currentUser.firstName} {currentUser.lastName}</Text>
-            <Text style={styles.location}>{currentUser.location.city}, {currentUser.location.state}</Text>
-          </View>
-        </View>
-        <TouchableOpacity
-          onPress={()=>{
-            this.props.navigator.push({
-              name: 'UserTechnologies',
-            })
-          }}
-          style={styles.formField}>
-          <Text style={styles.formName}>My Technologies</Text>
-          <View>
-            <Icon name="ios-arrow-forward" size={30} color='#ccc' />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={()=> {
-            this.props.navigator.push({
-              name: 'UserSettings'
-            })
-          }}
-          style={styles.formField}>
-          <Text style={styles.formName}>Settings</Text>
-          <View>
-            <Icon name="ios-arrow-forward" size={30} color='#ccc' />
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={()=>{
-            this.props.logout();
-          }}
-          style={styles.logoutButton}
-        >
-          <Text style={styles.logoutText}>Log Out</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=> {
+              this.props.navigator.push({
+                name: 'UserSettings'
+              })
+            }}
+            style={styles.formField}>
+            <Text style={styles.formName}>Settings</Text>
+            <View>
+              <Icon name="ios-arrow-forward" size={30} color='#ccc' />
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=>{
+              this.props.logout();
+            }}
+            style={styles.logoutButton}
+          >
+            <Text style={styles.logoutText}>Log Out</Text>
+          </TouchableOpacity>
+        </ScrollView>
       </View>
     )
   }
