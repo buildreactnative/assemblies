@@ -130,8 +130,9 @@ class Register extends React.Component{
                   locationError: '',
                   location: _.extend({}, details.geometry.location, {
                     formatted_address: details.formatted_address,
-                  }, ()=> this._testErrors())
-                })
+                  })
+                }, ()=> this._testErrors());
+                this.refs.emailField.focus();
               }}
               getDefaultValue={() => {return '';}}
               query={{
@@ -156,7 +157,11 @@ class Register extends React.Component{
           </View>
           <View ref="email" style={styles.formField}>
             <TextInput
+              ref="emailField"
               returnKeyType="next"
+              onSubmitEditing={()=>{
+                this.refs.passwordField.focus();
+              }}
               onFocus={this.inputFocused.bind(this, 'email')}
               onChangeText={(text)=> this.setState({email: text, emailError: ''}, ()=>this._testErrors())}
               keyboardType="email-address"
@@ -170,7 +175,11 @@ class Register extends React.Component{
           </View>
           <View style={styles.formField} ref="password">
             <TextInput
+              ref="passwordField"
               returnKeyType="next"
+              onSubmitEditing={()=>{
+                this.refs.firstNameField.focus();
+              }}
               onFocus={this.inputFocused.bind(this, "password")}
               onChangeText={(text)=> this.setState({password: text, passwordError: ''}, ()=> this._testErrors())}
               secureTextEntry={true}
@@ -184,7 +193,11 @@ class Register extends React.Component{
           </View>
           <View style={styles.formField} ref="firstName">
             <TextInput
+              ref="firstNameField"
               returnKeyType="next"
+              onSubmitEditing={()=>{
+                this.refs.lastNameField.focus();
+              }}
               onFocus={this.inputFocused.bind(this, "firstName")}
               maxLength={20}
               onChangeText={(text)=> this.setState({firstName: text, firstNameError: ''}, ()=> this._testErrors())}
@@ -201,7 +214,7 @@ class Register extends React.Component{
             <TextInput
               returnKeyType="next"
               maxLength={20}
-              ref="lastName"
+              ref="lastNameField"
               onFocus={this.inputFocused.bind(this, 'lastName')}
               onChangeText={(text) => this.setState({lastName: text, lastNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
