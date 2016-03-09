@@ -28,7 +28,8 @@ class UserProfile extends React.Component{
           tintColor={Colors.brandPrimary}
           title={titleConfig}
         />
-        <ScrollView style={{flex: 1}}>
+        <ScrollView
+          style={styles.container}>
           <View style={styles.topProfileContainer}>
             <TouchableOpacity
               onPress={()=>{
@@ -92,12 +93,13 @@ let styles = {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 10,
   },
   avatarContainer: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 30,
+    paddingVertical: 10,
   },
   avatar:{
     width: 100,
@@ -124,7 +126,7 @@ let styles = {
     paddingHorizontal: 30,
     paddingVertical: 10,
     backgroundColor: 'white',
-    marginVertical: 25,
+    marginVertical: 10,
   },
   forwardButton:{
 
