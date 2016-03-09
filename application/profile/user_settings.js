@@ -131,7 +131,7 @@ class UserSettings extends React.Component{
                 }, ()=> this._testErrors());
                 this.refs.emailField.focus();
               }}
-              getDefaultValue={() => {return '';}}
+              getDefaultValue={() => {return this.state.location.city;}}
               query={{
                 key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
                 language: 'en', // language of the results
@@ -165,6 +165,7 @@ class UserSettings extends React.Component{
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Your first name"
+              value={this.state.firstName}
             />
           </View>
           <Text style={styles.h4}>Last name</Text>
@@ -184,6 +185,7 @@ class UserSettings extends React.Component{
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Your last name"
+              value={this.state.lastName}
             />
           </View>
           <Text style={styles.h4}>{"Tell us a little about yourself"}</Text>
@@ -201,6 +203,7 @@ class UserSettings extends React.Component{
             style={styles.largeInput}
             multiline={true}
             onChangeText={(text)=> this.setState({summary: text})}
+            value={this.state.summary}
             placeholder="Short personal summary..."/>
           <ErrorMessage error={this.state.formError}/>
         </ScrollView>
