@@ -6,6 +6,7 @@ import {GooglePlacesAutocomplete} from '../third_party/google_places/autocomplet
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities'
 import {DEV} from '../utilities/fixtures';
+import ErrorMessage from '../ui_helpers/error_message';
 
 import React, {
   ScrollView,
@@ -31,10 +32,16 @@ class Register extends React.Component{
     super(props);
     this.state = {
       email: '',
+      emailError: '',
       password: '',
+      passwordError: '',
       firstName: '',
+      firstNameError: '',
       lastName: '',
+      lastNameError: '',
       location: null,
+      locationError: '',
+      formError: '',
       height: deviceHeight,
     }
   }
@@ -70,6 +77,17 @@ class Register extends React.Component{
       )
     }, 50)
   }
+  _testErrors(){
+    let {location, email, password, firstName, lastName} = this.state;
+    if (!! location &&
+        email != '' &&
+        password != '' &&
+        firstName != '' &&
+        lastName != ''
+    ) {
+      this.setState({formError: ''})
+    }
+  }
   render(){
     console.log('RENDER', this.props);
     let titleConfig = {title: 'Create Account', tintColor: 'white'}
@@ -97,6 +115,9 @@ class Register extends React.Component{
             </Text>
           </TouchableOpacity>
           <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
+          <View style={{paddingBottom: 10}}>
+            <ErrorMessage error={this.state.locationError}/>
+          </View>
           <View ref="location" style={{flex: 1,}}>
             <GooglePlacesAutocomplete
               styles={autocompleteStyles}
@@ -109,9 +130,10 @@ class Register extends React.Component{
                 if (DEV) {console.log(data);}
                 if (DEV) {console.log(details);}
                 this.setState({
+                  locationError: '',
                   location: _.extend({}, details.geometry.location, {
                     formatted_address: details.formatted_address,
-                  })
+                  }, ()=> this._testErrors())
                 })
               }}
               getDefaultValue={() => {return '';}}
@@ -132,64 +154,108 @@ class Register extends React.Component{
             />
           </View>
           <Text style={styles.h4}>Email</Text>
+          <View style={{paddingBottom: 10}}>
+            <ErrorMessage error={this.state.emailError}/>
+          </View>
           <View ref="email" style={styles.formField}>
             <TextInput
               returnKeyType="next"
               onFocus={this.inputFocused.bind(this, 'email')}
-              onChangeText={(text)=> this.setState({email: text})}
+              onChangeText={(text)=> this.setState({email: text, emailError: ''}, ()=>this._testErrors())}
               keyboardType="email-address"
               autoCapitalize="none"
               maxLength={144}
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"/>
           </View>
           <Text style={styles.h4}>Password</Text>
+          <View style={{paddingBottom: 10}}>
+            <ErrorMessage error={this.state.passwordError}/>
+          </View>
           <View style={styles.formField} ref="password">
             <TextInput
               returnKeyType="next"
               onFocus={this.inputFocused.bind(this, "password")}
-              onChangeText={(text)=> this.setState({password: text})}
+              onChangeText={(text)=> this.setState({password: text, passwordError: ''}, ()=> this._testErrors())}
               secureTextEntry={true}
               autoCapitalize="none"
               maxLength={20}
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your password"/>
           </View>
           <Text style={styles.h4}>First Name</Text>
+          <View style={{paddingBottom: 10}}>
+            <ErrorMessage error={this.state.firstNameError}/>
+          </View>
           <View style={styles.formField} ref="firstName">
             <TextInput
               returnKeyType="next"
               onFocus={this.inputFocused.bind(this, "firstName")}
               maxLength={20}
-              onChangeText={(text)=> this.setState({firstName: text})}
+              onChangeText={(text)=> this.setState({firstName: text, firstNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Your first name"
             />
           </View>
           <Text style={styles.h4}>Last name</Text>
+          <View style={{paddingBottom: 10}}>
+            <ErrorMessage error={this.state.lastNameError}/>
+          </View>
           <View style={styles.formField} ref="lastName">
             <TextInput
               returnKeyType="next"
               maxLength={20}
               ref="lastName"
               onFocus={this.inputFocused.bind(this, 'lastName')}
-              onChangeText={(text) => this.setState({lastName: text})}
+              onChangeText={(text) => this.setState({lastName: text, lastNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Your last name"
             />
           </View>
-
-
+          <ErrorMessage error={this.state.formError}/>
         </ScrollView>
         <TouchableOpacity style={Globals.submitButton} onPress={()=>{
-          this.props.navigator.push({
-            name: 'RegisterConfirm',
-            email: this.state.email,
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            location: this.state.location,
-            password: this.state.password,
-          })
+          let {emailError, passwordError, firstNameError, lastNameError, locationError, formError} = this.state;
+          if (this.state.email == ''){
+            emailError = 'Must enter a valid email address.'
+            formError = 'Complete the form to continue.'
+          }
+          if (this.state.password == '' ){
+            passwordError = 'Must enter a password.'
+            formError = 'Complete the form to continue.'
+          }
+          if (this.state.firstName == ''){
+            firstNameError = 'Must enter a first name.'
+            formError = 'Complete the form to continue.'
+          }
+          if (this.state.lastName == ''){
+            lastNameError = 'Must enter a last name.'
+            formError = 'Complete the form to continue.'
+          }
+          if (! this.state.location){
+            locationError = "Must select a location."
+            formError = 'Complete the form to continue.'
+          }
+          if (formError == 'Complete the form to continue.'){
+            this.setState({
+              emailError: emailError,
+              passwordError: passwordError,
+              firstNameError: firstNameError,
+              lastNameError: lastNameError,
+              locationError: locationError,
+              formError: formError,
+            });
+            return;
+          } else {
+            this.props.navigator.push({
+              name: 'RegisterConfirm',
+              email: this.state.email,
+              firstName: this.state.firstName,
+              lastName: this.state.lastName,
+              location: this.state.location,
+              password: this.state.password,
+            });
+          }
         }}>
           <Text style={Globals.submitButtonText}>Next</Text>
         </TouchableOpacity>

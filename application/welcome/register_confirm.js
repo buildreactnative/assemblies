@@ -148,9 +148,8 @@ class RegisterConfirm extends React.Component{
           <TextInput
             ref="summary"
             maxLength={200}
-            onKeyPress={(event, key) => {
-              console.log('EVENT', event, key);
-            }}
+            blurOnSubmit={true}
+            clearButtonMode='always'
             returnKeyType="next"
             onFocus={this.inputFocused.bind(this, "summary")}
             placeholderTextColor='#bbb'

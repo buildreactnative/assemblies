@@ -35,12 +35,26 @@ class ErrorMessage extends React.Component{
   componentWillReceiveProps(nextProps){
     if (nextProps.error != '' && nextProps.error != this.props.error){
       this._animate();
+    } else if (nextProps.error == '' && nextProps.error != this.props.error){
+      this._fadeOut()
     }
   }
   componentDidMount(){
     if (this.props.error != ''){
       this._animate();
     }
+  }
+  _fadeOut(){
+    Animated.timing(
+      this.state.height, {
+        toValue: 0
+      }
+    ).start();
+    Animated.timing(
+      this.state.opacity, {
+        toValue: 0,
+      }
+    ).start();
   }
   _animate(){
     Animated.timing(
