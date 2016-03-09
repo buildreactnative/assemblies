@@ -1,4 +1,5 @@
 import Colors from '../styles/colors';
+import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {profileFixture} from '../fixtures/users';
@@ -31,7 +32,7 @@ class UserAvatar extends React.Component{
   }
   _renderBackButton(){
     return (
-      <TouchableOpacity style={styles.backButton} onPress={()=>{
+      <TouchableOpacity style={Globals.backButton} onPress={()=>{
         this.props.navigator.pop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
@@ -103,11 +104,11 @@ class UserAvatar extends React.Component{
             <Image source={{uri: this.state.avatarSource}} style={styles.avatar}/>
           </View>
         </ScrollView>
-        <TouchableOpacity style={styles.submitButton} onPress={()=> {
+        <TouchableOpacity style={[Globals.submitButton, {marginBottom: 50}]} onPress={()=> {
           let {avatarSource} = this.state;
           this._updateUser();
         }}>
-          <Text style={styles.buttonText}>Save</Text>
+          <Text style={Globals.submitButtonText}>Save</Text>
         </TouchableOpacity>
       </View>
     )

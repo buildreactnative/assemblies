@@ -1,10 +1,12 @@
 import Colors from '../styles/colors';
+import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from '../third_party/google_places/autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities'
 import {BASE_URL, DEV} from '../utilities/fixtures';
+import ErrorMessage from '../ui_helpers/error_message';
 
 import React, {
   ScrollView,
@@ -28,6 +30,11 @@ class UserSettings extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      locationError: '',
+      firstNameError: '',
+      lastNameError: '',
+      summaryError: '',
+      formError: '',
       summary: props.currentUser.summary,
       firstName: props.currentUser.firstName,
       lastName: props.currentUser.lastName,
@@ -46,7 +53,7 @@ class UserSettings extends React.Component{
   }
   _renderBackButton(){
     return (
-      <TouchableOpacity style={styles.backButton} onPress={()=>{
+      <TouchableOpacity style={Globals.backButton} onPress={()=>{
         this.props.navigator.pop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
@@ -74,6 +81,19 @@ class UserSettings extends React.Component{
     })
     .done();
   }
+  _testErrors(){
+    let {location, summary, firstName, lastName} = this.state;
+    if (!! location &&
+        summary != '' &&
+        firstName != '' &&
+        lastName != ''
+    ) {
+      this.setState({formError: ''})
+    }
+  }
+  focusLocation(){
+    this.refs.scrollView.scrollTo(80);
+  }
   render(){
     let titleConfig = {title: 'Profile Settings', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
@@ -84,83 +104,107 @@ class UserSettings extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer} ref="scrollView">
+        <ScrollView
+          style={styles.formContainer}
+          ref="scrollView"
+        >
           <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
-          <GooglePlacesAutocomplete
-            styles={autocompleteStyles}
-            placeholder='Your city'
-            minLength={2} // minimum length of text to search
-            autoFocus={true}
-            fetchDetails={true}
-            onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-              this.setState({
-                location: _.extend({}, details.geometry.location, {
-                  city: details.address_components[0].long_name,
-                  state: details.address_components[2].short_name,
-                })
-              })
-            }}
-            getDefaultValue={() => {
-              return this.state.location.city; // text input default value
-            }}
-            query={{
-              // available options: https://developers.google.com/places/web-service/autocomplete
-              key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
-              language: 'en', // language of the results
-              types: '(cities)', // default: 'geocode'
-            }}
-            currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
-            currentLocationLabel="Current location"
-            nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-            GoogleReverseGeocodingQuery={{
-              // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-            }}
-            GooglePlacesSearchQuery={{
-              // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-              rankby: 'distance',
-            }}
-            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-            predefinedPlaces={[]}
-          />
+          <View style={{paddingBottom: 10}}>
+            <ErrorMessage error={this.state.locationError}/>
+          </View>
+          <View ref="location" style={{flex: 1,}}>
+            <GooglePlacesAutocomplete
+              styles={autocompleteStyles}
+              placeholder='Your city'
+              minLength={2} // minimum length of text to search
+              autoFocus={false}
+              onFocus={()=>this.focusLocation()}
+              fetchDetails={true}
+              onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                if (DEV) {console.log(data);}
+                if (DEV) {console.log(details);}
+                this.setState({
+                  locationError: '',
+                  location: _.extend({}, details.geometry.location, {
+                    formatted_address: details.formatted_address,
+                  })
+                }, ()=> this._testErrors());
+                this.refs.emailField.focus();
+              }}
+              getDefaultValue={() => {return '';}}
+              query={{
+                key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
+                language: 'en', // language of the results
+                types: '(cities)', // default: 'geocode'
+              }}
+              currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
+              currentLocationLabel="Current location"
+              nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+              GoogleReverseGeocodingQuery={{}}
+              GooglePlacesSearchQuery={{
+                rankby: 'distance',
+              }}
+              filterReverseGeocodingByTypes={['street_address']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+              predefinedPlaces={[]}
+            />
+          </View>
           <Text style={styles.h4}>First Name</Text>
-          <View style={styles.formField}>
+          <View style={{paddingBottom: 10}}>
+            <ErrorMessage error={this.state.firstNameError}/>
+          </View>
+          <View style={styles.formField} ref="firstName">
             <TextInput
-              ref="firstName"
-              onFocus={this.inputFocused.bind(this, 'firstName')}
-              maxLength={140}
-              onChangeText={(text)=> this.setState({firstName: text})}
+              ref="firstNameField"
+              returnKeyType="next"
+              onSubmitEditing={()=>{
+                this.refs.lastNameField.focus();
+              }}
+              onFocus={this.inputFocused.bind(this, "firstName")}
+              maxLength={20}
+              onChangeText={(text)=> this.setState({firstName: text, firstNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Your first name"
-              value={this.state.firstName}
             />
           </View>
           <Text style={styles.h4}>Last name</Text>
-          <View style={styles.formField}>
+          <View style={{paddingBottom: 10}}>
+            <ErrorMessage error={this.state.lastNameError}/>
+          </View>
+          <View style={styles.formField} ref="lastName">
             <TextInput
-              maxLength={140}
-              ref="lastName"
+              returnKeyType="next"
+              maxLength={20}
+              onSubmitEditing={()=>{
+                this.refs.summary.focus();
+              }}
+              ref="lastNameField"
               onFocus={this.inputFocused.bind(this, 'lastName')}
-              onChangeText={(text) => this.setState({lastName: text})}
+              onChangeText={(text) => this.setState({lastName: text, lastNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Your last name"
-              value={this.state.lastName}
             />
           </View>
           <Text style={styles.h4}>{"Tell us a little about yourself"}</Text>
+          <View style={{paddingBottom: 10}}>
+            <ErrorMessage error={this.state.summaryError}/>
+          </View>
           <TextInput
             ref="summary"
-            onFocus={this.inputFocused.bind(this, 'summary')}
+            maxLength={200}
+            blurOnSubmit={true}
+            clearButtonMode='always'
+            returnKeyType="next"
+            onFocus={this.inputFocused.bind(this, "summary")}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
             multiline={true}
-            value={this.state.summary}
             onChangeText={(text)=> this.setState({summary: text})}
             placeholder="Short personal summary..."/>
-
+          <ErrorMessage error={this.state.formError}/>
         </ScrollView>
-        <TouchableOpacity style={styles.submitButton} onPress={()=>{
+        <TouchableOpacity style={[Globals.submitButton, {marginBottom: 50}]} onPress={()=>{
           let user = {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
@@ -169,7 +213,7 @@ class UserSettings extends React.Component{
           };
           this._updateUser(user);
         }}>
-          <Text style={styles.buttonText}>Save</Text>
+          <Text style={Globals.submitButtonText}>Save</Text>
         </TouchableOpacity>
       </View>
     )
