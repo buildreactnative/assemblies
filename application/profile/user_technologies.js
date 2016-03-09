@@ -1,4 +1,5 @@
 import Colors from '../styles/colors';
+import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
@@ -54,7 +55,7 @@ class UserTechnologies extends React.Component{
   }
   _renderBackButton(){
     return (
-      <TouchableOpacity style={styles.backButton} onPress={()=>{
+      <TouchableOpacity style={Globals.backButton} onPress={()=>{
         this.props.navigator.pop();
       }}>
         <Icon name="ios-arrow-back" size={25} color="#ccc" />
@@ -63,7 +64,17 @@ class UserTechnologies extends React.Component{
   }
   _renderTechnologies(){
     return (
-      <Text style={styles.technologyList}>{this.state.technologies.join(', ')}</Text>
+      <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 10}}>
+        {this.state.technologies.map((technology, idx) => {
+          return (
+            <TouchableOpacity key={idx} style={styles.techContainer} onPress={()=>{
+              this.setState({technologies: [...this.state.technologies.slice(0, idx), ...this.state.technologies.slice(idx+1)]})
+            }}>
+              <Text style={styles.technologyList}>{technology}</Text>
+            </TouchableOpacity>
+          )
+        })}
+      </View>
     )
   }
   render(){
@@ -99,7 +110,7 @@ class UserTechnologies extends React.Component{
 
 
         </ScrollView>
-        <TouchableOpacity style={styles.submitButton} onPress={()=> {
+        <TouchableOpacity style={[Globals.submitButton, {marginBottom: 50}]} onPress={()=> {
           let {technologies, summary,} = this.state;
           let {currentUser} = this.props;
           fetch(`${BASE_URL}/users/${currentUser.id}`, {
@@ -121,7 +132,7 @@ class UserTechnologies extends React.Component{
           })
           .done();
         }}>
-          <Text style={styles.buttonText}>Save Changes</Text>
+          <Text style={Globals.submitButtonText}>Save Changes</Text>
         </TouchableOpacity>
       </View>
     )
@@ -142,9 +153,15 @@ let styles = {
     textAlign: 'left',
     fontSize: 18,
     fontWeight: 'bold',
+    backgroundColor: 'transparent',
     color: Colors.brandPrimary,
-    paddingHorizontal: 20,
+    paddingHorizontal: 2,
     paddingVertical: 4,
+  },
+  techContainer: {
+    paddingHorizontal: 2,
+    marginHorizontal: 2,
+    marginVertical: 4,
   },
   backButton: {
     paddingLeft: 20,

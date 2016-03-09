@@ -63,7 +63,7 @@ class UserProfile extends React.Component{
                 name: 'UserSettings'
               })
             }}
-            style={styles.formField}>
+            style={[styles.formField, {marginBottom: 15}]}>
             <Text style={styles.formName}>Settings</Text>
             <View>
               <Icon name="ios-arrow-forward" size={30} color='#ccc' />
@@ -137,7 +137,7 @@ let styles = {
   },
   logoutButton: {
     position: 'absolute',
-    left: 20,
+    left: 30,
   },
   logoutText:{
     fontSize: 20,
