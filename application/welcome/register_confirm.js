@@ -45,6 +45,14 @@ class RegisterConfirm extends React.Component{
       summary: '',
     }
   }
+  inputFocused(refName) {
+    setTimeout(() => {
+      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]), 110, true
+      )
+    }, 50)
+  }
   _getOptionList(){
     return this.refs['OPTIONLIST']
   }
@@ -64,7 +72,7 @@ class RegisterConfirm extends React.Component{
   }
   _renderTechnologies(){
     return (
-      <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
+      <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 10}}>
         {this.state.technologies.map((technology, idx) => {
           return (
             <TouchableOpacity key={idx} style={styles.techContainer} onPress={()=>{
@@ -111,7 +119,9 @@ class RegisterConfirm extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer}>
+        <ScrollView
+          ref="scrollView"
+          style={styles.formContainer}>
           <Text style={styles.h4}>{"My technologies"}</Text>
           {techAreas}
           <Select
@@ -136,6 +146,13 @@ class RegisterConfirm extends React.Component{
 
           <Text style={styles.h4}>{"Tell us a little about yourself"}</Text>
           <TextInput
+            ref="summary"
+            maxLength={200}
+            onKeyPress={(event, key) => {
+              console.log('EVENT', event, key);
+            }}
+            returnKeyType="next"
+            onFocus={this.inputFocused.bind(this, "summary")}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
             multiline={true}
@@ -297,7 +314,7 @@ let styles = {
     marginBottom: 10,
   },
   techContainer: {
-    paddingHorizontal: 10,
+    paddingHorizontal: 2,
     marginHorizontal: 2,
     marginVertical: 4,
   },
