@@ -93,7 +93,7 @@ let globals = StyleSheet.create({
 		paddingBottom: 8
 	},
 	map: {
-		height: 250,
+		height: (deviceHeight / 3),
 		width: deviceWidth
 	}
 })

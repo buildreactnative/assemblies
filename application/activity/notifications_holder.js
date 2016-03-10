@@ -50,9 +50,14 @@ class NotificationsHolder extends React.Component{
     }
     if (DEV){console.log('NEXT EVENT', nextEvent)}
     return (
-      <View style={styles.container}>
-        <Text style={styles.bodyText}>Next Assembly: {nextEvent ? nextEvent.name : ''}</Text>
-        <Text style={styles.dateText}>{nextEvent ? moment(new Date(parseInt(nextEvent.start))).format('dddd MMM Do, h:mm') : ''}</Text>
+      <ScrollView
+        contentContainerStyle={{paddingBottom: 20}}
+        automaticallyAdjustContentInsets={false}
+        style={styles.container}>
+        <View style={{backgroundColor: 'white'}}>
+          <Text style={styles.bodyText}>Next Assembly: {nextEvent ? nextEvent.name : ''}</Text>
+          <Text style={styles.dateText}>{nextEvent ? moment(new Date(parseInt(nextEvent.start))).format('dddd MMM Do, h:mm') : ''}</Text>
+        </View>
         <MapView
           style={Globals.map}
           region={mapRegion}
@@ -61,16 +66,16 @@ class NotificationsHolder extends React.Component{
         <View style={styles.notificationsContainer}>
           <Text style={styles.bodyText}>Notifications</Text>
           <View style={styles.break}></View>
-          <ScrollView style={styles.notificationsHolder}>
+          <View style={styles.notificationsHolder}>
             {this.props.notifications.map((notification, idx) => {
               return (
                 <Notification {...this.props} notification={notification} key={idx}/>
               )
             })}
             <View style={styles.emptySpace}></View>
-          </ScrollView>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     )
   }
 }
@@ -95,8 +100,10 @@ let styles = {
     marginHorizontal: 10,
   },
   notificationsContainer: {
-    height: deviceHeight - 70 - 20 - 250 - 40,
   },
-  container: {},
+  container: {
+    flex: 1,
+    paddingTop: 0,
+  },
 }
 module.exports = NotificationsHolder;

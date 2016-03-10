@@ -49,7 +49,7 @@ class UpcomingAssemblies extends React.Component{
       }
     }
     return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <Text style={styles.bodyText}>Assemblies Near Me</Text>
         <MapView
           style={Globals.map}
@@ -64,7 +64,7 @@ class UpcomingAssemblies extends React.Component{
         <View style={styles.notificationsContainer}>
           <Text style={styles.bodyText}>Today</Text>
           <View style={styles.break}></View>
-          <ScrollView style={styles.notificationsHolder}>
+          <View style={styles.notificationsHolder}>
           {this.props.allEvents.map((event, idx) => {
             let {groups} = this.props;
             let group = _.find(groups, (g) => g.id == event.groupId)
@@ -72,9 +72,9 @@ class UpcomingAssemblies extends React.Component{
               <UpcomingAssembly event={event} key={idx} />
             )
           })}
-          </ScrollView>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     )
   }
 }
