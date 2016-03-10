@@ -54,27 +54,31 @@ class Notification extends React.Component{
     if (DEV){console.log('RENDERED NOTIFICATION', message);}
     return (
       <View style={styles.container}>
-        <View style={styles.row}>
-          {seen ? <View style={styles.emptySeen}></View> : this._renderUnseen()}
-          <TouchableOpacity
-            onPress={()=>{
-              this.props.navigator.push({
-                name: type,
-                notification: notification,
-              })
-            }}
-            style={styles.subjectTextContainer}>
-            <Text style={styles.subjectText}>new {type}</Text>
-          </TouchableOpacity>
-          <View style={styles.timeContainer}>
-            <Text style={styles.timeText}>{moment(new Date(parseInt(notification.timestamp))).fromNow()}</Text>
-            <TouchableOpacity style={styles.timeLink}>
-              <Icon name="ios-arrow-forward" color="#777" size={20}/>
+        <View style={{flex: 1,}}>
+          <View style={styles.row}>
+            {seen ? <View style={styles.emptySeen}></View> : this._renderUnseen()}
+            <TouchableOpacity
+              onPress={()=>{
+                this.props.navigator.push({
+                  name: type,
+                  notification: notification,
+                })
+              }}
+              style={styles.subjectTextContainer}>
+              <Text style={styles.subjectText}>new {type}</Text>
             </TouchableOpacity>
+            <Text style={styles.timeText}>{moment(new Date(parseInt(notification.timestamp))).fromNow()}</Text>
+          </View>
+          <View style={styles.messageContainer}>
+            <Text style={styles.messageText}>{message}</Text>
           </View>
         </View>
-        <View style={styles.messageContainer}>
-          <Text style={styles.messageText}>{message}</Text>
+
+        <View style={styles.timeContainer}>
+
+          <TouchableOpacity style={styles.timeLink}>
+            <Icon name="ios-arrow-forward" color="#777" size={20}/>
+          </TouchableOpacity>
         </View>
       </View>
     )
@@ -84,13 +88,14 @@ class Notification extends React.Component{
 let styles = {
   container: {
     flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'stretch',
-    justifyContent: 'space-between',
+    alignItems: 'center',
     marginVertical: 8,
-    flex: 1,
   },
   seenCircle: {
     backgroundColor: Colors.brandPrimary,
@@ -100,12 +105,13 @@ let styles = {
     marginHorizontal: 10,
   },
   emptySeen: {
-    flex: 1,
     height: 15,
     width: 15,
+    backgroundColor: 'white',
+    marginHorizontal: 10,
   },
   subjectTextContainer: {
-    flex: 7
+    marginRight: 5,
   },
   subjectText: {
     fontSize: 18,
@@ -117,7 +123,11 @@ let styles = {
     flexDirection: 'row',
     paddingRight: 10,
   },
-  timeText: {},
+  timeText: {
+    fontSize: 12,
+    fontWeight: '300',
+    paddingHorizontal: 4,
+  },
   timeLink: {
     paddingHorizontal: 10,
   },
@@ -127,8 +137,9 @@ let styles = {
   },
   messageText: {
     color: 'black',
-    marginLeft: 25,
-    fontSize: 16,
+    marginLeft: 35,
+    fontSize: 14,
+    fontStyle: 'italic',
     fontWeight: '300',
   },
 }
