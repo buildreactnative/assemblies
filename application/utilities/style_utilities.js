@@ -70,7 +70,7 @@ let optionStyles = {
 }
 
 let optionTextStyles = {
-  fontSize: 20,
+  fontSize: 18,
   fontWeight: '300',
 }
 

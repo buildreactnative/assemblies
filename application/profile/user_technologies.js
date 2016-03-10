@@ -187,8 +187,8 @@ let styles = {
     fontWeight: '400'
   },
   h4: {
-    fontSize: 20,
-    fontWeight: '300',
+    fontSize: 18,
+    fontWeight: '400',
     marginTop: 15,
     color: 'black',
     paddingHorizontal: 20,

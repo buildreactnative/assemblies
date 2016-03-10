@@ -51,7 +51,7 @@ class NotificationsHolder extends React.Component{
     if (DEV){console.log('NEXT EVENT', nextEvent)}
     return (
       <ScrollView
-        contentContainerStyle={{paddingBottom: 20}}
+        contentContainerStyle={{paddingBottom: 80}}
         automaticallyAdjustContentInsets={false}
         style={styles.container}>
         <View style={{backgroundColor: 'white'}}>
@@ -84,12 +84,15 @@ let styles = {
   bodyText: {
     color: Colors.bodyText,
 		fontSize: 16,
+    fontWeight: '400',
 		paddingHorizontal: 15,
-    paddingVertical: 15,
+    paddingVertical: 10,
   },
   dateText: {
     fontSize: 14,
     paddingBottom: 4,
+    fontWeight: '300',
+    fontStyle: 'italic',
     paddingHorizontal: 15,
     color: Colors.bodyText,
   },

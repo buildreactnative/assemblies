@@ -110,13 +110,18 @@ let styles = {
   },
   topProfileInfo:{
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    paddingHorizontal: 12,
   },
   name: {
-    fontSize: 22,
+    fontSize: 20,
+    textAlign: 'center',
     fontWeight: '500',
   },
   location:{
-    fontSize: 20,
+    fontSize: 18,
+    textAlign: 'center',
     fontWeight: '300',
   },
   formField:{
@@ -124,7 +129,7 @@ let styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 30,
-    paddingVertical: 10,
+    paddingVertical: 8,
     backgroundColor: 'white',
     marginVertical: 10,
   },
@@ -133,14 +138,15 @@ let styles = {
   },
   formName:{
     fontWeight: '300',
-    fontSize: 20,
+    fontSize: 18,
   },
   logoutButton: {
     position: 'absolute',
     left: 30,
   },
   logoutText:{
-    fontSize: 20,
+    fontSize: 18,
+    fontWeight: '300',
     color: 'red',
   },
 }

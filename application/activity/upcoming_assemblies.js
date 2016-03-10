@@ -49,7 +49,10 @@ class UpcomingAssemblies extends React.Component{
       }
     }
     return (
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{paddingBottom: 80}}
+        >
         <Text style={styles.bodyText}>Assemblies Near Me</Text>
         <MapView
           style={Globals.map}
