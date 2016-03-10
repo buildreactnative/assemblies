@@ -69,7 +69,7 @@ class UpcomingAssemblies extends React.Component{
             let {groups} = this.props;
             let group = _.find(groups, (g) => g.id == event.groupId)
             return (
-              <UpcomingAssembly event={event} key={idx} />
+              <UpcomingAssembly event={event} group={group} key={idx} />
             )
           })}
           </View>

@@ -56,7 +56,7 @@ class NotificationsHolder extends React.Component{
         style={styles.container}>
         <View style={{backgroundColor: 'white'}}>
           <Text style={styles.bodyText}>Next Assembly: {nextEvent ? nextEvent.name : ''}</Text>
-          <Text style={styles.dateText}>{nextEvent ? moment(new Date(parseInt(nextEvent.start))).format('dddd MMM Do, h:mm') : ''}</Text>
+          <Text style={styles.dateText}>{nextEvent ? moment(new Date(parseInt(nextEvent.start))).format('dddd MMM Do, h:mm a') : ''}</Text>
         </View>
         <MapView
           style={Globals.map}

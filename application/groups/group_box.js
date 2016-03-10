@@ -44,11 +44,11 @@ let styles = {
   group: {
     opacity: 0.9,
     flex: 1,
-    height: 150,
+    height: (deviceWidth / 2) - 18,
     width: (deviceWidth / 2) - 18,
   },
   groupImage: {
-    height: 150,
+    height: (deviceWidth / 2) - 18,
     width: (deviceWidth / 2) - 20,
     margin: 10,
     opacity: 0.8,

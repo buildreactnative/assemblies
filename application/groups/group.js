@@ -1,4 +1,5 @@
 import Colors from '../styles/colors';
+import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import EventList from './event_list';
@@ -78,7 +79,7 @@ class Group extends React.Component{
   }
   _renderBackButton(){
     return (
-      <TouchableOpacity style={styles.backButton} onPress={()=> {
+      <TouchableOpacity style={Globals.backButton} onPress={()=> {
         if (DEV) {console.log('Routes', this.props.navigator.getCurrentRoutes());}
         this.props.navigator.popToTop();
       }}>
