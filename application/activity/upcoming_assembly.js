@@ -3,6 +3,7 @@ import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ActivityView from '../activity/activity_view';
 import moment from 'moment';
+import _ from 'underscore';
 import {DEV} from '../utilities/fixtures';
 
 import React, {
@@ -20,20 +21,25 @@ import React, {
 } from 'react-native';
 
 class UpcomingAssembly extends React.Component{
+  _renderImage(group){
+    return (
+      <Image source={{uri: group.imageUrl}} style={styles.groupImage}>
+        <View style={[styles.group, {backgroundColor: group.backgroundColor,}]} >
+        </View>
+      </Image>
+    )
+  }
   render(){
-    if (!this.props.group){
-      return null;
-    }
-    let {event, group} = this.props;
+    let group = _.find(this.props.groups, (g) => {
+      return g.id == this.props.event.groupId
+    })
+    let {event} = this.props;
     if (DEV) {console.log('GROUP', group);}
     let {name, attending, start} = event;
     let startTime = new Date(start);
     return (
       <View style={styles.container}>
-        <Image source={{uri: group.imageUrl}} style={styles.groupImage}>
-          <View style={[styles.group, {backgroundColor: group.backgroundColor,}]} >
-          </View>
-        </Image>
+        {group ? this._renderImage(group) : null}
         <View style={styles.row}>
           <View style={styles.textRow}>
             <Text style={styles.subjectText}>{name}</Text>
@@ -83,9 +89,9 @@ let styles = {
     alignItems: 'center',
   },
   going: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '300',
-    paddingVertical: 4,
+    paddingHorizontal: 5,
   },
   subjectText: {
     marginLeft: 10,

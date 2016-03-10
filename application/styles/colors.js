@@ -5,6 +5,7 @@ const Colors = {
   bodyText: '#222222',
   bodyTextLight: '#999',
   inactive: '#EBEEF5',
+  inactiveDark: '#ccd4e5',
   placeholderColor: '#8E8E93',
   brandDanger: '#e60000',
 };

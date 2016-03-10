@@ -67,9 +67,8 @@ class UpcomingAssemblies extends React.Component{
           <View style={styles.notificationsHolder}>
           {this.props.allEvents.map((event, idx) => {
             let {groups} = this.props;
-            let group = _.find(groups, (g) => g.id == event.groupId)
             return (
-              <UpcomingAssembly event={event} group={group} key={idx} />
+              <UpcomingAssembly event={event} groups={groups} key={idx} />
             )
           })}
           </View>

@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import UpcomingAssembly from '../activity/upcoming_assembly';
 import NavigationBar from 'react-native-navbar';
+import CalendarSection from './calendar_section';
 import {calendarFixture} from '../fixtures/calendar_fixtures';
 import {DEV} from '../utilities/fixtures';
 import _ from 'underscore';
@@ -107,9 +108,7 @@ class CalendarList extends React.Component{
   _renderSectionHeader(sectionData, sectionID){
     if (DEV) {console.log('SECTION DATA', sectionData, sectionID)}
     return (
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionHeaderText}>{moment(sectionData).format('dddd MMM Do')}</Text>
-      </View>
+      <CalendarSection sectionData={sectionData}/>
     )
   }
   _renderRow(rowData, sectionID, rowID){
@@ -126,7 +125,7 @@ class CalendarList extends React.Component{
           group: group,
         })
       }}>
-        <UpcomingAssembly event={rowData} group={group}/>
+        <UpcomingAssembly event={rowData} groups={this.props.groups}/>
       </TouchableOpacity>
     )
   }
