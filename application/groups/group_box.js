@@ -44,14 +44,14 @@ let styles = {
   group: {
     opacity: 0.9,
     flex: 1,
-    height: (deviceWidth / 2) - 18,
-    width: (deviceWidth / 2) - 18,
+    height: (deviceWidth / 2) - 15,
+    width: (deviceWidth / 2) - 15,
   },
   groupImage: {
-    height: (deviceWidth / 2) - 18,
-    width: (deviceWidth / 2) - 20,
-    margin: 10,
+    height: (deviceWidth / 2) - 15,
+    width: (deviceWidth / 2) - 15,
     opacity: 0.8,
+    margin: 5,
   },
   groupText: {
     color: 'white',
