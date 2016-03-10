@@ -77,7 +77,7 @@ class Notification extends React.Component{
         <View style={styles.timeContainer}>
 
           <TouchableOpacity style={styles.timeLink}>
-            <Icon name="ios-arrow-forward" color="#777" size={20}/>
+            <Icon name="ios-arrow-forward" color="#777" size={25}/>
           </TouchableOpacity>
         </View>
       </View>
