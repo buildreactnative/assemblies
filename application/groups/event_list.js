@@ -5,7 +5,8 @@ import moment from 'moment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';
 import EventItem from './event_item';
-import Swipeout from 'react-native-swipeout';
+// import Swipeout from 'react-native-swipeout';
+import Swipeout from '../third_party/swipeout/index';
 import {BASE_URL, DEV} from '../utilities/fixtures';
 
 import React, {
