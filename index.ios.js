@@ -95,7 +95,7 @@ class assembly extends Component {
   render() {
     let {foundUser, currentUser, sessionId,} = this.state;
     if (! foundUser) {
-      return <View></View>
+      return <View style={{backgroundColor: Colors.brandPrimary}}></View>
     }
     return (
       <View style={styles.container}>
