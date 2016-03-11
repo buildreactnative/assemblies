@@ -3,7 +3,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
-import Swipeout from 'react-native-swipeout';
+// import Swipeout from 'react-native-swipeout';
+import Swipeout from '../third_party/swipeout/index';
 import _ from 'underscore';
 import {DEV} from '../utilities/fixtures';
 
