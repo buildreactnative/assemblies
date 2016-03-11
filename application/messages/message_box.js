@@ -66,7 +66,7 @@ class MessageBox extends React.Component{
   }
   inputFocused(refName) {
     setTimeout(() => {
-      console.log(this.refs.scroll);
+      if (DEV) {console.log(this.refs.scroll);}
       // let scrollResponder = this.refs.scroll._scrollComponent.getScrollResponder();
       // scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
       //   React.findNodeHandle(this.refs[refName]), 110, true

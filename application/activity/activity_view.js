@@ -29,7 +29,6 @@ import React, {
 } from 'react-native';
 
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
-// console.log('GESTURES', CUSTOM_CONFIG.gestures);
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
 
 class ActivityView extends React.Component{
