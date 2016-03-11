@@ -172,7 +172,8 @@ let styles = {
     flex: 1,
   },
   groupsContainer: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingLeft: 4,
   },
   group: {
     opacity: 0.9,
@@ -186,7 +187,7 @@ let styles = {
     opacity: 0.8,
   },
   h2: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '300',
     paddingHorizontal: 10,
   },

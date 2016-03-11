@@ -35,10 +35,15 @@ class MessageBox extends React.Component{
     super(props);
     this.state = {
       loading: true,
-      messages: props.messages || [],
+      messages: props.messages,
       newMessage: '',
       keyboardOffset: 0,
       users: [],
+    }
+  }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.messages != this.state.messages){
+      this.setState({messages: nextProps.messages});
     }
   }
   _fetchMessages(){
@@ -54,13 +59,24 @@ class MessageBox extends React.Component{
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('MESSAGES', data);}
-      this.setState({messages: data})
+      if (data != this.state.messages){
+        this.setState({messages: data})
+      }
     })
   }
+  inputFocused(refName) {
+    setTimeout(() => {
+      console.log(this.refs.scroll);
+      // let scrollResponder = this.refs.scroll._scrollComponent.getScrollResponder();
+      // scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+      //   React.findNodeHandle(this.refs[refName]), 110, true
+      // )
+    }, 50)
+  }
   componentDidMount(){
-    if (this.state.messages = []){
-      this._fetchMessages()
-    }
+    // if (this.state.messages = []){
+    //   this._fetchMessages()
+    // }
     InteractionManager.runAfterInteractions(() => {
       this.setState({loading: false});
     });
@@ -163,6 +179,8 @@ class MessageBox extends React.Component{
         </InvertibleScrollView>
         <View style={styles.inputBox}>
           <TextInput
+            ref="message"
+            onFocus={this.inputFocused.bind(this, "message")}
             value={this.state.newMessage}
             placeholder='Say something...'
             onChange={(e) => {this.setState({newMessage: e.nativeEvent.text}); }}
