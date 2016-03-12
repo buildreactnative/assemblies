@@ -2,7 +2,8 @@ import Colors from '../styles/colors';
 import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from '../third_party/google_places/autocomplete';
+import ErrorMessage from '../ui_helpers/error_message';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
 import {DEV} from '../utilities/fixtures';
@@ -32,6 +33,7 @@ class CreateEvent extends React.Component{
       summary: '',
       name: '',
       location: null,
+      error: '',
     }
   }
   _renderBackButton(){
@@ -53,6 +55,9 @@ class CreateEvent extends React.Component{
       );
     }, 50);
   }
+  _scroll(dist){
+    this.refs.scrollView.scrollTo(dist);
+  }
   render(){
     let titleConfig = {title: 'Create Event', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
@@ -64,13 +69,19 @@ class CreateEvent extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer} ref="scrollView">
-          <Text style={styles.h4}>Where is the event?</Text>
+        <ScrollView
+          style={styles.formContainer}
+          contentContainerStyle={{paddingBottom: 100}}
+          ref="scrollView">
+          <Text style={styles.h4}>* Where is the event?</Text>
           <GooglePlacesAutocomplete
             styles={autocompleteStyles}
             placeholder='Type a place or street address'
             minLength={2} // minimum length of text to search
             autoFocus={false}
+            onFocus={()=>{
+              this._scroll(60);
+            }}
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
               if (DEV) {console.log(data);}
@@ -80,7 +91,8 @@ class CreateEvent extends React.Component{
                   city: details.address_components[0].long_name,
                   state: details.address_components[2].short_name,
                 })
-              })
+              });
+              this.refs.name.focus();
             }}
             getDefaultValue={() => {
               return ''; // text input default value
@@ -97,10 +109,14 @@ class CreateEvent extends React.Component{
             filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
             predefinedPlaces={[]}
           />
-          <Text style={styles.h4}>{"What's the event name?"}</Text>
+          <Text style={styles.h4}>{"* What's the event name?"}</Text>
           <View style={styles.formField}>
             <TextInput
               ref="name"
+              returnKeyType="next"
+              onSubmitEditing={()=>{
+                this.refs.summary.focus();
+              }}
               onFocus={this.inputFocused.bind(this, "name")}
               onChangeText={(text)=> this.setState({name: text})}
               placeholderTextColor='#bbb'
@@ -111,6 +127,9 @@ class CreateEvent extends React.Component{
           <Text style={styles.h4}>{"What's happening at the event?"}</Text>
           <TextInput
             ref="summary"
+            returnKeyType="next"
+            blurOnSubmit={true}
+            clearButtonMode='always'
             onFocus={this.inputFocused.bind(this, "summary")}
             onChangeText={(text)=> this.setState({summary: text})}
             placeholderTextColor='#bbb'
@@ -118,11 +137,15 @@ class CreateEvent extends React.Component{
             multiline={true}
             placeholder="Type a summary of the event..."
           />
-
+          <ErrorMessage error={this.state.error}/>
         </ScrollView>
         <TouchableOpacity
           onPress={()=>{
             let {name, summary, location} = this.state;
+            if (! location || name == ''){
+              this.setState({error: 'Must fill required fields *.'});
+              return;
+            }
             this.props.navigator.push({
               name: 'CreateEventConfirm',
               eventName: name,
