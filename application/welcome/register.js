@@ -3,6 +3,7 @@ import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from '../third_party/google_places/autocomplete';
+import Progress from 'react-native-progress';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities'
 import {DEV} from '../utilities/fixtures';
@@ -13,6 +14,7 @@ import React, {
   Component,
   StyleSheet,
   Text,
+  Easing,
   TextInput,
   View,
   TabBarIOS,
@@ -20,12 +22,13 @@ import React, {
   TouchableOpacity,
   Dimensions,
   NativeModules,
+  Animated,
   InteractionManager,
   DeviceEventEmitter,
   ActivityIndicatorIOS,
 } from 'react-native';
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+  const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class Register extends React.Component{
   constructor(props){
@@ -43,6 +46,7 @@ class Register extends React.Component{
       locationError: '',
       formError: '',
       height: deviceHeight,
+      progress: 0,
     }
   }
   inputFocused (refName) {
@@ -87,6 +91,14 @@ class Register extends React.Component{
       this.setState({formError: ''})
     }
   }
+  _animateProgress(){
+    let {progress} = this.state;
+    let newProgress = progress + 0.2;
+    if (newProgress > 1){
+      newProgress = 1;
+    }
+    this.setState({progress: newProgress});
+  }
   render(){
     let titleConfig = {title: 'Create Account', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
@@ -99,6 +111,14 @@ class Register extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
+      <Progress.Bar
+        borderRadius={0}
+        borderWidth={0}
+        color={Colors.brandPrimary}
+        unfilledColor="white"
+        borderColor={Colors.brandPrimary}
+        progress={this.state.progress}
+        width={deviceWidth} />
         <ScrollView
           style={[styles.formContainer, {height: this.state.height}]}
           ref="scrollView"
@@ -135,6 +155,7 @@ class Register extends React.Component{
                   })
                 }, ()=> this._testErrors());
                 this.refs.emailField.focus();
+                this._animateProgress();
               }}
               getDefaultValue={() => {return '';}}
               query={{
@@ -163,6 +184,7 @@ class Register extends React.Component{
               returnKeyType="next"
               onSubmitEditing={()=>{
                 this.refs.passwordField.focus();
+                this._animateProgress();
               }}
               onFocus={this.inputFocused.bind(this, 'email')}
               onChangeText={(text)=> this.setState({email: text, emailError: ''}, ()=>this._testErrors())}
@@ -181,6 +203,7 @@ class Register extends React.Component{
               returnKeyType="next"
               onSubmitEditing={()=>{
                 this.refs.firstNameField.focus();
+                this._animateProgress();
               }}
               onFocus={this.inputFocused.bind(this, "password")}
               onChangeText={(text)=> this.setState({password: text, passwordError: ''}, ()=> this._testErrors())}
@@ -199,6 +222,7 @@ class Register extends React.Component{
               returnKeyType="next"
               onSubmitEditing={()=>{
                 this.refs.lastNameField.focus();
+                this._animateProgress();
               }}
               onFocus={this.inputFocused.bind(this, "firstName")}
               maxLength={20}
@@ -217,6 +241,9 @@ class Register extends React.Component{
               returnKeyType="next"
               maxLength={20}
               ref="lastNameField"
+              onSubmitEditing={()=>{
+                this._animateProgress();
+              }}
               onFocus={this.inputFocused.bind(this, 'lastName')}
               onChangeText={(text) => this.setState({lastName: text, lastNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
@@ -328,7 +355,7 @@ let styles = {
   addPhotoContainer: {
     backgroundColor: 'white',
     marginVertical: 15,
-    marginHorizontal: (deviceWidth - 200) / 2,
+      marginHorizontal: (deviceWidth - 200) / 2,
     width: 200,
     borderRadius: 30,
     paddingVertical: 15,

@@ -19,6 +19,7 @@
     "react-native-invertible-scroll-view": "^0.2.0",
     "react-native-navbar": "^1.2.0",
     "react-native-picker": "^1.0.0",
+    "react-native-progress": "^2.2.1",
     "react-native-selectme": "^1.0.0",
     "react-native-vector-icons": "^1.1.0",
     "react-tween-state": "^0.1.3",
