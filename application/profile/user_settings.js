@@ -130,7 +130,7 @@ class UserSettings extends React.Component{
                     formatted_address: details.formatted_address,
                   })
                 }, ()=> this._testErrors());
-                this.refs.emailField.focus();
+                this.refs.firstNameField.focus();
               }}
               getDefaultValue={() => {return this.state.location.city;}}
               query={{
