@@ -61,6 +61,7 @@ class CreateEventConfirm extends React.Component{
       choseTime: false,
       choseDuration: false,
       choseCapacity: false,
+      showSubmit: true,
     }
   }
   onDateChange(date){
@@ -74,7 +75,12 @@ class CreateEventConfirm extends React.Component{
     prevDate.setMonth(prevDate.getMonth() - 1);
     if (DEV) {console.log('NEW DATE', this.state.date, date, nextDate, prevDate);}
     if (date.valueOf() != nextDate.valueOf() && date.valueOf() != prevDate.valueOf()){
-      this.setState({date: date, choseDate: true, showCalendar: false})
+      this.setState({
+        date: date,
+        choseDate: true,
+        showCalendar: false
+      });
+      this._scroll(108);
     } else {
       this.setState({date: date})
     }
@@ -136,7 +142,11 @@ class CreateEventConfirm extends React.Component{
         pickerData={['1 hour', '1.5 hours', '2 hours', '2.5 hours', '3 hours', '3.5 hours', '4 hours', '4.5 hours', '5 hours']}//picker`s value List
         selectedValue={this.state.duration}//default to be selected value
         onPickerDone={()=>{
-          this.setState({showDuration: false, choseDuration: true,})
+          this.setState({
+            showDuration: false,
+            choseDuration: true,
+          });
+          this._scroll(260);
         }}
         onPickerCancel={()=>{
           this.setState({showDuration: false,})
@@ -158,7 +168,11 @@ class CreateEventConfirm extends React.Component{
         pickerData={_.range(30).map((num) => `${(num+1)*10} people`)}//picker`s value List
         selectedValue={this.state.capacity}//default to be selected value
         onPickerDone={()=>{
-          this.setState({showCapacity: false, choseCapacity: true,})
+          this.setState({
+            showCapacity: false,
+            choseCapacity: true,
+          });
+          this._scroll(260);
         }}
         onPickerCancel={()=>{
           this.setState({showCapacity: false,})
@@ -191,13 +205,20 @@ class CreateEventConfirm extends React.Component{
         pickerData={TIMES_RANGE}//picker`s value List
         selectedValue={this.state.time}//default to be selected value
         onPickerDone={()=>{
-          this.setState({showTime: false, choseTime: true,})
+          this.setState({
+            showTime: false,
+            choseTime: true,
+          });
+          this.refs.scrollView.scrollTo(190);
         }}
         onPickerCancel={()=>{
           this.setState({showTime: false})
         }}
       />
     )
+  }
+  _scroll(dist){
+    this.refs.scrollView.scrollTo(dist);
   }
   render(){
     if (DEV) {console.log('RENDER')}
@@ -211,11 +232,18 @@ class CreateEventConfirm extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer}>
+        <ScrollView
+          style={styles.formContainer}
+          contentContainerStyle={{paddingBottom: 100}}
+          ref="scrollView"
+          >
           <Text style={styles.h4}>When is the event date?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
-              onPress={()=>this.setState({showCalendar: ! this.state.showCalendar})}
+              onPress={()=>{
+                this.setState({showCalendar: ! this.state.showCalendar, showSubmit: ! this.state.showSubmit});
+                this._scroll(60);
+              }}
               style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
               <Text style={styles.input}>{this.state.choseDate ? moment(this.state.date).format('dddd, MMM Do') : 'Choose a date'}</Text>
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
@@ -225,7 +253,7 @@ class CreateEventConfirm extends React.Component{
           <Text style={styles.h4}>When does it start?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
-              onPress={()=>this.setState({showTime: ! this.state.showTime})}
+              onPress={()=>this.setState({showTime: ! this.state.showTime, showSubmit: ! this.state.showSubmit})}
               style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
               <Text style={styles.input}>{this.state.choseTime ? this.state.time : 'Choose a time'}</Text>
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
@@ -236,7 +264,7 @@ class CreateEventConfirm extends React.Component{
           <Text style={styles.h4}>How long will it last?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
-              onPress={()=>this.setState({showDuration: ! this.state.showDuration})}
+              onPress={()=>this.setState({showDuration: ! this.state.showDuration, showSubmit: ! this.state.showSubmit})}
               style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
               <Text style={styles.input}>{this.state.choseDuration ? this.state.duration: 'Choose a duration'}</Text>
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
@@ -247,16 +275,14 @@ class CreateEventConfirm extends React.Component{
           <Text style={styles.h4}>Attendee capacity</Text>
           <View style={styles.formField}>
             <TouchableOpacity
-              onPress={()=>this.setState({showCapacity: ! this.state.showCapacity})}
+              onPress={()=>this.setState({showCapacity: ! this.state.showCapacity, showSubmit: ! this.state.showSubmit})}
               style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
               <Text style={styles.input}>{this.state.choseCapacity ? this.state.capacity : 'Choose a duration'}</Text>
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
             </TouchableOpacity>
           </View>
-          {this.state.showTime ? this._renderTime() : null}
-          {this.state.showDuration ? this._renderDuration() : null}
-          {this.state.showCapacity ? this._renderCapacity() : null}
         </ScrollView>
+
         <TouchableOpacity
           onPress={()=>{
             let {date, duration, capacity, time} = this.state;
@@ -315,10 +341,13 @@ class CreateEventConfirm extends React.Component{
               if (DEV) {console.log('ERR: ', err)}
             })
           }}
-          style={Globals.submitButton}
+          style={[Globals.submitButton, {marginBottom: 50}]}
         >
           <Text style={Globals.submitButtonText}>Create Event</Text>
         </TouchableOpacity>
+        {this.state.showTime ? this._renderTime() : null}
+        {this.state.showDuration ? this._renderDuration() : null}
+        {this.state.showCapacity ? this._renderCapacity() : null}
       </View>
     )
   }

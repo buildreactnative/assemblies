@@ -131,7 +131,7 @@ class CreateEvent extends React.Component{
               group: this.props.group,
             })
           }}
-          style={Globals.submitButton}>
+          style={[Globals.submitButton, {marginBottom: 50}]}>
           <Text style={Globals.submitButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
