@@ -111,7 +111,7 @@ class Register extends React.Component{
               Already have an account? <Text style={styles.technologyList}>Login</Text>
             </Text>
           </TouchableOpacity>
-          <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
+          <Text style={styles.h4}>{"* Where are you looking for assemblies?"}</Text>
           <View style={{paddingBottom: 10}}>
             <ErrorMessage error={this.state.locationError}/>
           </View>
@@ -151,7 +151,7 @@ class Register extends React.Component{
               predefinedPlaces={[]}
             />
           </View>
-          <Text style={styles.h4}>Email</Text>
+          <Text style={styles.h4}>* Email</Text>
           <View style={{paddingBottom: 10}}>
             <ErrorMessage error={this.state.emailError}/>
           </View>
@@ -169,7 +169,7 @@ class Register extends React.Component{
               maxLength={144}
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"/>
           </View>
-          <Text style={styles.h4}>Password</Text>
+          <Text style={styles.h4}>* Password</Text>
           <View style={{paddingBottom: 10}}>
             <ErrorMessage error={this.state.passwordError}/>
           </View>
@@ -187,7 +187,7 @@ class Register extends React.Component{
               maxLength={20}
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your password"/>
           </View>
-          <Text style={styles.h4}>First Name</Text>
+          <Text style={styles.h4}>* First Name</Text>
           <View style={{paddingBottom: 10}}>
             <ErrorMessage error={this.state.firstNameError}/>
           </View>
@@ -206,7 +206,7 @@ class Register extends React.Component{
               placeholder="Your first name"
             />
           </View>
-          <Text style={styles.h4}>Last name</Text>
+          <Text style={styles.h4}>* Last name</Text>
           <View style={{paddingBottom: 10}}>
             <ErrorMessage error={this.state.lastNameError}/>
           </View>
