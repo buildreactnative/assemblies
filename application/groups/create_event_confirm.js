@@ -128,12 +128,12 @@ class CreateEventConfirm extends React.Component{
         ref="durationPicker"
         pickerHeight={300}
         showDuration={300}
-        style={{height: (deviceHeight / 2), position: 'absolute', bottom: 0}}
-        pickerCancelBtnText='Cancel'
-        pickerBtnText='Confirm'
+        style={{height: 220, position: 'absolute', bottom: 0}}
+        pickerCancelBtnText="cancel"
+        pickerBtnText='confirm'
         onValueChange={(val)=>this.setState({duration: val})}
         pickerTitle="Event Duration"
-        pickerData={['1 hour', '2 hours', '3 hours', '4 hours', '5 hours']}//picker`s value List
+        pickerData={['1 hour', '1.5 hours', '2 hours', '2.5 hours', '3 hours', '3.5 hours', '4 hours', '4.5 hours', '5 hours']}//picker`s value List
         selectedValue={this.state.duration}//default to be selected value
         onPickerDone={()=>{
           this.setState({showDuration: false, choseDuration: true,})
@@ -150,11 +150,11 @@ class CreateEventConfirm extends React.Component{
         ref="capacity"
         pickerHeight={300}
         showDuration={300}
-        pickerCancelBtnText='Cancel'
-        pickerBtnText='Confirm'
+        pickerCancelBtnText="cancel"
+        pickerBtnText='confirm'
         style={{height: (deviceHeight / 2), position: 'absolute', bottom: 0}}
         onValueChange={(val)=>this.setState({capacity: val})}
-        pickerTitle="Event Duration"
+        pickerTitle="Event Capacity"
         pickerData={_.range(30).map((num) => `${(num+1)*10} people`)}//picker`s value List
         selectedValue={this.state.capacity}//default to be selected value
         onPickerDone={()=>{
@@ -181,13 +181,13 @@ class CreateEventConfirm extends React.Component{
         style={{height: (deviceHeight / 2), position: 'absolute', bottom: 0}}
         pickerHeight={300}
         showDuration={300}
-        pickerCancelBtnText='Cancel'
-        pickerBtnText='Confirm'
+        pickerCancelBtnText="cancel"
+        pickerBtnText='confirm'
         onValueChange={(val)=>{
           if (DEV) {console.log('VAL', val);}
           this.setState({time: val[0]})
         }}
-        pickerTitle="Event Duration"
+        pickerTitle="Event Start"
         pickerData={TIMES_RANGE}//picker`s value List
         selectedValue={this.state.time}//default to be selected value
         onPickerDone={()=>{
