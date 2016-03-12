@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import {DEV} from '../utilities/fixtures';
 import _ from 'underscore';
+import {shadeColor, blendColors} from '../utilities/color_utilities';
 
 import React, {
   ScrollView,

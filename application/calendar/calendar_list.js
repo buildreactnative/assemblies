@@ -125,7 +125,7 @@ class CalendarList extends React.Component{
           group: group,
         })
       }}>
-        <UpcomingAssembly event={rowData} groups={this.props.groups}/>
+        <UpcomingAssembly event={rowData} groups={this.props.groups} currentUser={this.props.currentUser}/>
       </TouchableOpacity>
     )
   }

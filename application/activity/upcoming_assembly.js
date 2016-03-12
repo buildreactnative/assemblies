@@ -5,6 +5,7 @@ import ActivityView from '../activity/activity_view';
 import moment from 'moment';
 import _ from 'underscore';
 import {DEV} from '../utilities/fixtures';
+import {shadeColor, blendColors} from '../utilities/color_utilities';
 
 import React, {
   ScrollView,
@@ -29,21 +30,33 @@ class UpcomingAssembly extends React.Component{
       </Image>
     )
   }
+  _renderGoing(){
+    let {event} = this.props;
+    return (
+      <Text style={styles.going}> {Object.keys(event.attending).length} going</Text>
+    )
+  }
+  _renderAttending(){
+    return (
+      <Text style={styles.attending}><Icon name="checkmark-circled" color={Colors.brandSuccess}/> Yes</Text>
+    )
+  }
   render(){
     let group = _.find(this.props.groups, (g) => {
       return g.id == this.props.event.groupId
     })
-    let {event} = this.props;
+    let {event, currentUser,} = this.props;
     if (DEV) {console.log('GROUP', group);}
     let {name, attending, start} = event;
     let startTime = new Date(start);
+    let isAttending = !! attending[currentUser.id]
     return (
       <View style={styles.container}>
         {group ? this._renderImage(group) : null}
         <View style={styles.row}>
           <View style={styles.textRow}>
             <Text style={styles.subjectText}>{name}</Text>
-            <Text style={styles.going}> {Object.keys(attending).length} going</Text>
+            {isAttending ? this._renderAttending() : this._renderGoing()}
           </View>
           <Text style={styles.messageText}>{group ? group.name : ''}</Text>
         </View>
@@ -66,6 +79,12 @@ let styles = {
     borderBottomWidth: 1,
     borderBottomColor: Colors.inactive,
     marginHorizontal: 8,
+  },
+  attending: {
+    color: Colors.brandSuccess,
+    fontSize: 12,
+    fontWeight: '300',
+    paddingHorizontal: 4,
   },
   group: {
     opacity: 0.9,

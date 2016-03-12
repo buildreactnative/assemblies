@@ -8,6 +8,7 @@ const Colors = {
   inactiveDark: '#ccd4e5',
   placeholderColor: '#8E8E93',
   brandDanger: '#e60000',
+  brandSuccess: '#4CAF50',
 };
 
 module.exports = Colors;

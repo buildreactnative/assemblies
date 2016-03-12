@@ -50,6 +50,7 @@ class CalendarView extends React.Component{
             if (route.name == 'CalendarList') {
               return (
                 <CalendarList
+                  {...this.props}
                   groups={this.props.groups.concat(this.props.suggestedGroups)}
                   changeState={this.props.changeState}
                   events={this.props.events.sort(function(a, b){
