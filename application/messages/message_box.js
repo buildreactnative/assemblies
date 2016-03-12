@@ -1,4 +1,5 @@
 import Colors from '../styles/colors';
+import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import InvertibleScrollView from 'react-native-invertible-scroll-view';
