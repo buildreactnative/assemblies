@@ -3,7 +3,6 @@ import Globals from '../styles/globals';
 import COLOR_FIXTURES from '../styles/color_fixtures';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
 import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
@@ -105,7 +104,7 @@ class CreateGroupConfirm extends React.Component{
           leftButton={leftButtonConfig}
         />
         <ScrollView style={styles.formContainer}>
-          <Text style={styles.h4}>What technology is your assembly about?</Text>
+          <Text style={styles.h4}>* What technology is your assembly about?</Text>
           {this.state.technologies.length ? this._renderTechnologies() : null}
           <Select
             width={deviceWidth}
@@ -159,7 +158,7 @@ class CreateGroupConfirm extends React.Component{
           </View>
         </ScrollView>
         <TouchableOpacity
-          style={Globals.submitButton}
+          style={[Globals.submitButton, {marginBottom: 50}]}
           onPress={()=>{
             let {groupName, summary, location, currentUser} = this.props;
             let userId = currentUser ? currentUser.id : '';

@@ -100,7 +100,7 @@ class CreateGroup extends React.Component{
           style={styles.formContainer}
           contentContainerStyle={{paddingBottom: 100}}
           ref="scrollView">
-          <Text style={styles.h4}>Name of your assembly</Text>
+          <Text style={styles.h4}>* Name of your assembly</Text>
           <View style={styles.formField}>
             <TextInput
               ref="name"
@@ -116,7 +116,7 @@ class CreateGroup extends React.Component{
               placeholder="Name of your assembly"
             />
           </View>
-          <Text style={styles.h4}>Where is your group located?</Text>
+          <Text style={styles.h4}>* Where is your group located?</Text>
           <GooglePlacesAutocomplete
             styles={autocompleteStyles}
             placeholder='Your city'
