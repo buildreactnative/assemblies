@@ -87,24 +87,24 @@ let styles = {
     marginRight: 5,
   },
   leftActiveTab: {
-    backgroundColor: Colors.brandPrimary,
+    backgroundColor: 'white',
   },
   leftInactiveTab: {
-    backgroundColor: 'white',
-  },
-  rightActiveTab: {
     backgroundColor: Colors.brandPrimary,
   },
-  rightInactiveTab: {
+  rightActiveTab: {
     backgroundColor: 'white',
+  },
+  rightInactiveTab: {
+    backgroundColor: Colors.brandPrimary,
   },
   activeTabText: {
     textAlign: 'center',
-    color: 'white',
+    color: Colors.brandPrimary,
   },
   inactiveTabText: {
     textAlign: 'center',
-    color: Colors.brandPrimary,
+    color: 'white',
   },
 }
 
