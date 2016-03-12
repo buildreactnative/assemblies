@@ -159,9 +159,9 @@ class CreateGroup extends React.Component{
               summary: summary,
             })
           }}
-          style={styles.submitButton}
+          style={Globals.submitButton}
         >
-          <Text style={styles.buttonText}>Next</Text>
+          <Text style={Globals.submitButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
     )

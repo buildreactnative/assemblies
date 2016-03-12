@@ -187,7 +187,7 @@ class Event extends React.Component{
             })
           }}
         >
-          <Text style={styles.buttonText}>Comment</Text>
+          <Text style={Globals.submitButtonText}>Comment</Text>
         </TouchableOpacity>
       </View>
     )

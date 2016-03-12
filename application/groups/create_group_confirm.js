@@ -159,7 +159,7 @@ class CreateGroupConfirm extends React.Component{
           </View>
         </ScrollView>
         <TouchableOpacity
-          style={styles.submitButton}
+          style={Globals.submitButton}
           onPress={()=>{
             let {groupName, summary, location, currentUser} = this.props;
             let userId = currentUser ? currentUser.id : '';
@@ -213,7 +213,7 @@ class CreateGroupConfirm extends React.Component{
             })
           }}
         >
-          <Text style={styles.buttonText}>Create Assembly</Text>
+          <Text style={Globals.submitButtonText}>Create Assembly</Text>
         </TouchableOpacity>
       </View>
     )

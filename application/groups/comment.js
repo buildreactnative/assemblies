@@ -87,7 +87,7 @@ class Comment extends React.Component{
             })
           }}
         >
-          <Text style={styles.buttonText}>Reply</Text>
+          <Text style={Globals.submitButtonText}>Reply</Text>
         </TouchableOpacity>
       </View>
     )

@@ -125,9 +125,10 @@ class CreateEventConfirm extends React.Component{
   _renderDuration(){
     return (
       <Picker
-        ref="picker"
+        ref="durationPicker"
         pickerHeight={300}
         showDuration={300}
+        style={{height: (deviceHeight / 2), position: 'absolute', bottom: 0}}
         pickerCancelBtnText='Cancel'
         pickerBtnText='Confirm'
         onValueChange={(val)=>this.setState({duration: val})}
@@ -151,6 +152,7 @@ class CreateEventConfirm extends React.Component{
         showDuration={300}
         pickerCancelBtnText='Cancel'
         pickerBtnText='Confirm'
+        style={{height: (deviceHeight / 2), position: 'absolute', bottom: 0}}
         onValueChange={(val)=>this.setState({capacity: val})}
         pickerTitle="Event Duration"
         pickerData={_.range(30).map((num) => `${(num+1)*10} people`)}//picker`s value List
@@ -176,6 +178,7 @@ class CreateEventConfirm extends React.Component{
     return (
       <Picker
         ref="time"
+        style={{height: (deviceHeight / 2), position: 'absolute', bottom: 0}}
         pickerHeight={300}
         showDuration={300}
         pickerCancelBtnText='Cancel'
@@ -228,7 +231,8 @@ class CreateEventConfirm extends React.Component{
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
             </TouchableOpacity>
           </View>
-          {this.state.showTime ? this._renderTime() : null}
+
+
           <Text style={styles.h4}>How long will it last?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
@@ -238,7 +242,8 @@ class CreateEventConfirm extends React.Component{
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
             </TouchableOpacity>
           </View>
-          {this.state.showDuration ? this._renderDuration() : null}
+
+
           <Text style={styles.h4}>Attendee capacity</Text>
           <View style={styles.formField}>
             <TouchableOpacity
@@ -248,6 +253,8 @@ class CreateEventConfirm extends React.Component{
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
             </TouchableOpacity>
           </View>
+          {this.state.showTime ? this._renderTime() : null}
+          {this.state.showDuration ? this._renderDuration() : null}
           {this.state.showCapacity ? this._renderCapacity() : null}
         </ScrollView>
         <TouchableOpacity
@@ -308,9 +315,9 @@ class CreateEventConfirm extends React.Component{
               if (DEV) {console.log('ERR: ', err)}
             })
           }}
-          style={styles.submitButton}
+          style={Globals.submitButton}
         >
-          <Text style={styles.buttonText}>Create Event</Text>
+          <Text style={Globals.submitButtonText}>Create Event</Text>
         </TouchableOpacity>
       </View>
     )

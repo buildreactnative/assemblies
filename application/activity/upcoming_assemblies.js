@@ -36,14 +36,32 @@ const UPCOMING_ASSEMBLIES = [
 ]
 
 class UpcomingAssemblies extends React.Component{
+  _todayEvents(events){
+    let today = new Date();
+    let year = today.getFullYear();
+    let month = today.getMonth();
+    let date = today.getDate();
+    let todayEvents = _.filter(events, (e)=>{
+      let eventDate = new Date(e.start);
+      console.log('EVENT DATE', eventDate, year, month, date);
+      return (
+        eventDate.getMonth() == month &&
+        eventDate.getDate() == date &&
+        eventDate.getFullYear() == year
+      );
+    });
+    console.log('TODAY EVENTS', todayEvents);
+    return todayEvents;
+  }
   render(){
     if (DEV) {console.log('ALL PROPS', this.props);}
     let events = this.props.allEvents;
+    let todayEvents = this._todayEvents(events);
     let mapRegion = MAP_REGION;
-    if (events.length) {
+    if (todayEvents.length) {
       mapRegion = {
-        latitude        : events[0].location.lat,
-        longitude       : events[0].location.lng,
+        latitude        : todayEvents[0].location.lat,
+        longitude       : todayEvents[0].location.lng,
         latitudeDelta   : 0.01,
         longitudeDelta  : 0.01
       }
@@ -57,7 +75,7 @@ class UpcomingAssemblies extends React.Component{
         <MapView
           style={Globals.map}
           region={mapRegion}
-          annotations={events.map((evt) => {
+          annotations={todayEvents.map((evt) => {
             return {
               latitude: evt.location.lat ? evt.location.lat : mapRegion.latitude,
               longitude: evt.location.lng ? evt.location.lng : mapRegion.longitude
@@ -68,7 +86,7 @@ class UpcomingAssemblies extends React.Component{
           <Text style={styles.bodyText}>Today</Text>
           <View style={styles.break}></View>
           <View style={styles.notificationsHolder}>
-          {this.props.allEvents.map((event, idx) => {
+          {todayEvents.map((event, idx) => {
             let {groups} = this.props;
             return (
               <UpcomingAssembly event={event} groups={groups} key={idx} />

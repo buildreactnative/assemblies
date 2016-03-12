@@ -222,7 +222,7 @@ class MessageBox extends React.Component{
               })
             }}
           >
-            <Text style={styles.buttonText}>Send</Text>
+            <Text style={Globals.submitButtonText}>Send</Text>
           </TouchableHighlight>
         </View>
       </View>
