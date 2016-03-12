@@ -47,7 +47,8 @@ class Register extends React.Component{
   }
   inputFocused (refName) {
     setTimeout(() => {
-      let scrollResponder = this.refs.scrollView.getScrollResponder();
+      let scrollView = this.refs.scrollView.getScrollResponder();
+      let scrollResponder = scrollView.getScrollRef();
       scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
         React.findNodeHandle(this.refs[refName]),
         110, //additionalOffset
