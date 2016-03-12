@@ -8,6 +8,7 @@ import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
 import CalendarPicker from '../third_party/calendar/CalendarPicker';
 import Picker from 'react-native-picker';
+import ErrorMessage from '../ui_helpers/error_message';
 import {TECHNOLOGIES, BASE_URL, TIMES_RANGE, DEV} from '../utilities/fixtures';
 import {
   overlayStyles,
@@ -62,6 +63,7 @@ class CreateEventConfirm extends React.Component{
       choseDuration: false,
       choseCapacity: false,
       showSubmit: true,
+      error: '',
     }
   }
   onDateChange(date){
@@ -237,7 +239,7 @@ class CreateEventConfirm extends React.Component{
           contentContainerStyle={{paddingBottom: 100}}
           ref="scrollView"
           >
-          <Text style={styles.h4}>When is the event date?</Text>
+          <Text style={styles.h4}>* When is the event date?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
               onPress={()=>{
@@ -250,7 +252,7 @@ class CreateEventConfirm extends React.Component{
             </TouchableOpacity>
           </View>
           {this.state.showCalendar ? this._renderCalendar() : null}
-          <Text style={styles.h4}>When does it start?</Text>
+          <Text style={styles.h4}>* When does it start?</Text>
           <View style={styles.formField}>
             <TouchableOpacity
               onPress={()=>this.setState({showTime: ! this.state.showTime, showSubmit: ! this.state.showSubmit})}
@@ -271,7 +273,6 @@ class CreateEventConfirm extends React.Component{
             </TouchableOpacity>
           </View>
 
-
           <Text style={styles.h4}>Attendee capacity</Text>
           <View style={styles.formField}>
             <TouchableOpacity
@@ -281,11 +282,16 @@ class CreateEventConfirm extends React.Component{
               <Icon name="ios-arrow-forward" color='#777' size={30} style={{marginRight: 15}}/>
             </TouchableOpacity>
           </View>
+          <ErrorMessage error={this.state.error}/>
         </ScrollView>
 
         <TouchableOpacity
           onPress={()=>{
             let {date, duration, capacity, time} = this.state;
+            if (! this.state.choseTime || ! this.state.choseDate){
+              this.setState({error: 'Missing required fields *.'});
+              return;
+            }
             let {location, summary, eventName, group, currentUser,} = this.props;
             let dateVal = date.valueOf();
             if (DEV) {console.log('TIME', time);}
