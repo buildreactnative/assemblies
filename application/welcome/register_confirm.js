@@ -2,6 +2,7 @@ import Colors from '../styles/colors';
 import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
+import Progress from 'react-native-progress';
 import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
 import {
   overlayStyles,
@@ -43,6 +44,7 @@ class RegisterConfirm extends React.Component{
       technologies: [],
       avatarSource: 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png',
       summary: '',
+      progress: 0,
     }
   }
   inputFocused(refName) {
@@ -53,13 +55,22 @@ class RegisterConfirm extends React.Component{
       )
     }, 50)
   }
+  _animateProgress(){
+    let {progress} = this.state;
+    let newProgress = progress + 0.2;
+    if (newProgress > 1){
+      newProgress = 1;
+    }
+    this.setState({progress: newProgress});
+  }
   _getOptionList(){
     return this.refs['OPTIONLIST']
   }
   _technologies(tech){
     this.setState({
-      technologies: this.state.technologies.concat(tech)
-    })
+      technologies: this.state.technologies.concat(tech),
+    });
+    this.setState({progress: 0.33});
   }
   _renderBackButton(){
     return (
@@ -102,7 +113,8 @@ class RegisterConfirm extends React.Component{
         const source = 'data:image/png;base64,' + response.data;
         if (DEV) {console.log('SRC', source);}
         this.setState({
-          avatarSource: source
+          avatarSource: source,
+          progress: 1,
         });
       }
     });
@@ -120,6 +132,14 @@ class RegisterConfirm extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
+        <Progress.Bar
+          borderRadius={0}
+          borderWidth={0}
+          color={Colors.brandPrimary}
+          unfilledColor="white"
+          borderColor={Colors.brandPrimary}
+          progress={this.state.progress}
+          width={deviceWidth} />
         <ScrollView
           ref="scrollView"
           style={styles.formContainer}>
@@ -136,9 +156,9 @@ class RegisterConfirm extends React.Component{
             onSelect={this._technologies.bind(this)}>
             {TECHNOLOGIES.map((tech, idx) => {
               return (
-                  <Option style={optionStyles} styleText={optionTextStyles} key={idx}>
-                    {tech}
-                  </Option>
+                <Option style={optionStyles} styleText={optionTextStyles} key={idx}>
+                  {tech}
+                </Option>
               )
             })}
           </Select>
@@ -152,6 +172,9 @@ class RegisterConfirm extends React.Component{
             blurOnSubmit={true}
             clearButtonMode='always'
             returnKeyType="next"
+            onSubmitEditing={()=>{
+              this.setState({progress: 0.67})
+            }}
             onFocus={this.inputFocused.bind(this, "summary")}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
