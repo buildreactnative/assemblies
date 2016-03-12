@@ -196,6 +196,7 @@ class Group extends React.Component{
     return (
       <View style={styles.container}>
       <NavigationBar
+        statusBar={{style: 'light-content', hidden: false}}
         title={{title: group.name, tintColor: 'white'}}
         tintColor={Colors.brandPrimary}
         leftButton={backButton}

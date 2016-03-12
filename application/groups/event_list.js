@@ -1,6 +1,5 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
 import moment from 'moment';
 import {truncate} from 'underscore.string';
 import _ from 'underscore';

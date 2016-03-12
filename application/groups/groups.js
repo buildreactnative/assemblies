@@ -152,6 +152,7 @@ class Groups extends React.Component{
     return (
       <View style={styles.container}>
         <NavigationBar
+          statusBar={{style: 'light-content', hidden: false}}
           title={titleConfig}
           tintColor={Colors.brandPrimary}
           rightButton={rightButtonConfig}

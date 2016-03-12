@@ -85,6 +85,7 @@ class UserTechnologies extends React.Component{
     return (
       <View style={styles.container}>
         <NavigationBar
+          statusBar={{style: 'light-content', hidden: false}}
           title={titleConfig}
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}

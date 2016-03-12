@@ -93,6 +93,7 @@ class Register extends React.Component{
       <View style={styles.container}>
         <NavigationBar
           ref="navbar"
+          statusBar={{style: 'light-content', hidden: false}}
           title={titleConfig}
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}

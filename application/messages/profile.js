@@ -73,6 +73,7 @@ class Profile extends React.Component{
     return (
       <View style={styles.container}>
         <NavigationBar
+          statusBar={{style: 'light-content', hidden: false}}
           tintColor={Colors.brandPrimary}
           title={titleConfig}
           leftButton={back}
