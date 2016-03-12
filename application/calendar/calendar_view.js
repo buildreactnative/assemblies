@@ -36,6 +36,7 @@ import React, {
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
+
 class CalendarView extends React.Component{
   render(){
     return (
@@ -51,7 +52,9 @@ class CalendarView extends React.Component{
                 <CalendarList
                   groups={this.props.groups.concat(this.props.suggestedGroups)}
                   changeState={this.props.changeState}
-                  events={this.props.allEvents}
+                  events={this.props.events.sort(function(a, b){
+                    return a.start > b.start
+                  })}
                   navigator={navigator}
                 />
               )
