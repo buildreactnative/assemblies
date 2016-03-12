@@ -2,7 +2,8 @@ import Colors from '../styles/colors';
 import Globals from '../styles/globals';
 import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {GooglePlacesAutocomplete} from '../third_party/google_places/autocomplete';
+import ErrorMessage from '../ui_helpers/error_message';
 import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
 import {TECHNOLOGIES,} from '../utilities/fixtures';
@@ -47,6 +48,7 @@ class CreateGroup extends React.Component{
       members: {},
       imageUrl: "http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg",
       events: {},
+      error: '',
     }
   }
   inputFocused (refName) {
@@ -94,11 +96,19 @@ class CreateGroup extends React.Component{
           tintColor={Colors.brandPrimary}
           leftButton={leftButtonConfig}
         />
-        <ScrollView style={styles.formContainer} ref="scrollView">
+        <ScrollView
+          style={styles.formContainer}
+          contentContainerStyle={{paddingBottom: 100}}
+          ref="scrollView">
           <Text style={styles.h4}>Name of your assembly</Text>
           <View style={styles.formField}>
             <TextInput
               ref="name"
+              returnKeyType="next"
+              autofocus={true}
+              onSubmitEditing={()=>{
+                this.refs.location.triggerFocus();
+              }}
               onFocus={this.inputFocused.bind(this, 'name')}
               onChangeText={(text)=> this.setState({name: text})}
               placeholderTextColor='#bbb'
@@ -112,6 +122,8 @@ class CreateGroup extends React.Component{
             placeholder='Your city'
             minLength={2} // minimum length of text to search
             autoFocus={false}
+            onFocus={this.inputFocused.bind(this, "location")}
+            ref="location"
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
               this.setState({
@@ -119,7 +131,8 @@ class CreateGroup extends React.Component{
                   city: details.address_components[0].long_name,
                   state: details.address_components[2].short_name,
                 })
-              })
+              });
+              this.refs.summary.focus();
             }}
             getDefaultValue={() => {
               return ''; // text input default value
@@ -141,6 +154,9 @@ class CreateGroup extends React.Component{
           <Text style={styles.h4}>Who should join and why?</Text>
           <TextInput
             ref="summary"
+            returnKeyType="next"
+            blurOnSubmit={true}
+            clearButtonMode='always'
             onFocus={this.inputFocused.bind(this, 'summary')}
             onChangeText={(text)=> this.setState({summary: text})}
             placeholderTextColor='#bbb'
@@ -148,10 +164,17 @@ class CreateGroup extends React.Component{
             multiline={true}
             placeholder="Type a message to get people interested in your group..."
           />
+          <ErrorMessage error={this.state.error}/>
         </ScrollView>
         <TouchableOpacity
           onPress={()=>{
             let {name, location, summary} = this.state;
+            if (name == '' || ! location) {
+              this.setState({
+                error: 'Must fill out required fields *.'
+              });
+              return;
+            }
             this.props.navigator.push({
               name: 'CreateGroupConfirm',
               groupName: name,
@@ -159,7 +182,7 @@ class CreateGroup extends React.Component{
               summary: summary,
             })
           }}
-          style={Globals.submitButton}
+          style={[Globals.submitButton, {marginBottom: 50}]}
         >
           <Text style={Globals.submitButtonText}>Next</Text>
         </TouchableOpacity>
