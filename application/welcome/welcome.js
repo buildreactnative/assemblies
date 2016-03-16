@@ -30,21 +30,10 @@ class Welcome extends Component {
             this.props.navigator.push({
               name: 'Register'
             })
-          }}
-        >
+          }}>
           <Icon style={styles.icon} name="person" size={36} color="white" />
           <Text style={styles.facebookButtonText}>Create an Account</Text>
         </TouchableOpacity>
-        {/*<TouchableOpacity style={styles.registerButton}
-          onPress={()=> {
-            this.props.navigator.push({
-              name: 'Login'
-            })
-          }}
-        >
-          <Icon style={styles.icon} name="unlocked" size={36} color='white' />
-          <Text style={styles.facebookButtonText}>Login</Text>
-        </TouchableOpacity>*/}
       </View>
     );
   }

@@ -164,8 +164,8 @@ export default class Register extends Component{
                 rankby: 'distance',
               }}
               filterReverseGeocodingByTypes={['street_address']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-              predefinedPlaces={[]}
-            />
+              predefinedPlaces={[]}>
+            </GooglePlacesAutocomplete>
           </View>
           <Text style={styles.h4}>* Email</Text>
           <View style={{paddingBottom: 10}}>

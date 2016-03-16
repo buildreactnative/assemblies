@@ -30,6 +30,7 @@ import React, {
   Image,
   TouchableOpacity,
   Dimensions,
+  ActivityIndicatorIOS,
   NativeModules,
   InteractionManager,
 } from 'react-native';
@@ -82,17 +83,22 @@ export default class RegisterConfirm extends Component{
       </TouchableOpacity>
     )
   }
+  _changeTechnologies(idx){
+    this.setState({
+      technologies: [
+      ...this.state.technologies.slice(0, idx),
+      ...this.state.technologies.slice(idx+1)]
+    });
+  }
   _renderTechnologies(){
     return (
       <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 10}}>
         {this.state.technologies.map((technology, idx) => {
           return (
-            <TouchableOpacity key={idx} style={styles.techContainer} onPress={()=>{
-              this.setState({technologies: [...this.state.technologies.slice(0, idx), ...this.state.technologies.slice(idx+1)]})
-            }}>
+            <TouchableOpacity key={idx} style={styles.techContainer} onPress={this._changeTechnologies.bind(this, idx)}>
               <Text style={styles.technologyList}>{technology}</Text>
             </TouchableOpacity>
-          )
+          );
         })}
       </View>
     )
@@ -136,6 +142,7 @@ export default class RegisterConfirm extends Component{
       messageIds        : [],
       suggestedEventIds : [],
       summary           : summary,
+      sendingData       : false,
     };
     if (DEV) {console.log('USER PARAMS', userParams);}
     fetch(`${BASE_URL}/users`, {
@@ -147,6 +154,7 @@ export default class RegisterConfirm extends Component{
     .then((data) => {
       if (data.errors) {
         if (DEV) {console.log(data.errors);}
+        this.setState({sendingData: false});
       } else {
         if (DEV) {console.log('DATA', data);}
         let user = {username: email, password: password};
@@ -160,6 +168,7 @@ export default class RegisterConfirm extends Component{
           if (data.errors || data.status == 401) {
             if (DEV) {console.log(data.errors);}
             errors = 'Login failed'
+            this.setState({sendingData: false});
           }
           else {
             if (DEV) {console.log('DATA', data);}
@@ -171,18 +180,21 @@ export default class RegisterConfirm extends Component{
             .then((response) => response.json())
             .then((data) => {
               this.props.updateUser(data);
+              this.setState({sendingData: false});
               this.props.navigator.push({
                 name: 'Dashboard'
               });
             })
             .catch((error) => {
               if (DEV) {console.log(error)}
+              this.setState({sendingData: false});
             })
             .done();
           }
         })
         .catch((error) => {
           if (DEV) {console.log(error)}
+          this.setState({sendingData: false})
         })
         .done();
       }
@@ -191,6 +203,19 @@ export default class RegisterConfirm extends Component{
       if (DEV) {console.log(error)}
     })
     .done();
+  }
+  _buttonText(){
+    return (
+      <Text style={Globals.submitButtonText}>Create Account</Text>
+    );
+  }
+  _sendingData(){
+    return (
+      <Text style={Globals.submitButtonText}>
+        <ActivityIndicatorIOS style={{marginRight: 4,}}/>
+        Create Account
+      </Text>
+    )
   }
   render(){
     let {technologies} = this.state;
@@ -263,8 +288,10 @@ export default class RegisterConfirm extends Component{
             <Image source={{uri: this.state.avatarSource}} style={styles.avatar}/>
           </View>
         </ScrollView>
-        <TouchableOpacity style={Globals.submitButton} onPress={this._registerUser.bind(this)}>
-          <Text style={Globals.submitButtonText}>Create Account</Text>
+        <TouchableOpacity style={Globals.submitButton} onPress={() => {
+            this.setState({sendingData: true}, this._registerUser.bind(this));
+          }}>
+          {this.state.sendingData ? this._sendingData() : this._buttonText()}
         </TouchableOpacity>
       </View>
     )
