@@ -75,9 +75,10 @@ class assembly extends Component {
     try {
       var userParams = await AsyncStorage.getItem('USER_PARAMS');
       if (userParams !== null){
+        console.log('USER PARAMS', userParams);
         let parsedUser = JSON.parse(userParams);
         console.log('USER PARAMS', parsedUser);
-        if (parsedUser.username && parsedUser.password){
+        if (!! parsedUser && parsedUser.username && parsedUser.password){
           let errors = null;
           if (DEV) {console.log("LOGIN", `${BASE_URL}/users/login`)}
           fetch(`${BASE_URL}/users/login`, {

@@ -152,6 +152,8 @@ class Register extends React.Component{
                   locationError: '',
                   location: _.extend({}, details.geometry.location, {
                     formatted_address: details.formatted_address,
+                    city: details.address_components[0].long_name,
+                    state: details.address_components[2].short_name,
                   })
                 }, ()=> this._testErrors());
                 this.refs.emailField.focus();

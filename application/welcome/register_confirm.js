@@ -1,15 +1,18 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import Progress from 'react-native-progress';
-import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
+import Colors         from '../styles/colors';
+import Globals        from '../styles/globals';
+import Icon           from 'react-native-vector-icons/Ionicons';
+import NavigationBar  from 'react-native-navbar';
+import Progress       from 'react-native-progress';
+import _              from 'underscore';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
+
 import {
   overlayStyles,
   optionTextStyles,
   optionStyles,
   selectStyles,
 } from '../utilities/style_utilities'
+
 import DropDown, {
   Select,
   Option,
@@ -23,20 +26,19 @@ import React, {
   Text,
   TextInput,
   View,
-  TabBarIOS,
   AsyncStorage,
   Image,
   TouchableOpacity,
   Dimensions,
   NativeModules,
   InteractionManager,
-  ActivityIndicatorIOS,
 } from 'react-native';
+
+const DEFAULT_AVATAR = 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png';
 
 let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-const DEFAULT_AVATAR = 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png';
 class RegisterConfirm extends React.Component{
   constructor(props){
     super(props);
@@ -119,6 +121,78 @@ class RegisterConfirm extends React.Component{
       }
     });
   }
+  _registerUser(){
+    let {avatarSource, technologies, summary,} = this.state;
+    let {firstName, lastName, email, password, location,} = this.props;
+    let userParams = {
+      location          : location || {},
+      firstName         : firstName,
+      lastName          : lastName,
+      username          : email,
+      avatarUrl         : avatarSource,
+      technologies      : technologies,
+      password          : password,
+      groupIds          : [],
+      eventIds          : [],
+      messageIds        : [],
+      suggestedEventIds : [],
+      summary           : summary,
+    };
+    if (DEV) {console.log('USER PARAMS', userParams);}
+    fetch(`${BASE_URL}/users`, {
+      method    : "POST",
+      headers   : HEADERS,
+      body      : JSON.stringify(userParams)
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.errors) {
+        if (DEV) {console.log(data.errors);}
+      } else {
+        if (DEV) {console.log('DATA', data);}
+        let user = {username: email, password: password};
+        fetch(`${BASE_URL}/users/login`, {
+          method    : "POST",
+          headers   : HEADERS,
+          body      : JSON.stringify(user)
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.errors || data.status == 401) {
+            if (DEV) {console.log(data.errors);}
+            errors = 'Login failed'
+          }
+          else {
+            if (DEV) {console.log('DATA', data);}
+            AsyncStorage.setItem('USER_PARAMS', JSON.stringify(user));
+            fetch(`${BASE_URL}/users/me`, {
+              method    : "GET",
+              headers   : _.extend({}, {'Set-Cookie': `sid=${data.id}`}, HEADERS),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              this.props.updateUser(data);
+              this.props.navigator.push({
+                name: 'Dashboard'
+              });
+            })
+            .catch((error) => {
+              if (DEV) {console.log(error)}
+            })
+            .done();
+          }
+        })
+        .catch((error) => {
+          if (DEV) {console.log(error)}
+        })
+        .done();
+      }
+    })
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+    })
+    .done();
+  }
   render(){
     let {technologies} = this.state;
     let titleConfig = {title: 'Create Account', tintColor: 'white'}
@@ -190,90 +264,7 @@ class RegisterConfirm extends React.Component{
             <Image source={{uri: this.state.avatarSource}} style={styles.avatar}/>
           </View>
         </ScrollView>
-        <TouchableOpacity style={Globals.submitButton} onPress={()=> {
-          let {avatarSource, technologies, summary,} = this.state;
-          let {firstName, lastName, email, password, location,} = this.props;
-          let user = {
-            location: location || {},
-            firstName: firstName,
-            lastName: lastName,
-            username: email,
-            avatarUrl: avatarSource,
-            technologies: technologies,
-            password: password,
-            groupIds: [],
-            eventIds: [],
-            messageIds: [],
-            suggestedEventIds: [],
-            summary: summary,
-          }
-          if (DEV) {console.log('USER PARAMS', user);}
-          fetch(`${BASE_URL}/users`, {
-            method: "POST",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user)
-          })
-          .then((response) => response.json())
-          .then((data) => {
-              if (data.errors) {
-                if (DEV) {console.log(data.errors);}
-              }
-              else {
-                if (DEV) {console.log('DATA', data);}
-                let user = {username: email, password: password};
-                fetch(`${BASE_URL}/users/login`, {
-                  method: "POST",
-                  headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify(user)
-                })
-                .then((response) => response.json())
-                .then((data) => {
-                  if (data.errors || data.status == 401) {
-                    if (DEV) {console.log(data.errors);}
-                    errors = 'Login failed'
-                  }
-                  else {
-                    if (DEV) {console.log('DATA', data);}
-                    AsyncStorage.setItem('USER_PARAMS', JSON.stringify(user))
-                    fetch(`${BASE_URL}/users/me`, {
-                      method: "GET",
-                      headers: {
-                        'Set-Cookie': `sid=${data.id}`,
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                      },
-                    })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      this.props.updateUser(data);
-                      this.props.navigator.push({
-                        name: 'Dashboard'
-                      });
-                    })
-                    .catch((error) => {
-                      if (DEV) {console.log(error)}
-                    })
-                    .done();
-                  }
-                })
-                .catch((error) => {
-                  if (DEV) {console.log(error)}
-                })
-                .done();
-              }
-          })
-          .catch((error) => {
-            if (DEV) {console.log(error)}
-          })
-          .done();
-
-        }}>
+        <TouchableOpacity style={Globals.submitButton} onPress={this._registerUser.bind(this)}>
           <Text style={Globals.submitButtonText}>Create Account</Text>
         </TouchableOpacity>
       </View>
