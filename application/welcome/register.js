@@ -1,52 +1,44 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
+import Icon                       from 'react-native-vector-icons/Ionicons';
+import NavigationBar              from 'react-native-navbar';
+import Progress                   from 'react-native-progress';
+import _                          from 'underscore';
+import Colors                     from '../styles/colors';
+import Globals                    from '../styles/globals';
 import {GooglePlacesAutocomplete} from '../third_party/google_places/autocomplete';
-import Progress from 'react-native-progress';
-import _ from 'underscore';
-import {autocompleteStyles} from '../utilities/style_utilities'
-import {DEV} from '../utilities/fixtures';
-import ErrorMessage from '../ui_helpers/error_message';
+import {autocompleteStyles}       from '../utilities/style_utilities'
+import {DEV}                      from '../utilities/fixtures';
+import ErrorMessage               from '../ui_helpers/error_message';
 
 import React, {
   ScrollView,
   Component,
   StyleSheet,
   Text,
-  Easing,
   TextInput,
   View,
-  TabBarIOS,
-  Image,
   TouchableOpacity,
   Dimensions,
-  NativeModules,
-  Animated,
-  InteractionManager,
-  DeviceEventEmitter,
-  ActivityIndicatorIOS,
 } from 'react-native';
 
-  const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class Register extends React.Component{
+export default class Register extends Component{
   constructor(props){
     super(props);
     this.state = {
-      email: '',
-      emailError: '',
-      password: '',
-      passwordError: '',
-      firstName: '',
-      firstNameError: '',
-      lastName: '',
-      lastNameError: '',
-      location: null,
-      locationError: '',
-      formError: '',
-      height: deviceHeight,
-      progress: 0,
+      email           : '',
+      emailError      : '',
+      password        : '',
+      passwordError   : '',
+      firstName       : '',
+      firstNameError  : '',
+      lastName        : '',
+      lastNameError   : '',
+      locationError   : '',
+      formError       : '',
+      location        : null,
+      progress        : 0,
+      height          : deviceHeight,
     }
   }
   inputFocused (refName) {
@@ -122,19 +114,18 @@ class Register extends React.Component{
         <ScrollView
           style={[styles.formContainer, {height: this.state.height}]}
           ref="scrollView"
-          keyboardDismissMode="interactive"
-        >
+          keyboardDismissMode="interactive">
           <TouchableOpacity onPress={()=>{
             this.props.navigator.push({
               name: 'Login'
-            })
+            });
           }}>
             <Text style={styles.h5}>
               Already have an account? <Text style={styles.technologyList}>Login</Text>
             </Text>
           </TouchableOpacity>
           <Text style={styles.h4}>{"* Where are you looking for assemblies?"}</Text>
-          <View style={{paddingBottom: 10}}>
+          <View style={styles.pb}>
             <ErrorMessage error={this.state.locationError}/>
           </View>
           <View ref="location" style={{flex: 1,}}>
@@ -161,9 +152,9 @@ class Register extends React.Component{
               }}
               getDefaultValue={() => {return '';}}
               query={{
-                key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
-                language: 'en', // language of the results
-                types: '(cities)', // default: 'geocode'
+                key       : 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
+                language  : 'en', // language of the results
+                types     : '(cities)', // default: 'geocode'
               }}
               currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
               currentLocationLabel="Current location"
@@ -196,7 +187,7 @@ class Register extends React.Component{
               placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"/>
           </View>
           <Text style={styles.h4}>* Password</Text>
-          <View style={{paddingBottom: 10}}>
+          <View style={styles.pb}>
             <ErrorMessage error={this.state.passwordError}/>
           </View>
           <View style={styles.formField} ref="password">
@@ -212,30 +203,38 @@ class Register extends React.Component{
               secureTextEntry={true}
               autoCapitalize="none"
               maxLength={20}
-              placeholderTextColor='#bbb' style={styles.input} placeholder="Your password"/>
+              placeholderTextColor='#bbb'
+              style={styles.input}
+              placeholder="Your password"
+            />
           </View>
           <Text style={styles.h4}>* First Name</Text>
-          <View style={{paddingBottom: 10}}>
+          <View style={styles.pb}>
             <ErrorMessage error={this.state.firstNameError}/>
           </View>
           <View style={styles.formField} ref="firstName">
             <TextInput
               ref="firstNameField"
               returnKeyType="next"
-              onSubmitEditing={()=>{
+              onSubmitEditing={() =>{
                 this.refs.lastNameField.focus();
                 this._animateProgress();
               }}
               onFocus={this.inputFocused.bind(this, "firstName")}
               maxLength={20}
-              onChangeText={(text)=> this.setState({firstName: text, firstNameError: ''}, ()=> this._testErrors())}
+              onChangeText={(text) => {
+                this.setState({
+                  firstNameError  : '',
+                  firstName       : text,
+                }, () => this._testErrors())
+              }}
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Your first name"
             />
           </View>
           <Text style={styles.h4}>* Last name</Text>
-          <View style={{paddingBottom: 10}}>
+          <View style={styles.pb}>
             <ErrorMessage error={this.state.lastNameError}/>
           </View>
           <View style={styles.formField} ref="lastName">
@@ -243,11 +242,14 @@ class Register extends React.Component{
               returnKeyType="next"
               maxLength={20}
               ref="lastNameField"
-              onSubmitEditing={()=>{
-                this._animateProgress();
-              }}
+              onSubmitEditing={()=>{this._animateProgress();}}
               onFocus={this.inputFocused.bind(this, 'lastName')}
-              onChangeText={(text) => this.setState({lastName: text, lastNameError: ''}, ()=> this._testErrors())}
+              onChangeText={(text) => {
+                this.setState({
+                  lastName        : text,
+                  lastNameError   : ''
+                }, () => this._testErrors())
+              }}
               placeholderTextColor='#bbb'
               style={styles.input}
               placeholder="Your last name"
@@ -279,33 +281,33 @@ class Register extends React.Component{
           }
           if (formError == 'Complete the form to continue.'){
             this.setState({
-              emailError: emailError,
-              passwordError: passwordError,
-              firstNameError: firstNameError,
-              lastNameError: lastNameError,
-              locationError: locationError,
-              formError: formError,
+              emailError      : emailError,
+              passwordError   : passwordError,
+              firstNameError  : firstNameError,
+              lastNameError   : lastNameError,
+              locationError   : locationError,
+              formError       : formError,
             });
             return;
           } else {
             this.props.navigator.push({
-              name: 'RegisterConfirm',
-              email: this.state.email,
-              firstName: this.state.firstName,
-              lastName: this.state.lastName,
-              location: this.state.location,
-              password: this.state.password,
+              name      : 'RegisterConfirm',
+              email     : this.state.email,
+              firstName : this.state.firstName,
+              lastName  : this.state.lastName,
+              location  : this.state.location,
+              password  : this.state.password,
             });
           }
         }}>
           <Text style={Globals.submitButtonText}>Next</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
-}
+};
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -379,6 +381,9 @@ let styles = {
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
+  pb: {
+    paddingBottom: 10,
+  },
   largeInput: {
     color: '#ccc',
     fontSize: 18,
@@ -388,6 +393,4 @@ let styles = {
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
-}
-
-module.exports = Register
+});

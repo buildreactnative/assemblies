@@ -35,11 +35,10 @@ import React, {
 } from 'react-native';
 
 const DEFAULT_AVATAR = 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png';
-
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
-const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-class RegisterConfirm extends React.Component{
+export default class RegisterConfirm extends Component{
   constructor(props){
     super(props);
     this.state = {
@@ -115,8 +114,8 @@ class RegisterConfirm extends React.Component{
         const source = 'data:image/png;base64,' + response.data;
         if (DEV) {console.log('SRC', source);}
         this.setState({
-          avatarSource: source,
-          progress: 1,
+          avatarSource    : source,
+          progress        : 1,
         });
       }
     });
@@ -233,7 +232,7 @@ class RegisterConfirm extends React.Component{
                 <Option style={optionStyles} styleText={optionTextStyles} key={idx}>
                   {tech}
                 </Option>
-              )
+              );
             })}
           </Select>
 
@@ -272,7 +271,7 @@ class RegisterConfirm extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -383,6 +382,4 @@ let styles = {
     fontWeight: '300',
     fontSize: 20,
   },
-}
-
-module.exports = RegisterConfirm
+});
