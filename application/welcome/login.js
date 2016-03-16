@@ -5,7 +5,7 @@ import NavigationBar from 'react-native-navbar';
 import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
 import _ from 'underscore';
 import ErrorMessage from '../ui_helpers/error_message';
-import {BASE_URL, DEV} from '../utilities/fixtures';
+import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -15,25 +15,20 @@ import React, {
   AsyncStorage,
   TextInput,
   View,
-  TabBarIOS,
-  Image,
   TouchableOpacity,
   Dimensions,
-  NativeModules,
-  DeviceEventEmitter,
   InteractionManager,
-  ActivityIndicatorIOS,
 } from 'react-native';
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class Login extends React.Component{
+export default class Login extends Component{
   constructor(props){
     super(props);
     this.state = {
-      email: '',
-      password: '',
-      connectionError: '',
+      email           : '',
+      password        : '',
+      connectionError : '',
     };
   }
   inputFocused(refName) {
@@ -42,7 +37,7 @@ class Login extends React.Component{
       scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
         React.findNodeHandle(this.refs[refName]), 110, true
       )
-    }, 50)
+    }, 50);
   }
   _renderBackButton(){
     return (
@@ -52,6 +47,48 @@ class Login extends React.Component{
         <Icon name="ios-arrow-back" size={25} color="#ccc"/>
       </TouchableOpacity>
     )
+  }
+  _loginUser(){
+    let {email, password,} = this.state;
+    let user = {username: email, password: password};
+    let errors = null;
+    if (DEV) {console.log("LOGIN", `${BASE_URL}/users/login`)}
+    fetch(`${BASE_URL}/users/login`, {
+      method: "POST",
+      headers: HEADERS,
+      body: JSON.stringify(user)
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.errors || data.status == 401) {
+        if (DEV) {console.log('LOGIN FAILED', data);}
+        this.setState({connectionError: 'Email or password was incorrect.'})
+      } else {
+        if (DEV) {console.log('DATA', data);}
+        AsyncStorage.setItem('sid', data.id)
+        fetch(`${BASE_URL}/users/me`, {
+          method: "GET",
+          headers: _.extend({'Set-Cookie': `sid=${data.id}`}, HEADERS),
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          this.props.updateUser(data);
+          this.props.navigator.push({
+            name: 'Dashboard'
+          });
+        })
+        .catch((error) => {
+          if (DEV) {console.log(error)}
+          this.setState({connectionError: 'Connection error.'})
+        })
+        .done();
+      }
+    })
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+      this.setState({connectionError: 'Email or password was incorrect.'})
+    })
+    .done();
   }
   render(){
     let titleConfig = {title: 'Login', tintColor: 'white'}
@@ -104,62 +141,15 @@ class Login extends React.Component{
             <ErrorMessage error={this.state.connectionError}/>
           </View>
         </ScrollView>
-
-        <TouchableOpacity style={Globals.submitButton} onPress={()=>{
-          let {email, password,} = this.state;
-          let user = {username: email, password: password};
-          let errors = null;
-          if (DEV) {console.log("LOGIN", `${BASE_URL}/users/login`)}
-          fetch(`${BASE_URL}/users/login`, {
-            method: "POST",
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user)
-          })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.errors || data.status == 401) {
-              if (DEV) {console.log('LOGIN FAILED', data);}
-              this.setState({connectionError: 'Email or password was incorrect.'})
-            } else {
-              if (DEV) {console.log('DATA', data);}
-              AsyncStorage.setItem('sid', data.id)
-              fetch(`${BASE_URL}/users/me`, {
-                method: "GET",
-                headers: {
-                    'Set-Cookie': `sid=${data.id}`,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-              })
-              .then((response) => response.json())
-              .then((data) => {
-                this.props.updateUser(data);
-                this.props.navigator.push({
-                  name: 'Dashboard'
-                });
-              })
-              .catch((error) => {
-                if (DEV) {console.log(error)}
-              })
-              .done();
-            }
-          })
-          .catch((error) => {
-            if (DEV) {console.log(error)}
-          })
-          .done();
-        }}>
+        <TouchableOpacity style={Globals.submitButton} onPress={this._loginUser.bind(this)}>
           <Text style={Globals.submitButtonText}>Login</Text>
         </TouchableOpacity>
       </View>
-    )
+    );
   }
-}
+};
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -246,6 +236,4 @@ let styles = {
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
-}
-
-module.exports = Login
+});

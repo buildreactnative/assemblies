@@ -89,7 +89,7 @@ class UpcomingAssemblies extends React.Component{
           {todayEvents.map((event, idx) => {
             let {groups} = this.props;
             return (
-              <UpcomingAssembly event={event} groups={groups} key={idx} />
+              <UpcomingAssembly currentUser={this.props.currentUser} event={event} groups={groups} key={idx} />
             )
           })}
           </View>

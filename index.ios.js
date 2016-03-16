@@ -1,7 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
 'use strict';
 import Colors from './application/styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -17,10 +13,7 @@ import React, {
   AppRegistry,
   Component,
   StyleSheet,
-  Text,
   View,
-  Image,
-  TouchableOpacity,
   Dimensions,
   AsyncStorage,
   NativeModules,
@@ -44,13 +37,12 @@ class assembly extends Component {
     if (DEV) {console.log('CLIENT ID', DeviceInfo)}
     NativeModules.SegmentAnalytics.identify(clientId);
     this._loadUser()
-
   }
   async _loadUser(){
     try {
       var sid = await AsyncStorage.getItem('sid');
       if (DEV) {console.log('SID', sid);}
-      if (sid !== null && sid !== 'false'){
+      if (sid != null && sid != 'false'){
         fetch(`${BASE_URL}/users/me`, {
           method: "GET",
           headers: {

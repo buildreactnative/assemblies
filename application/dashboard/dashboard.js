@@ -115,7 +115,16 @@ class Dashboard extends Component {
   }
   _fetchLastEvent(){
     let {currentUser} = this.props;
-    let url = `${BASE_URL}/events?{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}`;
+    let d = new Date();
+    d.setHours(0);
+    console.log('VALUE', d.valueOf());
+    let url = `${BASE_URL}/events?{"$and": [{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}, {"start" : {"$gte": ${JSON.stringify(d.valueOf())}}}]}`;
+    console.log("URL", url);
+    // {"$and": [
+    //   {"groupId": {"$in": ["2a34e38590259838","36609ec1a48ab9a4","692ad465cee2e999","918dbbab69b329ba","14456ee69df4b9dd","034e8e3fce08ebda","c21b6af93ae0ebdd"]}},
+    //   {"start" : {"$gt": 0}}
+    //   ]
+    // }
     fetch(url, {
       method: "GET",
       headers: {
@@ -152,7 +161,6 @@ class Dashboard extends Component {
   _fetchAllEvents(){
     let d = new Date();
     d.setHours(0);
-    d.setTime(0);
     let url = `${BASE_URL}/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
     fetch(url, {
       method: "GET",
