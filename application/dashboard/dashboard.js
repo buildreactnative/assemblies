@@ -1,34 +1,29 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import ActivityView from '../activity/activity_view';
-import CalendarView from '../calendar/calendar_view';
-import MessagesView from '../messages/messages_view';
-import Profile from '../messages/profile';
-import Settings from '../profile/settings';
-import GroupView from '../groups/group_view';
-import {BASE_URL, DEV} from '../utilities/fixtures';
-import _ from 'underscore';
+import _                from 'underscore';
+import Icon             from 'react-native-vector-icons/Ionicons';
+import Colors           from '../styles/colors';
+import ActivityView     from '../activity/activity_view';
+import CalendarView     from '../calendar/calendar_view';
+import MessagesView     from '../messages/messages_view';
+import Profile          from '../messages/profile';
+import Settings         from '../profile/settings';
+import GroupView        from '../groups/group_view';
+import {BASE_URL, DEV}  from '../utilities/fixtures';
 
 import React, {
-  ScrollView,
   Component,
   AsyncStorage,
   StyleSheet,
-  Text,
   View,
   TabBarIOS,
   ListView,
-  Image,
-  TouchableOpacity,
   Dimensions,
-  NativeModules,
   InteractionManager,
   ActivityIndicatorIOS,
 } from 'react-native';
 
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class Dashboard extends Component {
+export default class Dashboard extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -362,5 +357,3 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
 });
-
-module.exports = Dashboard;

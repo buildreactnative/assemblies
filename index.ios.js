@@ -21,6 +21,7 @@ import React, {
   AsyncStorage,
   NativeModules,
   Navigator,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
@@ -40,36 +41,6 @@ class assembly extends Component {
     if (DEV) {console.log('CLIENT ID', DeviceInfo)}
     NativeModules.SegmentAnalytics.identify(clientId);
     this._loadUser()
-  }
-  _fetchUser(sid){
-    let headers = _.extend({}, {'Set-Cookie': 'sid=' + sid}, HEADERS);
-    if (DEV) {console.log('HEADERS', headers);}
-    fetch(`${BASE_URL}/users/me`, {
-      method  : "GET",
-      headers : headers
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.errors) {
-        if (DEV) {console.log('ERRORS', data.errors);}
-        this.setState({foundUser: true})
-      }
-      else {
-        if (DEV) {console.log('DATA', data);}
-        this.setState({
-          foundUser: true,
-          initialRoute: 'Dashboard',
-          currentUser: data,
-          sessionId: sid,
-        })
-      }
-    })
-    .catch((error) => {
-      if (DEV) {console.log(error)}
-      // AsyncStorage.setItem('sid', 'false');
-      this.setState({foundUser: true})
-    })
-    .done();
   }
   async _loadUser(){
     try {
@@ -128,10 +99,17 @@ class assembly extends Component {
   updateUser(user){
     this.setState({currentUser: user})
   }
-  render() {
+  _loading(){
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicatorIOS size="large"/>
+      </View>
+    )
+  }
+  render(){
     let {foundUser, currentUser, sessionId,} = this.state;
     if (! foundUser) {
-      return <View style={{backgroundColor: Colors.inactive, flex: 1,}}></View>
+      return this._loading();
     }
     console.log('INITIAL ROUTE', this.state.initialRoute);
     return (
@@ -171,10 +149,9 @@ class assembly extends Component {
                     updateUser={this.updateUser.bind(this)}
                     {...route}
                   />
-                )
+                );
                 break;
             }
-
           }}
         />
       </View>
