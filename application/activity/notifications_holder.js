@@ -1,10 +1,10 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import Icon from 'react-native-vector-icons/Ionicons';
-import ActivityView from '../activity/activity_view';
-import Notification from './notification';
-import moment from 'moment';
-import {DEV} from '../utilities/fixtures';
+import Colors         from '../styles/colors';
+import Globals        from '../styles/globals';
+import Icon           from 'react-native-vector-icons/Ionicons';
+import ActivityView   from '../activity/activity_view';
+import Notification   from './notification';
+import moment         from 'moment';
+import {DEV}          from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -29,17 +29,26 @@ const NOTIFICATIONS = [
   {time: new Date(), message: 'new message from Nick', subject: 'Message', seen: false, redirect: '/'},
   {time: new Date(), message: 'new event in JavaScript', subject: 'Event', seen: false, redirect: '/'},
 ]
-const MAP_REGION = {
-  latitude        : 40.688816,
-  longitude       : -73.988410,
-  latitudeDelta   : 0.01,
-  longitudeDelta  : 0.01
-};
+const MAP_REGION = {};
 
-class NotificationsHolder extends React.Component{
+export default class NotificationsHolder extends Component{
+  _renderMap(mapRegion){
+    return (
+      <MapView
+        style={Globals.map}
+        region={mapRegion}
+        annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
+      />
+    )
+  }
+  _renderEmptyMap(){
+    return (
+      <View style={[Globals.map, {backgroundColor: Colors.inactive}]}></View>
+    )
+  }
   render(){
     let {nextEvent} = this.props;
-    let mapRegion = MAP_REGION;
+    let mapRegion = null;
     if (nextEvent) {
       mapRegion = {
         latitude: nextEvent.location.lat,
@@ -58,11 +67,8 @@ class NotificationsHolder extends React.Component{
           <Text style={styles.bodyText}>Next Assembly: {nextEvent ? nextEvent.name : ''}</Text>
           <Text style={styles.dateText}>{nextEvent ? moment(new Date(parseInt(nextEvent.start))).format('dddd MMM Do, h:mm a') : ''}</Text>
         </View>
-        <MapView
-          style={Globals.map}
-          region={mapRegion}
-          annotations={[{latitude: mapRegion.latitude, longitude: mapRegion.longitude}]}
-        />
+        {nextEvent ? this._renderMap(mapRegion) : this._renderEmptyMap()}
+
         <View style={styles.notificationsContainer}>
           <Text style={styles.bodyText}>Notifications</Text>
           <View style={styles.break}></View>
@@ -80,7 +86,7 @@ class NotificationsHolder extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   bodyText: {
     color: Colors.bodyText,
 		fontSize: 16,
@@ -108,5 +114,4 @@ let styles = {
     flex: 1,
     paddingTop: 0,
   },
-}
-module.exports = NotificationsHolder;
+});

@@ -1,26 +1,20 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NotificationsHolder from './notifications_holder';
-import UpcomingAssemblies from './upcoming_assemblies';
-import ActivityHolder from './activity_holder';
-import MessageList from '../messages/messages_list';
-import MessageBox from '../messages/message_box';
-import {BASE_URL} from '../utilities/fixtures';
-import Event from '../groups/event';
-import Profile from '../messages/profile';
-import Group from '../groups/group';
-import _ from 'underscore';
-import {DEV} from '../utilities/fixtures';
+import Icon                 from 'react-native-vector-icons/Ionicons';
+import _                    from 'underscore';
+import Colors               from '../styles/colors';
+import NotificationsHolder  from './notifications_holder';
+import UpcomingAssemblies   from './upcoming_assemblies';
+import ActivityHolder       from './activity_holder';
+import MessageList          from '../messages/messages_list';
+import MessageBox           from '../messages/message_box';
+import Event                from '../groups/event';
+import Profile              from '../messages/profile';
+import Group                from '../groups/group';
+import {BASE_URL, HEADERS, DEV} from '../utilities/fixtures';
 
 import React, {
-  ScrollView,
   Component,
   StyleSheet,
-  Text,
   View,
-  TabBarIOS,
-  Image,
-  TouchableOpacity,
   Dimensions,
   NativeModules,
   Navigator,
@@ -31,12 +25,12 @@ import React, {
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
 
-class ActivityView extends React.Component{
+export default class ActivityView extends Component{
   constructor(props){
     super(props);
     this.state = {
       tab: 'notifications',
-    }
+    };
   }
   render(){
     let {tab,} = this.state;
@@ -137,7 +131,7 @@ class ActivityView extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -191,6 +185,4 @@ let styles = {
     textAlign: 'center',
     color: Colors.brandPrimary,
   },
-}
-
-module.exports = ActivityView;
+});

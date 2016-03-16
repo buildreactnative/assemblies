@@ -1,25 +1,22 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NotificationsHolder from './notifications_holder';
-import UpcomingAssemblies from './upcoming_assemblies';
-import MessageList from '../messages/messages_list';
-import MessageBox from '../messages/message_box';
-import {BASE_URL} from '../utilities/fixtures';
+import Colors               from '../styles/colors';
+import Icon                 from 'react-native-vector-icons/Ionicons';
+import NotificationsHolder  from './notifications_holder';
+import UpcomingAssemblies   from './upcoming_assemblies';
+import MessageList          from '../messages/messages_list';
+import MessageBox           from '../messages/message_box';
+import {BASE_URL, DEV}      from '../utilities/fixtures';
 
 import React, {
-  ScrollView,
   Component,
   StyleSheet,
   Text,
   View,
-  TabBarIOS,
-  Image,
   TouchableOpacity,
   Dimensions,
   NativeModules,
 } from 'react-native';
 
-class ActivityHolder extends React.Component{
+export default class ActivityHolder extends Component{
   render(){
     let {tab,} = this.props;
     let tabContent = tab == 'upcoming' ? <UpcomingAssemblies {...this.props} /> : <NotificationsHolder {...this.props}/>
@@ -52,7 +49,7 @@ class ActivityHolder extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -106,6 +103,4 @@ let styles = {
     textAlign: 'center',
     color: 'white',
   },
-}
-
-module.exports = ActivityHolder;
+});
