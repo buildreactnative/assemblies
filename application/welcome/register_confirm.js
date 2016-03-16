@@ -260,9 +260,7 @@ export default class RegisterConfirm extends Component{
               );
             })}
           </Select>
-
           <OptionList ref="OPTIONLIST" overlayStyles={overlayStyles}/>
-
           <Text style={styles.h4}>{"Tell us a little about yourself"}</Text>
           <TextInput
             ref="summary"

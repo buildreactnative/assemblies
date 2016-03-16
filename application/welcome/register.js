@@ -156,9 +156,9 @@ export default class Register extends Component{
                 language  : 'en', // language of the results
                 types     : '(cities)', // default: 'geocode'
               }}
-              currentLocation={false} // Will add a 'Current location' button at the top of the predefined places list
+              currentLocation={false}
               currentLocationLabel="Current location"
-              nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+              nearbyPlacesAPI='GooglePlacesSearch'
               GoogleReverseGeocodingQuery={{}}
               GooglePlacesSearchQuery={{
                 rankby: 'distance',
@@ -245,10 +245,9 @@ export default class Register extends Component{
               onSubmitEditing={()=>{this._animateProgress();}}
               onFocus={this.inputFocused.bind(this, 'lastName')}
               onChangeText={(text) => {
-                this.setState({
-                  lastName        : text,
-                  lastNameError   : ''
-                }, () => this._testErrors())
+                this.setState({lastName: text, lastNameError: ''},
+                  this._testErrors.bind(this)
+                );
               }}
               placeholderTextColor='#bbb'
               style={styles.input}

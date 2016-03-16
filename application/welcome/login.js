@@ -16,6 +16,7 @@ import React, {
   TextInput,
   View,
   TouchableOpacity,
+  ActivityIndicatorIOS,
   Dimensions,
   InteractionManager,
 } from 'react-native';
@@ -29,6 +30,7 @@ export default class Login extends Component{
       email           : '',
       password        : '',
       connectionError : '',
+      sendingData     : false,
     };
   }
   inputFocused(refName) {
