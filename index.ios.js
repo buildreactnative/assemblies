@@ -1,13 +1,16 @@
 'use strict';
-import Colors from './application/styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import Welcome from './application/welcome/welcome';
-import Dashboard from './application/dashboard/dashboard';
-import Register from './application/welcome/register';
-import RegisterConfirm from './application/welcome/register_confirm';
-import Login from './application/welcome/login';
-import {BASE_URL, DEV} from './application/utilities/fixtures';
-import DeviceInfo from 'react-native-device-info';
+
+import Icon             from 'react-native-vector-icons/Ionicons';
+import Colors           from './application/styles/colors';
+import Welcome          from './application/welcome/welcome';
+import Dashboard        from './application/dashboard/dashboard';
+import Register         from './application/welcome/register';
+import RegisterConfirm  from './application/welcome/register_confirm';
+import Login            from './application/welcome/login';
+import Logging          from './application/welcome/logging';
+import DeviceInfo       from 'react-native-device-info';
+import _                from 'underscore';
+import {BASE_URL, DEV, HEADERS} from './application/utilities/fixtures';
 
 import React, {
   AppRegistry,
@@ -27,10 +30,10 @@ class assembly extends Component {
   constructor(props){
     super(props);
     this.state = {
-      foundUser: false,
-      currentUser: null,
-      initialRoute: 'Welcome',
-      sessionId: null,
+      foundUser     : false,
+      currentUser   : null,
+      initialRoute  : 'Welcome',
+      sessionId     : null,
     }
   }
   componentDidMount(){
@@ -38,44 +41,84 @@ class assembly extends Component {
     NativeModules.SegmentAnalytics.identify(clientId);
     this._loadUser()
   }
+  _fetchUser(sid){
+    let headers = _.extend({}, {'Set-Cookie': 'sid=' + sid}, HEADERS);
+    if (DEV) {console.log('HEADERS', headers);}
+    fetch(`${BASE_URL}/users/me`, {
+      method  : "GET",
+      headers : headers
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.errors) {
+        if (DEV) {console.log('ERRORS', data.errors);}
+        this.setState({foundUser: true})
+      }
+      else {
+        if (DEV) {console.log('DATA', data);}
+        this.setState({
+          foundUser: true,
+          initialRoute: 'Dashboard',
+          currentUser: data,
+          sessionId: sid,
+        })
+      }
+    })
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+      // AsyncStorage.setItem('sid', 'false');
+      this.setState({foundUser: true})
+    })
+    .done();
+  }
   async _loadUser(){
     try {
-      var sid = await AsyncStorage.getItem('sid');
-      if (DEV) {console.log('SID', sid);}
-      if (sid != null && sid != 'false'){
-        fetch(`${BASE_URL}/users/me`, {
-          method: "GET",
-          headers: {
-            'Set-Cookie': `sid=${sid}`,
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
-        })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.errors) {
-            if (DEV) {console.log('ERRORS', data.errors);}
-            this.setState({foundUser: true})
-          }
-          else {
-            if (DEV) {console.log('DATA', data);}
-            this.setState({
-              foundUser: true,
-              initialRoute: 'Dashboard',
-              currentUser: data,
-              sessionId: sid,
-            })
-          }
-        })
-        .catch((error) => {
-          if (DEV) {console.log(error)}
-          AsyncStorage.setItem('sid', 'false');
+      var userParams = await AsyncStorage.getItem('USER_PARAMS');
+      if (userParams !== null){
+        let parsedUser = JSON.parse(userParams);
+        console.log('USER PARAMS', parsedUser);
+        if (parsedUser.username && parsedUser.password){
+          let errors = null;
+          if (DEV) {console.log("LOGIN", `${BASE_URL}/users/login`)}
+          fetch(`${BASE_URL}/users/login`, {
+            method: "POST",
+            headers: HEADERS,
+            body: JSON.stringify(parsedUser)
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.errors || data.status == 401) {
+              if (DEV) {console.log('LOGIN FAILED', data);}
+              this.setState({foundUser: true});
+            } else {
+              if (DEV) {console.log('DATA', data);}
+              fetch(`${BASE_URL}/users/me`, {
+                method: "GET",
+                headers: _.extend({'Set-Cookie': `sid=${data.id}`}, HEADERS),
+              })
+              .then((response) => response.json())
+              .then((data) => {
+                this.updateUser(data);
+                this.setState({foundUser: true, initialRoute: 'Dashboard'});
+              })
+              .catch((error) => {
+                if (DEV) {console.log(error)}
+                this.setState({foundUser: true})
+              })
+              .done();
+            }
+          })
+          .catch((error) => {
+            if (DEV) {console.log(error)}
+            this.setState({connectionError: 'Email or password was incorrect.'})
+          })
+          .done();
+        } else {
           this.setState({foundUser: true})
-        })
-        .done();
+        }
       } else {
+        if (DEV) {console.log('COULD NOT FIND USER');}
         this.setState({foundUser: true})
-        AsyncStorage.setItem('sid', 'false')
       }
     } catch (error) {
       if (DEV) {console.log('ERR: ', error)}
@@ -87,11 +130,13 @@ class assembly extends Component {
   render() {
     let {foundUser, currentUser, sessionId,} = this.state;
     if (! foundUser) {
-      return <View style={{backgroundColor: Colors.brandPrimary}}></View>
+      return <View style={{backgroundColor: Colors.inactive, flex: 1,}}></View>
     }
+    console.log('INITIAL ROUTE', this.state.initialRoute);
     return (
       <View style={styles.container}>
         <Navigator
+          ref="navigator"
           configureScene={() => {
             return Navigator.SceneConfigs.FadeAndroid;
           }}
@@ -106,8 +151,8 @@ class assembly extends Component {
               case 'Dashboard':
                 return (
                   <Dashboard
-                    navigator={navigator}
                     {...this.state}
+                    navigator={navigator}
                     updateUser={this.updateUser.bind(this)}
                   />
                 )
@@ -116,9 +161,7 @@ class assembly extends Component {
                 return <Register navigator={navigator} />
                 break;
               case 'Login':
-                return (
-                  <Login navigator={navigator} updateUser={this.updateUser.bind(this)}/>
-                )
+                return <Login navigator={navigator} updateUser={this.updateUser.bind(this)}/>
                 break;
               case 'RegisterConfirm':
                 return (

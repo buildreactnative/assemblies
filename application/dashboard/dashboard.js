@@ -221,7 +221,7 @@ class Dashboard extends Component {
     this.setState(newState, callback)
   }
   _logout(){
-    AsyncStorage.setItem('sid', 'false');
+    AsyncStorage.setItem('USER_PARAMS', JSON.stringify(null));
     this.props.navigator.push({
       name: 'Welcome'
     });

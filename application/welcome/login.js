@@ -65,7 +65,7 @@ export default class Login extends Component{
         this.setState({connectionError: 'Email or password was incorrect.'})
       } else {
         if (DEV) {console.log('DATA', data);}
-        AsyncStorage.setItem('sid', data.id)
+        AsyncStorage.setItem('USER_PARAMS', JSON.stringify(user));
         fetch(`${BASE_URL}/users/me`, {
           method: "GET",
           headers: _.extend({'Set-Cookie': `sid=${data.id}`}, HEADERS),

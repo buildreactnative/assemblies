@@ -36,15 +36,15 @@ import React, {
 let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-
+const DEFAULT_AVATAR = 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png';
 class RegisterConfirm extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      technologies: [],
-      avatarSource: 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png',
-      summary: '',
-      progress: 0,
+      technologies  : [],
+      avatarSource  : DEFAULT_AVATAR,
+      summary       : '',
+      progress      : 0,
     }
   }
   inputFocused(refName) {
@@ -240,7 +240,7 @@ class RegisterConfirm extends React.Component{
                   }
                   else {
                     if (DEV) {console.log('DATA', data);}
-                    AsyncStorage.setItem('sid', data.id)
+                    AsyncStorage.setItem('USER_PARAMS', JSON.stringify(user))
                     fetch(`${BASE_URL}/users/me`, {
                       method: "GET",
                       headers: {
