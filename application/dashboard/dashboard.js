@@ -7,7 +7,7 @@ import MessagesView     from '../messages/messages_view';
 import Profile          from '../messages/profile';
 import Settings         from '../profile/settings';
 import GroupView        from '../groups/group_view';
-import {BASE_URL, DEV}  from '../utilities/fixtures';
+import {BASE_URL, DEV, HEADERS}  from '../utilities/fixtures';
 
 import React, {
   Component,
@@ -27,25 +27,35 @@ export default class Dashboard extends Component {
   constructor(props){
     super(props);
     this.state = {
-      selectedTab: 'Activity',
-      loading: true,
-      groups: [],
-      allEvents: [],
-      events: [],
-      messages: [],
-      conversations: {},
-      notifications: [],
-      suggestedGroups: [],
-      suggestedEvents: [],
-      currentUser: props.currentUser,
-      dataSource: new ListView.DataSource({
+      selectedTab     : 'Activity',
+      loading         : true,
+      groups          : [],
+      allEvents       : [],
+      events          : [],
+      messages        : [],
+      conversations   : {},
+      notifications   : [],
+      suggestedGroups : [],
+      suggestedEvents : [],
+      currentUser     : props.currentUser,
+      dataSource      : new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 != r2
       })
       .cloneWithRows([]),
-    }
+    };
+  }
+  componentDidMount(){
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({loading: false});
+      if (!! this.props.currentUser){
+        this._fetchNotifications();
+        this._fetchLastEvent();
+        this._fetchMessages();
+      }
+    });
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.currentUser != this.props.currentUser){
+    if (nextProps.currentUser != this.state.currentUser && ! this.state.loading){
       this.setState({currentUser: nextProps.currentUser})
       this._fetchNotifications();
       this._fetchLastEvent();
@@ -58,10 +68,7 @@ export default class Dashboard extends Component {
     if (DEV) {console.log('MESSAGE URL', url);}
     fetch(url, {
       method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type':'application/json'
-      }
+      headers: HEADERS,
     })
     .then((response) => response.json())
     .then((data) => {
@@ -79,7 +86,7 @@ export default class Dashboard extends Component {
       let dataBlob = [];
       Object.keys(conversations).forEach((c) => {
         dataBlob.push(conversations[c])
-      })
+      });
       if (DEV) {console.log('DATA BLOB', dataBlob.map((d) => d[0]))}
       this.setState({
         dataSource: new ListView.DataSource({
@@ -92,15 +99,13 @@ export default class Dashboard extends Component {
     .catch((err) => {
       if (DEV) {console.log('ERR: ', err)}
     })
+    .done();
   }
   _fetchNotifications(){
     let url = `${BASE_URL}/notifications`;
     fetch(url, {
       method: "GET",
-      headers: {
-        'Accept':'application/json',
-        'Content-Type':'application/json'
-      }
+      headers: HEADERS,
     })
     .then((response) => response.json())
     .then((data) => {
@@ -115,17 +120,9 @@ export default class Dashboard extends Component {
     console.log('VALUE', d.valueOf());
     let url = `${BASE_URL}/events?{"$and": [{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}, {"start" : {"$gte": ${JSON.stringify(d.valueOf())}}}]}`;
     console.log("URL", url);
-    // {"$and": [
-    //   {"groupId": {"$in": ["2a34e38590259838","36609ec1a48ab9a4","692ad465cee2e999","918dbbab69b329ba","14456ee69df4b9dd","034e8e3fce08ebda","c21b6af93ae0ebdd"]}},
-    //   {"start" : {"$gt": 0}}
-    //   ]
-    // }
     fetch(url, {
       method: "GET",
-      headers: {
-        'Accept':'application/json',
-        'Content-Type':'application/json'
-      }
+      headers: HEADERS,
     })
     .then((response) => response.json())
     .then((data) => {
@@ -159,10 +156,7 @@ export default class Dashboard extends Component {
     let url = `${BASE_URL}/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
     fetch(url, {
       method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type':'application/json'
-      }
+      headers: HEADERS,
     })
     .then((response) => response.json())
     .then((data) => {
@@ -177,10 +171,7 @@ export default class Dashboard extends Component {
     if (DEV) {console.log('URL', url)}
     fetch(url, {
       method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: HEADERS,
     })
     .then((response) => response.json())
     .then((data) => {
@@ -194,10 +185,7 @@ export default class Dashboard extends Component {
     if (DEV) {console.log('URL', url)}
     fetch(`${BASE_URL}/groups`, {
       method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: HEADERS,
     })
     .then((response) => response.json())
     .then((data) => {
@@ -224,16 +212,7 @@ export default class Dashboard extends Component {
   _setTab(tabId){
     this.setState({selectedTab: tabId})
   }
-  componentDidMount(){
-    InteractionManager.runAfterInteractions(() => {
-      this.setState({loading: false});
-      if (!! this.props.currentUser){
-        this._fetchNotifications();
-        this._fetchLastEvent();
-        this._fetchMessages();
-      }
-    });
-  }
+
   _renderLoading(){
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
