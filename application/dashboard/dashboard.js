@@ -27,21 +27,22 @@ export default class Dashboard extends Component {
   constructor(props){
     super(props);
     this.state = {
-      selectedTab     : 'Activity',
-      loading         : true,
-      groups          : [],
-      allEvents       : [],
-      events          : [],
-      messages        : [],
-      conversations   : {},
-      notifications   : [],
-      suggestedGroups : [],
-      suggestedEvents : [],
-      currentUser     : props.currentUser,
-      dataSource      : new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 != r2
-      })
-      .cloneWithRows([]),
+      selectedTab               : 'Activity',
+      loading                   : true,
+      fetchedGroups             : false,
+      fetchedMessages           : false,
+      fetchedLastEvent          : false,
+      fetchedUserEvents         : false,
+      fetchedSuggestedGroups    : false,
+      groups                    : [],
+      allEvents                 : [],
+      events                    : [],
+      messages                  : [],
+      conversations             : {},
+      notifications             : [],
+      suggestedGroups           : [],
+      suggestedEvents           : [],
+      currentUser               : props.currentUser,
     };
   }
   componentDidMount(){
@@ -50,7 +51,6 @@ export default class Dashboard extends Component {
       if (!! this.props.currentUser){
         this._fetchNotifications();
         this._fetchLastEvent();
-        this._fetchMessages();
       }
     });
   }
@@ -59,48 +59,9 @@ export default class Dashboard extends Component {
       this.setState({currentUser: nextProps.currentUser})
       this._fetchNotifications();
       this._fetchLastEvent();
-      this._fetchMessages();
     }
   }
-  _fetchMessages(){
-    let {currentUser} = this.props;
-    let url = `${BASE_URL}/messages?{"participantsString": {"$regex": ".*${currentUser.id}.*"}}`;
-    if (DEV) {console.log('MESSAGE URL', url);}
-    fetch(url, {
-      method: "GET",
-      headers: HEADERS,
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('MESSAGES', data);}
-      let conversations = {};
-      data.forEach((msg) => {
-        let key = msg.participants.sort().join(':');
-        if (conversations[key]){
-          conversations[key].push(msg)
-        } else {
-          conversations[key] = [msg];
-        }
-      })
-      if (DEV) {console.log('CONVERSATIONS', conversations);}
-      let dataBlob = [];
-      Object.keys(conversations).forEach((c) => {
-        dataBlob.push(conversations[c])
-      });
-      if (DEV) {console.log('DATA BLOB', dataBlob.map((d) => d[0]))}
-      this.setState({
-        dataSource: new ListView.DataSource({
-          rowHasChanged: (r1, r2) => r1 != r2
-        })
-        .cloneWithRows(dataBlob.map((d) => d[0])),
-        conversations: conversations
-      })
-    })
-    .catch((err) => {
-      if (DEV) {console.log('ERR: ', err)}
-    })
-    .done();
-  }
+
   _fetchNotifications(){
     let url = `${BASE_URL}/notifications`;
     fetch(url, {
@@ -220,6 +181,9 @@ export default class Dashboard extends Component {
       </View>
     )
   }
+  _sendData(newState){
+    this.setState(newState);
+  }
   render() {
     if (this.state.loading) {
       return this._renderLoading();
@@ -237,7 +201,7 @@ export default class Dashboard extends Component {
             })
           }}
           >
-          <MessagesView {...this.state}/>
+          <MessagesView {...this.state} sendData={this._sendData.bind(this)}/>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Groups"

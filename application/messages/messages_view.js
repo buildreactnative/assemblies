@@ -1,32 +1,28 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
-import MessagesList from './messages_list';
-import MessageBox from './message_box';
-import Profile from './profile';
-import Groups from '../groups/groups';
-import Group from '../groups/group';
-import CreateGroup from '../groups/create_group';
-import CreateEvent from '../groups/create_event';
-import GroupMembers from '../groups/group_members';
-import GroupEvents from '../groups/group_events';
-import CreateEventConfirm from '../groups/create_event_confirm';
-import CreateGroupConfirm from '../groups/create_group_confirm';
-import Event from '../groups/event';
-import _ from 'underscore';
+import Colors                 from '../styles/colors';
+import Icon                   from 'react-native-vector-icons/Ionicons';
+import moment                 from 'moment';
+import MessagesList           from './messages_list';
+import MessageBox             from './message_box';
+import Profile                from './profile';
+import Groups                 from '../groups/groups';
+import Group                  from '../groups/group';
+import CreateGroup            from '../groups/create_group';
+import CreateEvent            from '../groups/create_event';
+import GroupMembers           from '../groups/group_members';
+import GroupEvents            from '../groups/group_events';
+import CreateEventConfirm     from '../groups/create_event_confirm';
+import CreateGroupConfirm     from '../groups/create_group_confirm';
+import Event                  from '../groups/event';
+import _                      from 'underscore';
 import {conversationFixtures,} from '../fixtures/messages';
-import {BASE_URL, DEV} from '../utilities/fixtures';
+import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
   Component,
   StyleSheet,
-  Text,
   View,
-  TabBarIOS,
   ListView,
-  Image,
-  TouchableOpacity,
   Navigator,
   Dimensions,
   NativeModules,
@@ -35,12 +31,63 @@ import React, {
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 const BASE_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
-
 const CUSTOM_CONFIG = BASE_CONFIG;
 
-class MessagesView extends React.Component{
+export default class MessagesView extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 != r2
+      })
+      .cloneWithRows([]),
+    }
+  }
+  componentDidMount(){
+    this._fetchMessages();
+  }
+  _fetchMessages(){
+    let {currentUser} = this.props;
+    let url = `${BASE_URL}/messages?{"participantsString": {"$regex": ".*${currentUser.id}.*"}}`;
+    if (DEV) {console.log('MESSAGE URL', url);}
+    fetch(url, {
+      method: "GET",
+      headers: HEADERS,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('MESSAGES', data);}
+      let conversations = {};
+      data.forEach((msg) => {
+        let key = msg.participants.sort().join(':');
+        if (conversations[key]){
+          conversations[key].push(msg)
+        } else {
+          conversations[key] = [msg];
+        }
+      })
+      if (DEV) {console.log('CONVERSATIONS', conversations);}
+      let dataBlob = [];
+      Object.keys(conversations).forEach((c) => {
+        dataBlob.push(conversations[c])
+      });
+      if (DEV) {console.log('DATA BLOB', dataBlob.map((d) => d[0]))}
+      this.props.sendData({messages: data});
+      this.setState({
+        dataSource: new ListView.DataSource({
+          rowHasChanged: (r1, r2) => r1 != r2
+        })
+        .cloneWithRows(dataBlob.map((d) => d[0])),
+        conversations: conversations
+      });
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR: ', err)}
+    })
+    .done();
+  }
   render(){
-    if (DEV) {console.log('DATA SOURCE', this.props.dataSource);}
+    if (DEV) {console.log('DATA SOURCE', this.state.dataSource);}
     return (
       <View style={styles.container}>
         <Navigator
@@ -53,7 +100,7 @@ class MessagesView extends React.Component{
           renderScene={(route, navigator) => {
             if (route.name == 'MessageList') {
               return (
-                <MessagesList dataSource={this.props.dataSource} navigator={navigator} />
+                <MessagesList dataSource={this.state.dataSource} navigator={navigator} />
               )
             } else if (route.name == 'Message'){
               let {userIds} = route;
@@ -142,7 +189,7 @@ class MessagesView extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   sentText:{
     fontSize: 14,
     padding: 10,
@@ -193,6 +240,4 @@ let styles = {
     color: 'white',
     fontSize: 22,
   },
-}
-
-module.exports = MessagesView;
+});
