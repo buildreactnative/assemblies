@@ -72,7 +72,7 @@ export default class MessagesView extends Component{
         dataBlob.push(conversations[c])
       });
       if (DEV) {console.log('DATA BLOB', dataBlob.map((d) => d[0]))}
-      this.props.sendData({messages: data});
+      this.props.sendData({messages: data, fetchedMessages: true});
       this.setState({
         dataSource: new ListView.DataSource({
           rowHasChanged: (r1, r2) => r1 != r2
@@ -100,7 +100,7 @@ export default class MessagesView extends Component{
           renderScene={(route, navigator) => {
             if (route.name == 'MessageList') {
               return (
-                <MessagesList dataSource={this.state.dataSource} navigator={navigator} />
+                <MessagesList {...this.props} dataSource={this.state.dataSource} navigator={navigator} />
               )
             } else if (route.name == 'Message'){
               let {userIds} = route;

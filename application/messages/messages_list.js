@@ -19,6 +19,7 @@ import React, {
   Navigator,
   Dimensions,
   NativeModules,
+  ActivityIndicatorIOS,
 } from 'react-native';
 
 class MessagesList extends React.Component{
@@ -83,9 +84,17 @@ class MessagesList extends React.Component{
     )
   }
   _renderNoMessages(){
-    return(
-      <NoMessages text={'You dont have any messages yet. You can start a conversation from within one of your groups.'}/>
-    )
+    if (this.props.fetchedMessages) {
+      return(
+        <NoMessages text={'You dont have any messages yet. You can start a conversation from within one of your groups.'}/>
+      );
+    } else {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicatorIOS size="large" />
+        </View>
+      );
+    }
   }
   render(){
     let titleConfig = {title: 'Messages', tintColor: 'white'};
