@@ -42,6 +42,9 @@ export default class ActivityHolder extends Component{
             <Text
               style={this.props.tab == 'notifications' ? styles.activeTabText : styles.inactiveTabText}>Notifications</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.infoIcon}>
+            <Icon name="information-circled" color="white" size={30}/>
+          </TouchableOpacity>
         </View>
         {tabContent}
       </View>
@@ -50,6 +53,9 @@ export default class ActivityHolder extends Component{
 }
 
 let styles = StyleSheet.create({
+  infoIcon: {
+    marginHorizontal: 10,
+  },
   container: {
     flex: 1,
   },
