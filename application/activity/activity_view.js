@@ -109,7 +109,7 @@ export default class ActivityView extends Component{
               let {events, groups} = this.props;
               let eventId = route.notification.eventId;
               let event = _.find(this.props.allEvents, (e) => e.id == eventId);
-              let group = _.find(groups, (g) => g.id == event.groupId);
+              let group = !! event ? _.find(groups, (g) => g.id == event.groupId) : null;
               if (DEV) {console.log('EVENT NOW', event, group, route.notification, this.state);}
               return (
                 <Event event={event} group={group} {...route} {...this.props} navigator={navigator} />

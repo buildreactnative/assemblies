@@ -39,26 +39,32 @@ class Event extends React.Component{
       signedUp: false,
       message: '',
       showCommentForm: false,
+      showMap: false,
+      ready: false,
     }
   }
   componentDidMount(){
-    let {group, event,} = this.props;
-    let attending = Object.keys(event.attending)
-    fetch(`${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(attending)}}}`, {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('DATA USERS', data)}
-      this.setState({members: data})
-    })
-    .catch((error) => {
-      if (DEV) {console.log(error)}
-    })
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({ready: true});
+      let {group, event,} = this.props;
+      let attending = Object.keys(event.attending)
+      fetch(`${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(attending)}}}`, {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (DEV) {console.log('DATA USERS', data)}
+        this.setState({members: data, showMap: true})
+      })
+      .catch((error) => {
+        if (DEV) {console.log(error)}
+        this.setState({showMap: true})
+      })
+    });
   }
   _renderBackButton(){
     return (
@@ -192,6 +198,16 @@ class Event extends React.Component{
       </View>
     )
   }
+  _renderEmptyMap(){
+    return (
+      <View>
+        <View style={[Globals.map, {backgroundColor: Colors.inactive}]}></View>
+        <View style={styles.bottomPanel}>
+          <Text style={styles.memberText}>{Object.keys(this.state.event.attending).length} going</Text>
+        </View>
+      </View>
+    );
+  }
   render(){
     let {group, currentUser, events} = this.props;
     let {event, members} = this.state;
@@ -209,7 +225,7 @@ class Event extends React.Component{
         leftButton={backButton}
       />
         <ScrollView style={styles.scrollView}>
-        <EventLocation event={event} group={group}/>
+        {this.state.showMap ? <EventLocation event={event} group={group}/> : this._renderEmptyMap()}
         <Text style={styles.h2}>Summary</Text>
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(event.summary, 140)}</Text>
         <Text style={styles.h2}>Address</Text>
