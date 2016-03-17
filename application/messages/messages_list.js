@@ -3,6 +3,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import Animatable from 'react-native-animatable';
+import NoMessages from './no_messages';
 import _ from 'underscore';
 
 import React, {
@@ -83,18 +84,7 @@ class MessagesList extends React.Component{
   }
   _renderNoMessages(){
     return(
-      <View style={{flex: 1, backgroundColor: '#f7f7f7',}}>
-        <Animatable.View animation="fadeIn" duration={500} style={{flex: 1, alignItems: 'stretch', backgroundColor: '#f7f7f7'}}>
-          <Animatable.View animation="slideInUp" duration={500} easing="ease-out" style={{flex: 1, alignItems: 'stretch', height: 50, backgroundColor: '#f7f7f7'}}>
-            <View style={{flex: 1, paddingTop: 100, paddingHorizontal: 40, alignItems: 'stretch',}}>
-              <Text style={{textAlign: 'center', fontSize: 20, color: Colors.bodyTextLight, lineHeight: 26}}>
-              You dont have any messages yet. You can start a conversation from within one of your groups.
-              </Text>
-            </View>
-          </Animatable.View>
-        </Animatable.View>
-        <View style={{flex: 3, backgroundColor: '#f7f7f7', opacity: 0,}}></View>
-      </View>
+      <NoMessages text={'You dont have any messages yet. You can start a conversation from within one of your groups.'}/>
     )
   }
   render(){

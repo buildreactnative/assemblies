@@ -6,6 +6,7 @@ import NavigationBar from 'react-native-navbar';
 import CalendarSection from './calendar_section';
 import {calendarFixture} from '../fixtures/calendar_fixtures';
 import {DEV} from '../utilities/fixtures';
+import NoMessages from '../messages/no_messages';
 import _ from 'underscore';
 
 import React, {
@@ -129,6 +130,25 @@ class CalendarList extends React.Component{
       </TouchableOpacity>
     )
   }
+  _renderListView(){
+    return (
+      <ListView
+        style={styles.listView}
+        initialListSize={7}
+        ref="assemblyList"
+        contentInset={{bottom: 49}}
+        automaticallyAdjustContentInsets={false}
+        dataSource={this.state.dataSource}
+        renderRow={this._renderRow.bind(this)}
+        renderSectionHeader={this._renderSectionHeader.bind(this)}
+      />
+    );
+  }
+  _renderEmptyCalendar(){
+    return (
+      <NoMessages text='No events scheduled. Explore groups in the groups tab or create your own to start an event.'/>
+    );
+  }
   render(){
     let titleConfig = {title: 'Calendar', tintColor: 'white'}
     if (DEV) {console.log('DATA SOURCES', this.state.dataSource)}
@@ -137,18 +157,8 @@ class CalendarList extends React.Component{
         <NavigationBar
           statusBar={{style: 'light-content', hidden: false}}
           tintColor={Colors.brandPrimary}
-          title={titleConfig}
-        />
-        <ListView
-          style={styles.listView}
-          initialListSize={7}
-          ref="assemblyList"
-          contentInset={{bottom: 49}}
-          automaticallyAdjustContentInsets={false}
-          dataSource={this.state.dataSource}
-          renderRow={this._renderRow.bind(this)}
-          renderSectionHeader={this._renderSectionHeader.bind(this)}
-        />
+          title={titleConfig}/>
+        {this.props.events.length ? this._renderListView() : this._renderEmptyCalendar()}
       </View>
     )
   }
