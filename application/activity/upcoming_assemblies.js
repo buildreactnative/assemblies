@@ -1,10 +1,10 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import Icon from 'react-native-vector-icons/Ionicons';
-import ActivityView from '../activity/activity_view';
+import Colors           from '../styles/colors';
+import Globals          from '../styles/globals';
+import Icon             from 'react-native-vector-icons/Ionicons';
+import ActivityView     from '../activity/activity_view';
 import UpcomingAssembly from './upcoming_assembly';
-import _ from 'underscore';
-import {DEV} from '../utilities/fixtures';
+import _                from 'underscore';
+import {DEV}            from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -12,30 +12,15 @@ import React, {
   StyleSheet,
   Text,
   View,
-  TabBarIOS,
-  Image,
   TouchableOpacity,
   Dimensions,
   NativeModules,
   MapView,
 } from 'react-native';
 
-const MAP_REGION = {
-  latitude        : 40.688816,
-  longitude       : -73.988410,
-  latitudeDelta   : 0.01,
-  longitudeDelta  : 0.01
-};
+const MAP_REGION = {};
 
-const UPCOMING_ASSEMBLIES = [
-  {name: 'Hack Night', time: new Date(), group: 'Hacker Hours', going: 10,},
-  {name: 'Startup Pitch', time: new Date(), group: 'Geeks & Suits NYC', going: 10,},
-  {name: 'Intro to Node JS', time: new Date(), group: 'NY JavaScript', going: 20,},
-  {name: 'Admission Guidelines', time: new Date(), group: 'Dev Bootcamp', going: 10,},
-  {name: 'VC Night', time: new Date(), group: 'New York Startups', going: 10,},
-]
-
-class UpcomingAssemblies extends React.Component{
+export default class UpcomingAssemblies extends Component{
   _todayEvents(events){
     let today = new Date();
     let year = today.getFullYear();
@@ -53,6 +38,25 @@ class UpcomingAssemblies extends React.Component{
     console.log('TODAY EVENTS', todayEvents);
     return todayEvents;
   }
+  _renderMap(todayEvents, mapRegion){
+    return (
+      <MapView
+        style={Globals.map}
+        region={mapRegion}
+        annotations={todayEvents.map((evt) => {
+          return {
+            latitude: evt.location.lat ? evt.location.lat : mapRegion.latitude,
+            longitude: evt.location.lng ? evt.location.lng : mapRegion.longitude
+           }
+        })}
+      />
+    );
+  }
+  _renderEmptyMap(){
+    return (
+      <View style={[Globals.map, {backgroundColor: Colors.inactive}]}></View>
+    );
+  }
   render(){
     if (DEV) {console.log('ALL PROPS', this.props);}
     let events = this.props.allEvents;
@@ -64,7 +68,7 @@ class UpcomingAssemblies extends React.Component{
         longitude       : todayEvents[0].location.lng,
         latitudeDelta   : 0.01,
         longitudeDelta  : 0.01
-      }
+      };
     }
     return (
       <ScrollView
@@ -72,16 +76,7 @@ class UpcomingAssemblies extends React.Component{
         contentContainerStyle={{paddingBottom: 80}}
         >
         <Text style={styles.bodyText}>Assemblies Near Me</Text>
-        <MapView
-          style={Globals.map}
-          region={mapRegion}
-          annotations={todayEvents.map((evt) => {
-            return {
-              latitude: evt.location.lat ? evt.location.lat : mapRegion.latitude,
-              longitude: evt.location.lng ? evt.location.lng : mapRegion.longitude
-             }
-          })}
-        />
+        {todayEvents.length ? this._renderMap(todayEvents, mapRegion) : this._renderEmptyMap()}
         <View style={styles.notificationsContainer}>
           <Text style={styles.bodyText}>Today</Text>
           <View style={styles.break}></View>
@@ -99,7 +94,7 @@ class UpcomingAssemblies extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   bodyText: {
     color: Colors.bodyText,
 		fontSize: 16,
@@ -114,5 +109,4 @@ let styles = {
   },
   notificationsContainer: {},
   container: {},
-}
-module.exports = UpcomingAssemblies;
+});
