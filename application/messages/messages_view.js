@@ -147,12 +147,12 @@ export default class MessagesView extends Component{
               )
             } else if (route.name == 'Chat') {
               let userIds = [this.props.currentUser.id, route.user.id]
-              let otherUserIds = _.reject(userIds, (id) => id == this.props.currentUser.id)
               return (
                 <MessageBox
+                  {...this.props}
                   user={route.user}
                   userIds={userIds}
-                  {...this.props}
+                  messageUsers={null}
                   navigator={navigator}/>
               )
             }

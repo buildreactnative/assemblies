@@ -54,8 +54,32 @@ class Profile extends React.Component{
       </TouchableOpacity>
     )
   }
-  render(){
+  _renderNewMessage(){
     let {user,} = this.props;
+    let {groups} = this.state;
+    return (
+      <TouchableOpacity style={styles.newMessageContainer}
+        onPress={()=>{
+          if (DEV) {console.log('SEND CHAT', user)}
+          this.props.navigator.push({
+            name: 'Chat',
+            user: user,
+            userIds: [user.id, this.props.currentUser.id],
+            messageUsers: null,
+          })
+        }}>
+        <Icon name="chatbubbles" size={40} style={styles.chatBubble} color={Colors.brandPrimary}/>
+        <Text style={styles.sendMessageText}>Send a Message</Text>
+      </TouchableOpacity>
+    );
+  }
+  _renderNoMessages(){
+    return (
+      <View style={{height: 10,}}/>
+    )
+  }
+  render(){
+    let {user, currentUser} = this.props;
     let {groups} = this.state;
     let titleConfig = {title: `${user ? user.firstName : 'User'}'s Profile`, tintColor: 'white'};
     let back = this._renderBackButton();
@@ -84,20 +108,7 @@ class Profile extends React.Component{
           </View>
           <Text style={styles.username}>{user.firstName} {user.lastName}</Text>
           <Text style={styles.location}>{user.location.city}, {user.location.state}</Text>
-          <TouchableOpacity style={styles.newMessageContainer}
-            onPress={()=>{
-              if (DEV) {console.log('SEND CHAT', user)}
-              this.props.navigator.push({
-                name: 'Chat',
-                user: user,
-                userIds: [user.id, this.props.currentUser.id],
-                messageUsers: null,
-              })
-            }}
-          >
-            <Icon name="chatbubbles" size={40} style={styles.chatBubble} color={Colors.brandPrimary}/>
-            <Text style={styles.sendMessageText}>Send a Message</Text>
-          </TouchableOpacity>
+          {user.id != currentUser.id ? this._renderNewMessage() : this._renderNoMessages()}
           <View style={styles.break}></View>
           <Text style={styles.technologies}>Technologies</Text>
           <Text style={styles.technologyList}>{user.technologies.join(', ')}</Text>
