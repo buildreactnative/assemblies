@@ -89,7 +89,9 @@ class Profile extends React.Component{
               if (DEV) {console.log('SEND CHAT', user)}
               this.props.navigator.push({
                 name: 'Chat',
-                user: user
+                user: user,
+                userIds: [user.id, this.props.currentUser.id],
+                messageUsers: null,
               })
             }}
           >

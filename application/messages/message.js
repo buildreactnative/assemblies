@@ -85,9 +85,9 @@ let styles = StyleSheet.create({
   icon: {
     marginTop: 10,
     marginLeft: 13,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
   },
   messageBox: {
     flex: 1,

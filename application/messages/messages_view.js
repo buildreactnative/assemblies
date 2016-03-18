@@ -75,12 +75,14 @@ export default class MessagesView extends Component{
                 />
               )
             } else if (route.name == 'Message'){
-              let {userIds} = route;
+              let {userIds, messageUsers} = route;
               let otherUserIds = _.reject(userIds, (id) => id == this.props.currentUser.id)
               return (
                 <MessageBox
                   {...this.props}
                   userIds={userIds}
+                  messages={this.props.messages}
+                  messageUsers={messageUsers}
                   navigator={navigator}
                 />
               )
@@ -88,6 +90,7 @@ export default class MessagesView extends Component{
               return (
                 <Profile
                   {...route}
+                  {...this.props}
                   navigator={navigator}
                 />
               )
@@ -150,7 +153,6 @@ export default class MessagesView extends Component{
                   user={route.user}
                   userIds={userIds}
                   {...this.props}
-                  messages={this.props.conversations[userIds.sort().join(':')]}
                   navigator={navigator}/>
               )
             }

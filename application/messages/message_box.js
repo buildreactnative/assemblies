@@ -1,77 +1,79 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
-import InvertibleScrollView from 'react-native-invertible-scroll-view';
-import Message from './message';
-import {messageFixtures} from '../fixtures/messages';
-import NavigationBar from 'react-native-navbar';
-import {BASE_URL, DEV} from '../utilities/fixtures';
-import _ from 'underscore';
+import Colors                 from '../styles/colors';
+import Globals                from '../styles/globals';
+import Icon                   from 'react-native-vector-icons/Ionicons';
+import moment                 from 'moment';
+import InvertibleScrollView   from 'react-native-invertible-scroll-view';
+import Message                from './message';
+import {messageFixtures}      from '../fixtures/messages';
+import NavigationBar          from 'react-native-navbar';
+import _                      from 'underscore';
+import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
-  ScrollView,
   Component,
   StyleSheet,
   Text,
   View,
-  TabBarIOS,
-  ListView,
-  Image,
   TouchableOpacity,
-  TouchableHighlight,
   InteractionManager,
-  Navigator,
   Dimensions,
   NativeModules,
   ActivityIndicatorIOS,
-  DeviceEventEmitter,
   TextInput,
 } from 'react-native';
 
 let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class MessageBox extends React.Component{
+export default class MessageBox extends Component{
   constructor(props){
     super(props);
     this.state = {
-      loading: true,
-      messages: props.messages,
-      newMessage: '',
-      keyboardOffset: 0,
-      users: [],
+      loading           : true,
+      newMessage        : '',
+      keyboardOffset    : 0,
+      users             : [],
     }
   }
-  componentWillReceiveProps(nextProps){
-    if (nextProps.messages != this.state.messages){
-      this.setState({messages: nextProps.messages});
-    }
-  }
-  _fetchMessages(){
-    let {userIds} = this.props;
-    let url = `${BASE_URL}/messages?{"participants":${JSON.stringify(userIds.sort())}}`;
-    fetch(url, {
-      method: "GET",
-      headers: {
-        'Accept':'application/json',
-        'Content-Type':'application/json'
-      }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('MESSAGES', data);}
-      if (data != this.state.messages){
-        this.setState({messages: data})
-      }
-    })
-  }
+  // _fetchMessages(){
+  //   let {userIds} = this.props;
+  //   let url = `${BASE_URL}/messages?{"participants":${JSON.stringify(userIds.sort())}}`;
+  //   fetch(url, {
+  //     method: "GET",
+  //     headers: HEADERS,
+  //   })
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     if (DEV) {console.log('MESSAGES', data);}
+  //     if (data != this.state.messages){
+  //       this.setState({messages: data})
+  //     }
+  //   })
+  // }
+  // _fetchUsers(){
+  //   let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(this.props.userIds)}}}`;
+  //   fetch(url, {
+  //     method: "GET",
+  //     headers: {
+  //       'Accept': 'application/json',
+  //       'Content-Type':'application/json'
+  //     }
+  //   })
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     if (DEV) {console.log('USERS', data);}
+  //     this.setState({users: data})
+  //   })
+  //   .catch((err) => {
+  //     if (DEV) {console.log('ERR: ', err)}
+  //   })
+  // }
   inputFocused(refName) {
     setTimeout(() => {
       if (DEV) {console.log(this.refs.scroll);}
-      // let scrollResponder = this.refs.scroll._scrollComponent.getScrollResponder();
-      // scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
-      //   React.findNodeHandle(this.refs[refName]), 110, true
-      // )
+      let scrollResponder = this.refs.scroll._scrollComponent.getScrollResponder();
+      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+        React.findNodeHandle(this.refs[refName]), 110, true
+      )
     }, 50)
   }
   componentDidMount(){
@@ -83,34 +85,6 @@ class MessageBox extends React.Component{
     });
     this.refs.scroll.scrollTo(0);
     if (DEV) {console.log('USER IDS', this.props.userIds);}
-    let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(this.props.userIds)}}}`;
-    fetch(url, {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type':'application/json'
-      }
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('USERS', data);}
-      this.setState({users: data})
-    })
-    .catch((err) => {
-      if (DEV) {console.log('ERR: ', err)}
-    })
-  }
-  _keyboardWillShow(e){
-    let newCoordinates = e.endCoordinates.height;
-    this.setState({
-      keyboardOffset: newCoordinates
-    })
-    this.refs.scroll.scrollTo(0);
-  }
-  _keyboardWillHide(e){
-    this.setState({
-      keyboardOffset: 0
-    })
   }
   _renderLoading(){
     return (
@@ -145,10 +119,7 @@ class MessageBox extends React.Component{
     if (DEV) {console.log('PARAMS', notification)}
     fetch(url, {
       method: "POST",
-      headers: {
-        'Accept':'application/json',
-        'Content-Type':'application/json'
-      },
+      headers: HEADERS,
       body: JSON.stringify(notification)
     })
     .then((response) => response.json())
@@ -158,9 +129,8 @@ class MessageBox extends React.Component{
   }
   render(){
     console.log('MESSAGE BOX PROPS', this.props, this.state);
-    let {currentUser,} = this.props;
-    let {messages, users,} = this.state;
-    let username = users.map((usr) => usr.firstName).join(', ');
+    let {currentUser, messages, messageUsers} = this.props;
+    let username = messageUsers ? messageUsers.map((usr) => usr.firstName).join(', ') : '';
     let titleConfig = {title: username, tintColor: 'white'}
     let back = this._renderBackButton();
     return (
@@ -189,7 +159,7 @@ class MessageBox extends React.Component{
             onChange={(e) => {this.setState({newMessage: e.nativeEvent.text}); }}
             style={styles.input}
             />
-          <TouchableHighlight
+          <TouchableOpacity
             style={this.state.newMessage ? styles.buttonActive : styles.buttonInactive}
             underlayColor='#D97573'
             onPress={()=>{
@@ -225,7 +195,7 @@ class MessageBox extends React.Component{
             }}
           >
             <Text style={Globals.submitButtonText}>Send</Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
       </View>
     )
@@ -344,5 +314,3 @@ let styles = StyleSheet.create({
     fontSize: 22,
   },
 });
-
-module.exports = MessageBox;
