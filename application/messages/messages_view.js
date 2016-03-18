@@ -34,15 +34,6 @@ const BASE_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 const CUSTOM_CONFIG = BASE_CONFIG;
 
 export default class MessagesView extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 != r2
-      })
-      .cloneWithRows([]),
-    }
-  }
   componentDidMount(){
     this._fetchMessages();
   }
@@ -57,29 +48,7 @@ export default class MessagesView extends Component{
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('MESSAGES', data);}
-      let conversations = {};
-      data.forEach((msg) => {
-        let key = msg.participants.sort().join(':');
-        if (conversations[key]){
-          conversations[key].push(msg)
-        } else {
-          conversations[key] = [msg];
-        }
-      })
-      if (DEV) {console.log('CONVERSATIONS', conversations);}
-      let dataBlob = [];
-      Object.keys(conversations).forEach((c) => {
-        dataBlob.push(conversations[c])
-      });
-      if (DEV) {console.log('DATA BLOB', dataBlob.map((d) => d[0]))}
       this.props.sendData({messages: data, fetchedMessages: true});
-      this.setState({
-        dataSource: new ListView.DataSource({
-          rowHasChanged: (r1, r2) => r1 != r2
-        })
-        .cloneWithRows(dataBlob.map((d) => d[0])),
-        conversations: conversations
-      });
     })
     .catch((err) => {
       if (DEV) {console.log('ERR: ', err)}
@@ -87,7 +56,7 @@ export default class MessagesView extends Component{
     .done();
   }
   render(){
-    if (DEV) {console.log('DATA SOURCE', this.state.dataSource);}
+    if (DEV) {console.log('DATA SOURCE', this.props);}
     return (
       <View style={styles.container}>
         <Navigator
@@ -100,22 +69,27 @@ export default class MessagesView extends Component{
           renderScene={(route, navigator) => {
             if (route.name == 'MessageList') {
               return (
-                <MessagesList {...this.props} dataSource={this.state.dataSource} navigator={navigator} />
+                <MessagesList
+                  {...this.props}
+                  navigator={navigator}
+                />
               )
             } else if (route.name == 'Message'){
               let {userIds} = route;
               let otherUserIds = _.reject(userIds, (id) => id == this.props.currentUser.id)
               return (
                 <MessageBox
-                  userIds={userIds}
                   {...this.props}
-                  messages={this.props.conversations[userIds.sort().join(':')]}
+                  userIds={userIds}
                   navigator={navigator}
                 />
               )
             } else if (route.name == 'Profile') {
               return (
-                <Profile navigator={navigator} user={route.user} username={route.username} avatar={route.avatar} />
+                <Profile
+                  {...route}
+                  navigator={navigator}
+                />
               )
             } if (route.name == 'Groups') {
               return (

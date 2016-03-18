@@ -4,6 +4,7 @@ import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import Animatable from 'react-native-animatable';
 import NoMessages from './no_messages';
+import {DEV} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -29,18 +30,41 @@ class MessagesList extends React.Component{
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 != r2
       })
-      .cloneWithRows(props.dataSource)
+      .cloneWithRows([])
     }
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.dataSource != this.props.dataSource){
-      this.setState({
-        dataSource: new ListView.DataSource({
-          rowHasChanged: (r1, r2) => r1 != r2
-        })
-        .cloneWithRows(nextProps.dataSource)
-      })
+    if (nextProps.messages != this.props.messages){
+      this._loadConversations(nextProps);
     }
+  }
+  _loadConversations(props){
+    console.log('MESSAGES', props.messages);
+    let conversations = {};
+    props.messages.forEach((msg) => {
+      let key = msg.participants.sort().join(':');
+      if (conversations[key]){
+        conversations[key].push(msg)
+      } else {
+        conversations[key] = [msg];
+      }
+    })
+    if (DEV) {console.log('CONVERSATIONS', conversations);}
+    let dataBlob = [];
+    Object.keys(conversations).forEach((c) => {
+      dataBlob.push(conversations[c])
+    });
+    if (DEV) {console.log('DATA BLOB', dataBlob.map((d) => d[0]))}
+    this.setState({
+      dataSource: new ListView.DataSource({
+        rowHasChanged: (r1, r2) => r1 != r2
+      })
+      .cloneWithRows(dataBlob.map((d) => d[0])),
+      conversations: conversations
+    });
+  }
+  componentDidMount(){
+    this._loadConversations(this.props);
   }
   _renderRow(rowData){
     return (
@@ -75,7 +99,7 @@ class MessagesList extends React.Component{
   _renderListView(){
     return (
       <ListView
-        dataSource={this.props.dataSource}
+        dataSource={this.state.dataSource}
         contentInset={{bottom: 49}}
         automaticallyAdjustContentInsets={false}
         ref="messagesList"
@@ -84,7 +108,7 @@ class MessagesList extends React.Component{
     )
   }
   _renderNoMessages(){
-    if (this.props.fetchedMessages) {
+    if (this.props.messages.length) {
       return(
         <NoMessages text={'You dont have any messages yet. You can start a conversation from within one of your groups.'}/>
       );
@@ -108,7 +132,7 @@ class MessagesList extends React.Component{
           title={titleConfig}
         />
 
-        {_.keys(this.props.dataSource._dataBlob.s1).length ? this._renderListView() : this._renderNoMessages()}
+        {_.keys(this.state.dataSource._dataBlob.s1).length ? this._renderListView() : this._renderNoMessages()}
       </View>
     )
   }

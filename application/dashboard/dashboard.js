@@ -38,7 +38,6 @@ export default class Dashboard extends Component {
       allEvents                 : [],
       events                    : [],
       messages                  : [],
-      conversations             : {},
       notifications             : [],
       suggestedGroups           : [],
       suggestedEvents           : [],
@@ -162,7 +161,7 @@ export default class Dashboard extends Component {
     })
   }
   _mutateState(newState, callback){
-    this.setState(newState, callback)
+    this.setState(newState);
   }
   _logout(){
     AsyncStorage.setItem('USER_PARAMS', JSON.stringify(null));
@@ -185,6 +184,7 @@ export default class Dashboard extends Component {
     this.setState(newState);
   }
   render() {
+    console.log('DASHBOARD STATE', this.state);
     if (this.state.loading) {
       return this._renderLoading();
     }
@@ -201,7 +201,7 @@ export default class Dashboard extends Component {
             })
           }}
           >
-          <MessagesView {...this.state} sendData={this._sendData.bind(this)}/>
+          <MessagesView {...this.state} {...this.props} sendData={this._sendData.bind(this)}/>
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Groups"

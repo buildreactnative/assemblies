@@ -157,6 +157,7 @@ class MessageBox extends React.Component{
     })
   }
   render(){
+    console.log('MESSAGE BOX PROPS', this.props, this.state);
     let {currentUser,} = this.props;
     let {messages, users,} = this.state;
     let username = users.map((usr) => usr.firstName).join(', ');
