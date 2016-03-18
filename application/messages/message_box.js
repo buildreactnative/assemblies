@@ -13,11 +13,13 @@ import React, {
   Component,
   StyleSheet,
   Text,
+  Easing,
   View,
   TouchableOpacity,
   InteractionManager,
   Dimensions,
   NativeModules,
+  Animated,
   ActivityIndicatorIOS,
   TextInput,
 } from 'react-native';
@@ -32,6 +34,7 @@ export default class MessageBox extends Component{
       newMessage        : '',
       keyboardOffset    : 0,
       users             : [],
+      height            : new Animated.Value(0),
     }
   }
   // _fetchMessages(){
@@ -68,13 +71,25 @@ export default class MessageBox extends Component{
   //   })
   // }
   inputFocused(refName) {
-    setTimeout(() => {
-      if (DEV) {console.log(this.refs.scroll);}
-      let scrollResponder = this.refs.scroll._scrollComponent.getScrollResponder();
-      scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
-        React.findNodeHandle(this.refs[refName]), 110, true
-      )
-    }, 50)
+    console.log('FOCUS INPUT', Easing);
+    Animated.timing(
+      this.state.height,
+      {
+        toValue: 200,
+        duration: 300,
+        easing :  Easing.in(Easing.linear)
+      },
+    ).start();
+  }
+  inputBlur(refName){
+    Animated.timing(
+      this.state.height,
+      {
+        toValue: 0,
+        duration: 150,
+        easing: Easing.out(Easing.linear)
+      }
+    ).start();
   }
   componentDidMount(){
     // if (this.state.messages = []){
@@ -129,7 +144,7 @@ export default class MessageBox extends Component{
   }
   render(){
     console.log('MESSAGE BOX PROPS', this.props, this.state);
-    let {currentUser, messages, messageUsers} = this.props;
+    let {currentUser, messages, messageUsers, userIds} = this.props;
     let username = messageUsers ? messageUsers.map((usr) => usr.firstName).join(', ') : '';
     let titleConfig = {title: username, tintColor: 'white'}
     let back = this._renderBackButton();
@@ -142,7 +157,7 @@ export default class MessageBox extends Component{
           leftButton={back}
         />
         <InvertibleScrollView ref="scroll">
-          {messages.map((msg, idx) => {
+          {_.reject(messages, (m) => m.participants.sort().join(':') != userIds.sort().join(':')).map((msg, idx) => {
             let user = _.find(this.state.users.concat(this.props.currentUser), (usr) => `${usr.firstName} ${usr.lastName}` == msg.senderName)
             if (DEV) {console.log('USER', user);}
             return (
@@ -150,10 +165,15 @@ export default class MessageBox extends Component{
             )
           })}
         </InvertibleScrollView>
-        <View style={styles.inputBox}>
+        <Animated.View style={[styles.inputBox, {bottom: this.state.height}]}>
           <TextInput
             ref="message"
-            onFocus={this.inputFocused.bind(this, "message")}
+            onFocus={this.inputFocused.bind(this, 'message')}
+            onBlur={()=>{
+              console.log('DONE EDITING');
+              this.inputBlur();
+            }}
+            returnKeyType='send'
             value={this.state.newMessage}
             placeholder='Say something...'
             onChange={(e) => {this.setState({newMessage: e.nativeEvent.text}); }}
@@ -196,7 +216,7 @@ export default class MessageBox extends Component{
           >
             <Text style={Globals.submitButtonText}>Send</Text>
           </TouchableOpacity>
-        </View>
+        </Animated.View>
       </View>
     )
   }
@@ -205,6 +225,8 @@ export default class MessageBox extends Component{
 let styles = StyleSheet.create({
   inputBox: {
     height: 60,
+    left: 0,
+    right: 0,
     backgroundColor: '#F3EFEF',
     flexDirection: 'row',
     marginBottom: 50,
