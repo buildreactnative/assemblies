@@ -4,6 +4,8 @@ const Colors = {
   facebookBlue: '#415A9D',
   bodyText: '#222222',
   bodyTextLight: '#999',
+  bodyTextGray: '#9B9B9B',
+  lightGray: '#eee',
   inactive: '#EBEEF5',
   inactiveDark: '#ccd4e5',
   placeholderColor: '#8E8E93',

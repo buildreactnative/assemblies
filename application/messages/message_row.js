@@ -16,11 +16,15 @@ import React, {
   ActivityIndicatorIOS,
 } from 'react-native';
 
+let { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+
 export default class MessageRow extends Component{
   render(){
     let {rowData, otherUser, users} = this.props;
     return (
-      <TouchableOpacity onPress={()=>{
+      <TouchableOpacity
+        style={styles.container}
+        onPress={()=>{
         this.props.navigator.push({
           name: 'Message',
           userIds: rowData.participants,
@@ -36,9 +40,12 @@ export default class MessageRow extends Component{
             </View>
             <Text style={styles.messageText}>{rowData.text}</Text>
           </View>
+          <View style={{flex: 0.5, alignItems: 'flex-end', paddingRight: 25,}}>
+            <Icon size={30} name="ios-arrow-forward" color={Colors.bodyTextLight}/>
+          </View>
         </View>
-        <View style={{flex: 0.5}}>
-          <Icon size={30} name="ios-arrow-forward" color="#777"/>
+        <View style={{alignItems: 'center',}}>
+          <View style={styles.border}/>
         </View>
       </TouchableOpacity>
     )
@@ -47,24 +54,34 @@ export default class MessageRow extends Component{
 
 let styles = StyleSheet.create({
   sentText:{
-    fontSize: 14,
-    padding: 10,
-    marginRight: 15,
+    fontSize: 12,
     fontWeight: '300',
+    color: Colors.bodyTextGray,
+    marginLeft: 10,
+    fontWeight: '300',
+    marginLeft: 10
   },
   fromContainer:{
     justifyContent: 'center',
     marginLeft: 10,
     flex: 1,
   },
+  border: {
+    height: 0,
+    borderBottomWidth: 1,
+    width: deviceWidth * 0.95,
+    borderBottomColor: Colors.inactive,
+  },
   fromText:{
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 12,
+    fontWeight: '700'
   },
   messageTextContainer:{
   },
   messageText:{
-    fontSize: 18,
+    fontSize: 16,
+    color: '#9B9B9B',
+    fontStyle: 'italic',
     fontWeight: '300',
   },
   messageContainer:{
