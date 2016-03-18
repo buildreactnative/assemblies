@@ -4,7 +4,8 @@ import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
 import Animatable from 'react-native-animatable';
 import NoMessages from './no_messages';
-import {DEV} from '../utilities/fixtures';
+import MessageRow from './message_row';
+import {DEV, BASE_URL, HEADERS} from '../utilities/fixtures';
 import _ from 'underscore';
 
 import React, {
@@ -27,6 +28,7 @@ class MessagesList extends React.Component{
   constructor(props){
     super(props);
     this.state = {
+      messageUsers: [],
       dataSource: new ListView.DataSource({
         rowHasChanged: (r1, r2) => r1 != r2
       })
@@ -41,8 +43,10 @@ class MessagesList extends React.Component{
   _loadConversations(props){
     console.log('MESSAGES', props.messages);
     let conversations = {};
+    let userIds = [];
     props.messages.forEach((msg) => {
       let key = msg.participants.sort().join(':');
+      userIds = userIds.concat(msg.participants);
       if (conversations[key]){
         conversations[key].push(msg)
       } else {
@@ -54,37 +58,43 @@ class MessagesList extends React.Component{
     Object.keys(conversations).forEach((c) => {
       dataBlob.push(conversations[c])
     });
-    if (DEV) {console.log('DATA BLOB', dataBlob.map((d) => d[0]))}
-    this.setState({
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 != r2
-      })
-      .cloneWithRows(dataBlob.map((d) => d[0])),
-      conversations: conversations
-    });
+    let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: HEADERS,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      this.setState({
+        dataSource: new ListView.DataSource({
+          rowHasChanged: (r1, r2) => r1 != r2
+        })
+        .cloneWithRows(dataBlob.map((d) => d[0])),
+        conversations: conversations,
+        messageUsers: data
+      });
+    })
+    .catch((err) => {
+      if (DEV) {console.log("ERR:", err);}
+    })
+    .done();
   }
   componentDidMount(){
     this._loadConversations(this.props);
   }
   _renderRow(rowData){
+    let {currentUser} = this.props;
+    let users = _.reject(this.state.messageUsers, (usr) => {
+      return  ! _.contains(rowData.participants, usr.id);
+    });
+    let otherUser = _.find(users, (usr) => usr.id != currentUser.id);
     return (
-      <TouchableOpacity onPress={()=>{
-        this.props.navigator.push({
-          name: 'Message',
-          userIds: rowData.participants,
-        })
-      }}>
-        <View style={styles.messageContainer}>
-          <Image style={styles.profile} source={{uri: rowData.senderAvatar}}/>
-          <View style={styles.messageTextContainer}>
-            <View style={styles.fromContainer}>
-              <Text style={styles.fromText}>{rowData.senderName}</Text>
-              <Text style={styles.sentText}>{moment(new Date(parseInt(rowData.createdAt))).fromNow()}</Text>
-            </View>
-            <Text style={styles.messageText}>{rowData.text}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+      <MessageRow
+        otherUser={otherUser}
+        users={users}
+        navigator={this.props.navigator}
+        rowData={rowData}
+      />
     )
   }
   _renderBackButton(){
