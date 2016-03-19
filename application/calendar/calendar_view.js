@@ -46,12 +46,9 @@ export default class CalendarView extends Component{
               return (
                 <CalendarList
                   {...this.props}
-                  groups={this.props.groups}
                   sendData={this.props.sendData}
-                  events={this.props.events.sort(function(a, b){
-                    return a.start > b.start
-                  })}
                   navigator={navigator}
+                  allEvents={this.props.allEvents.sort((a, b) => a.start > b.start)}
                 />
               )
             } else if (route.name == 'Event') {
