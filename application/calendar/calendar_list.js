@@ -16,6 +16,7 @@ import React, {
   View,
   ListView,
   TouchableOpacity,
+  ActivityIndicatorIOS,
   Dimensions,
   NativeModules,
 } from 'react-native';
@@ -30,10 +31,10 @@ let getRowData = (dataBlob, sectionID, rowID) => {
 class CalendarList extends React.Component{
   constructor(props){
     super(props);
-    this.state = this._loadData(this.props.events)
+    this.state = this._loadData(this.props.allEvents)
   }
   componentDidMount(){
-    if (DEV) {console.log('EVENTS', this.props.events);}
+    if (DEV) {console.log('EVENTS', this.props.allEvents);}
     if (! this.props.fetchedAllEvents || ! this.props.fetchedAllEventsGroups){
       this._fetchAllEvents();
     }
@@ -78,10 +79,10 @@ class CalendarList extends React.Component{
     }).done();
   }
   componentWillReceiveProps(nextProps){
-    if (nextProps.events != this.props.events ||
+    if (nextProps.allEvents != this.props.allEvents ||
         nextProps.groups != this.props.groups
     ) {
-      let newState = this._loadData(nextProps.events)
+      let newState = this._loadData(nextProps.allEvents)
       if (newState){
         this.setState(newState);
       }
@@ -182,9 +183,18 @@ class CalendarList extends React.Component{
     );
   }
   _renderEmptyCalendar(){
-    return (
-      <NoMessages text='No events scheduled. Explore groups in the groups tab or create your own to start an event.'/>
-    );
+    console.log('PROPS', this.props);
+    if ( this.props.fetchedAllEvents && this.props.fetchedAllEventsGroups){
+      return (
+        <NoMessages text='No events scheduled. Explore groups in the groups tab or create your own to start an event.'/>
+      );
+    } else {
+      return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicatorIOS size='large' />
+        </View>
+      )
+    }
   }
   render(){
     let titleConfig = {title: 'Calendar', tintColor: 'white'}
@@ -195,7 +205,7 @@ class CalendarList extends React.Component{
           statusBar={{style: 'light-content', hidden: false}}
           tintColor={Colors.brandPrimary}
           title={titleConfig}/>
-        {this.props.events.length ? this._renderListView() : this._renderEmptyCalendar()}
+        {this.props.allEvents.length ? this._renderListView() : this._renderEmptyCalendar()}
       </View>
     )
   }
