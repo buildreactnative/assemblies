@@ -55,7 +55,6 @@ export default class CommentHeader extends React.Component{
     let initialValue = this.state.expanded ? this.state.maxHeight : this.state.minHeight;
     let finalValue = this.state.expanded ? this.state.minHeight : this.state.maxHeight;
     this.setState({expanded: ! this.state.expanded})
-    this.props.toggleCommentForm();
     this.state.animation.setValue(initialValue);
     Animated.spring(
       this.state.animation, {
@@ -71,7 +70,9 @@ export default class CommentHeader extends React.Component{
           <TouchableOpacity onPress={this._toggle.bind(this)}>
             <Text style={styles.h2}>Comments {this.state.expanded ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
           </TouchableOpacity>
-          <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>
+          <TouchableOpacity onPress={this.props.openCommentForm}>
+            <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>
+          </TouchableOpacity>
         </View>
         <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} {...this.props}/>
       </View>
@@ -100,7 +101,9 @@ export default class CommentHeader extends React.Component{
           <TouchableOpacity onPress={this._toggle.bind(this)} >
             <Text style={styles.h2}>Comments {this.props.isToggled ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
           </TouchableOpacity>
-          <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>
+          <TouchableOpacity onPress={this.props.openCommentForm}>
+            <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>
+          </TouchableOpacity>
         </View>
       </View>
     )

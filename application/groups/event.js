@@ -99,10 +99,7 @@ export default class Event extends Component{
             attending[currentUser.id] = true;
             fetch(`${BASE_URL}/events/${event.id}`, {
               method: "PUT",
-              headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-              },
+              headers: HEADERS,
               body: JSON.stringify({attending: attending})
             })
             .then((response) => response.json())
@@ -158,7 +155,7 @@ export default class Event extends Component{
   }
   _renderCommentForm(){
     return (
-      <View style={styles.inputBox}>
+      <View style={[styles.inputBox, {opacity: this.state.showCommentForm ? 0 : 1}]}>
         <TextInput
           ref="input"
           value={this.state.message}
@@ -240,8 +237,12 @@ export default class Event extends Component{
           isToggled={this.state.showCommentForm}
           event={event}
           {...this.props}
+          openCommentForm={()=>{
+            console.log('OPEN COMMENT FORM');
+            this.setState({showCommentForm: true})
+          }}
           toggleCommentForm={()=> {this.setState({showCommentForm: ! this.state.showCommentForm})}}/>
-          {this.state.showCommentForm ? this._renderCommentForm() : null}
+
 
         <View style={styles.break}></View>
         <Text style={styles.h2}>Going</Text>
@@ -270,6 +271,7 @@ export default class Event extends Component{
           )
         })}
         </ScrollView>
+        { this._renderCommentForm() }
       </View>
     )
   }
@@ -294,7 +296,6 @@ let styles = StyleSheet.create({
     height: 60,
     backgroundColor: '#f2f2f2',
     flexDirection: 'row',
-    marginBottom: 5,
   },
   input: {
     height: 40,
