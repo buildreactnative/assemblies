@@ -7,6 +7,7 @@ import Message                from './message';
 import {messageFixtures}      from '../fixtures/messages';
 import NavigationBar          from 'react-native-navbar';
 import _                      from 'underscore';
+import KeyboardSpacer         from 'react-native-keyboard-spacer';
 import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
@@ -35,7 +36,7 @@ export default class MessageBox extends Component{
       messages          : props.messages,
       keyboardOffset    : 0,
       users             : props.messageUsers,
-      height            : new Animated.Value(0),
+      height            : 50,
     }
   }
   _fetchMessages(){
@@ -64,27 +65,6 @@ export default class MessageBox extends Component{
     .catch((err) => {
       if (DEV) {console.log('ERR: ', err)}
     }).done();
-  }
-  inputFocused(refName) {
-    console.log('FOCUS INPUT', Easing);
-    Animated.timing(
-      this.state.height,
-      {
-        toValue: 200,
-        duration: 300,
-        easing :  Easing.in(Easing.linear)
-      },
-    ).start();
-  }
-  inputBlur(refName){
-    Animated.timing(
-      this.state.height,
-      {
-        toValue: 0,
-        duration: 150,
-        easing: Easing.out(Easing.linear)
-      }
-    ).start();
   }
   componentDidMount(){
     InteractionManager.runAfterInteractions(() => {
@@ -189,14 +169,9 @@ export default class MessageBox extends Component{
             )
           })}
         </InvertibleScrollView>
-        <Animated.View style={[styles.inputBox, {bottom: this.state.height}]}>
+        <View style={styles.inputBox}>
           <TextInput
             ref="message"
-            onFocus={this.inputFocused.bind(this, 'message')}
-            onBlur={()=>{
-              console.log('DONE EDITING');
-              this.inputBlur();
-            }}
             multiline={true}
             value={this.state.newMessage}
             placeholder='Say something...'
@@ -210,7 +185,8 @@ export default class MessageBox extends Component{
           >
             <Text style={Globals.submitButtonText}>Send</Text>
           </TouchableOpacity>
-        </Animated.View>
+        </View>
+        <KeyboardSpacer topSpacing={-50}/>
       </View>
     )
   }
@@ -218,12 +194,12 @@ export default class MessageBox extends Component{
 
 let styles = StyleSheet.create({
   inputBox: {
+    marginBottom: 50,
     height: 60,
     left: 0,
     right: 0,
     backgroundColor: '#F3EFEF',
     flexDirection: 'row',
-    marginBottom: 50,
   },
   input: {
     height: 40,
