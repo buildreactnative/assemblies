@@ -20,7 +20,7 @@ import React, {
   ActivityIndicatorIOS,
 } from 'react-native';
 
-let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
+let ImagePickerManager = require('NativeModules').ImagePickerManager;
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class UserAvatar extends React.Component{
@@ -40,13 +40,13 @@ class UserAvatar extends React.Component{
     )
   }
   showImagePicker(){
-    UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
+    ImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
       if (DEV) {console.log('Response = ', response);}
       if (response.didCancel) {
         if (DEV) {console.log('User cancelled image picker');}
       }
       else if (response.error) {
-        if (DEV) {console.log('UIImagePickerManager Error: ', response.error);}
+        if (DEV) {console.log('ImagePickerManager Error: ', response.error);}
       }
       else if (response.customButton) {
         if (DEV) {console.log('User tapped custom button: ', response.customButton);}

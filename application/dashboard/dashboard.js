@@ -62,7 +62,8 @@ export default class Dashboard extends Component {
   }
 
   _fetchNotifications(){
-    let url = `${BASE_URL}/notifications`;
+    let {currentUser} = this.props;
+    let url = `${BASE_URL}/notifications?{"userIdString": {"$regex": ".*${currentUser.id}.*"}}`;
     fetch(url, {
       method: "GET",
       headers: HEADERS,
@@ -70,8 +71,13 @@ export default class Dashboard extends Component {
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('NOTIFICATIONS', data);}
-      this.setState({notifications: data})
+      this.setState({
+        notifications: _.reject(data, (n) => n.relatedUserIds[currentUser.id].seen)
+      });
     })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
   }
   _fetchLastEvent(){
     let {currentUser} = this.props;
@@ -100,15 +106,15 @@ export default class Dashboard extends Component {
         }
       }
       this._fetchGroups();
-      this._fetchAllEvents();
       this.setState({
         nextEvent: nextEvent,
         events: data,
       })
+      this._fetchAllEvents();
     })
     .catch((err) => {
       if (DEV) {console.log('ERR: ', err)}
-    })
+    }).done();
   }
   _fetchAllEvents(){
     let d = new Date();
@@ -123,6 +129,9 @@ export default class Dashboard extends Component {
       if (DEV) {console.log('EVENTS ALL', data);}
       this.setState({allEvents: data});
     })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
   }
   _fetchGroups(){
     let {currentUser} = this.props;
@@ -140,8 +149,9 @@ export default class Dashboard extends Component {
     })
     .catch((error) => {
       if (DEV) {console.log(error)}
-    })
-
+    }).done();
+  }
+  _fetchSuggestedGroups(){
     if (DEV) {console.log('URL', url)}
     fetch(`${BASE_URL}/groups`, {
       method: "GET",
@@ -158,7 +168,7 @@ export default class Dashboard extends Component {
     })
     .catch((error) => {
       if (DEV) {console.log(error)}
-    })
+    }).done();
   }
   _mutateState(newState, callback){
     this.setState(newState);

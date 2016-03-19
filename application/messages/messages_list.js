@@ -118,7 +118,7 @@ class MessagesList extends React.Component{
     )
   }
   _renderNoMessages(){
-    if (this.props.messages.length) {
+    if (this.props.fetchedMessages && ! this.props.messages.length) {
       return(
         <NoMessages text={'You dont have any messages yet. You can start a conversation from within one of your groups.'}/>
       );

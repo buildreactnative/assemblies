@@ -72,6 +72,9 @@ export default class MessageBox extends Component{
     if (nextProps.messages != this.state.messages && this.props.hasMessages){
       this.setState({messages: nextProps.messages});
     }
+    if (nextProps.messageUsers != this.state.users && this.props.hasMessages){
+      this.setState({users: nextProps.messageUsers});
+    }
   }
   componentDidMount(){
     InteractionManager.runAfterInteractions(() => {
@@ -141,6 +144,7 @@ export default class MessageBox extends Component{
     let notification = {
       type              : 'message',
       relatedUserIds    : relatedUserIds,
+      userIdString      : Object.keys(relatedUserIds).sort().join(':'),
       message           : `You have a new message from ${data.senderName}`,
       timestamp         : new Date().valueOf(),
     }
@@ -176,8 +180,8 @@ export default class MessageBox extends Component{
           {_.reject(messages, (m) => m.participants.sort().join(':') != userIds.sort().join(':'))
             .sort((a, b) => {return b.createdAt - a.createdAt})
             .map((msg, idx) => {
-            let user = _.find(this.state.users.concat(this.props.currentUser), (usr) => `${usr.firstName} ${usr.lastName}` == msg.senderName)
-            if (DEV) {console.log('USER', user);}
+              if (DEV) {console.log('USER', user, msg);}
+            let user = _.find(this.state.users, (usr) => usr.id == msg.senderId)
             return (
               <Message message={msg} user={user} key={idx} navigator={this.props.navigator}/>
             )
