@@ -74,9 +74,8 @@ let styles = {
   bottomPanel: {
     flex: 0.3,
     backgroundColor: Colors.brandPrimaryDark,
-    paddingVertical: 8,
-    marginHorizontal: 10,
-    marginTop: 10,
+    paddingVertical: 12,
+    marginBottom: 10,
     opacity: 0.8,
     justifyContent: 'center',
     alignItems: 'center',

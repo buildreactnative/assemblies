@@ -56,16 +56,18 @@ export default class CommentHeader extends React.Component{
     let finalValue = this.state.expanded ? this.state.minHeight : this.state.maxHeight;
     this.setState({expanded: ! this.state.expanded})
     this.state.animation.setValue(initialValue);
-    Animated.spring(
-      this.state.animation, {
-        toValue: finalValue
-      }
-    ).start();
+    if (this.props.event.comments.length){
+      Animated.spring(
+        this.state.animation, {
+          toValue: finalValue
+        }
+      ).start();
+    }
   }
   _renderExpanded(){
     let {event} = this.props;
     return (
-      <View>
+      <View style={styles.container}>
         <View style={styles.row}>
           <TouchableOpacity onPress={this._toggle.bind(this)}>
             <Text style={styles.h2}>Comments {this.state.expanded ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
@@ -130,12 +132,12 @@ let styles = StyleSheet.create({
   h4: {
     fontSize: 16,
     fontWeight: '300',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   h2: {
     fontSize: 20,
     fontWeight: '400',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 5,
   },
   container: {
@@ -143,7 +145,6 @@ let styles = StyleSheet.create({
     marginHorizontal: 10,
     overflow: 'hidden',
     backgroundColor: 'white',
-    paddingBottom: 10,
     marginBottom: 1,
   },
 });

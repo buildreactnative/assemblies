@@ -48,7 +48,7 @@ export default class Event extends Component{
   }
   componentDidMount(){
     InteractionManager.runAfterInteractions(() => {
-      this.setState({ready: true});
+      this.setState({ready: true, showMap: true});
       let {group, event,} = this.props;
       let attending = Object.keys(event.attending)
       fetch(`${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(attending)}}}`, {
@@ -58,11 +58,11 @@ export default class Event extends Component{
       .then((response) => response.json())
       .then((data) => {
         if (DEV) {console.log('DATA USERS', data)}
-        this.setState({members: data, showMap: true})
+        this.setState({members: data})
       })
       .catch((error) => {
         if (DEV) {console.log(error)}
-        this.setState({showMap: true})
+        // this.setState({showMap: true})
       }).done();
     });
   }
@@ -373,9 +373,8 @@ let styles = StyleSheet.create({
     backgroundColor: Colors.brandPrimaryDark,
     opacity: 0.8,
     justifyContent: 'center',
-    paddingVertical: 8,
-    marginHorizontal: 10,
-    marginTop: 10,
+    paddingVertical: 12,
+    marginBottom: 10,
     alignItems: 'center',
   },
   memberText: {

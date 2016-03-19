@@ -54,6 +54,7 @@ let styles = StyleSheet.create({
     backgroundColor: 'white',
     marginHorizontal: 10,
     paddingBottom: 10,
+    marginBottom: 1,
     borderBottomLeftRadius: 3,
     borderBottomRightRadius: 4,
   },
