@@ -123,6 +123,16 @@ export default class UpcomingAssemblies extends Component{
         text='No events scheduled in your area yet.' />
     )
   }
+  _goToEvent(event){
+    let group = _.find(this.props.groups, (g) => {
+      return g.id == event.groupId
+    })
+    this.props.navigator.push({
+      name: 'Event',
+      event: event,
+      group: group,
+    });
+  }
   _renderEvents(events){
     if (! events.length && this.props.fetchedAllEvents) {
       return (
@@ -136,7 +146,11 @@ export default class UpcomingAssemblies extends Component{
           {events.map((event, idx) => {
             let {groups} = this.props;
             return (
-              <UpcomingAssembly currentUser={this.props.currentUser} event={event} groups={groups} key={idx} />
+              <TouchableOpacity
+                key={idx}
+                onPress={() => {this._goToEvent(event)}}>
+                <UpcomingAssembly currentUser={this.props.currentUser} event={event} groups={groups} key={idx} />
+              </TouchableOpacity>
             )
           })}
         </View>
