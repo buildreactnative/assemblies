@@ -1,30 +1,26 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import Groups from './groups';
-import Group from './group';
-import CreateGroup from './create_group';
-import CreateEvent from './create_event';
-import GroupMembers from './group_members';
-import GroupEvents from './group_events';
+import _                  from 'underscore';
+import Icon               from 'react-native-vector-icons/Ionicons';
+import NavigationBar      from 'react-native-navbar';
+import Groups             from './groups';
+import Group              from './group';
+import CreateGroup        from './create_group';
+import Event              from './event';
+import CreateEvent        from './create_event';
+import GroupMembers       from './group_members';
+import GroupEvents        from './group_events';
 import CreateEventConfirm from './create_event_confirm';
 import CreateGroupConfirm from './create_group_confirm';
-import Profile from '../messages/profile';
-import Event from './event';
-import MessageList from '../messages/messages_list';
-import MessageBox from '../messages/message_box';
-import _ from 'underscore';
-import {BASE_URL, DEV} from '../utilities/fixtures';
+import Profile            from '../messages/profile';
+import MessageList        from '../messages/messages_list';
+import Colors             from '../styles/colors';
+import MessageBox         from '../messages/message_box';
+import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
   Component,
   StyleSheet,
-  Text,
   View,
-  TabBarIOS,
-  Image,
-  TouchableOpacity,
   Dimensions,
   NativeModules,
   Navigator,
@@ -35,7 +31,7 @@ import React, {
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
-class GroupView extends React.Component{
+export default class GroupView extends Component{
   createGroup(group){
     if (! group) {return;}
     this.props.changeState({
@@ -70,10 +66,7 @@ class GroupView extends React.Component{
     if (DEV) {console.log('UPDATED GROUPS', groups)}
     fetch(`${BASE_URL}/groups/${event.groupId}`, {
       method: "PUT",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: HEADERS,
       body: JSON.stringify({events: group.events.concat(event.id)})
     })
     .then((response) => response.json())
@@ -149,9 +142,8 @@ class GroupView extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
-  }
-}
-module.exports = GroupView;
+  },
+});

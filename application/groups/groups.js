@@ -1,13 +1,13 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
+import _                  from 'underscore';
+import Icon               from 'react-native-vector-icons/Ionicons';
+import NavigationBar      from 'react-native-navbar';
+import GroupBox           from './group_box';
+import SuggestedGroupBox  from './suggested_group_box';
+import AddGroupBox        from './add_group_box';
+import Colors             from '../styles/colors';
+import {DEV, HEADERS, BASE_URL} from '../utilities/fixtures';
 import {groupsFixture, suggestedGroups,} from '../fixtures/group_fixtures';
-import {profileFixture} from '../fixtures/users';
-import _ from 'underscore';
-import GroupBox from './group_box';
-import SuggestedGroupBox from './suggested_group_box';
-import AddGroupBox from './add_group_box';
-import {DEV} from '../utilities/fixtures';
+import {profileFixture}   from '../fixtures/users';
 
 import React, {
   ScrollView,
@@ -15,8 +15,6 @@ import React, {
   StyleSheet,
   Text,
   View,
-  TabBarIOS,
-  Image,
   TouchableOpacity,
   Dimensions,
   NativeModules,
@@ -32,10 +30,43 @@ suggestedGroups.forEach((group, idx) => {
   else { splitSuggestions.push([group]); }
 })
 
-class Groups extends React.Component{
+export default class Groups extends Component{
   componentDidMount(){
-    if (DEV) {console.log('ROUTES', this.props.navigator.getCurrentRoutes())}
-    let routes = this.props.navigator.getCurrentRoutes();
+    if (! this.props.fetchedGroups || ! this.props.fetchedSuggestedGroups){
+      this._loadGroups();
+    }
+  }
+  _loadGroups(){
+    if (DEV) {console.log('URL', url)}
+    let groupIds = this.props.currentUser.groupIds;
+    let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: HEADERS,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('DATA SG GROUPS', data)}
+      let groups = data;
+      let url = `${BASE_URL}/groups?{"id": {"$nin": ${JSON.stringify(groupIds)}}}`;
+      fetch(url, {
+        method: 'GET',
+        headers: HEADERS,
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (DEV) {console.log('SUGGESTED GROUPS', data, groups)}
+        this.props.sendData({
+          groups                  : groups,
+          suggestedGroups         : data,
+          fetchedGroups           : true,
+          fetchedSuggestedGroups  : true,
+        })
+      })
+    })
+    .catch((error) => {
+      if (DEV) {console.log(error)}
+    }).done();
   }
   _renderAddButton(){
     return (
@@ -146,7 +177,7 @@ class Groups extends React.Component{
   }
   render(){
     let {groups, suggestedGroups,} = this.props;
-    if (DEV) {console.log('NAV', this.props.navigator);}
+    if (DEV) {console.log('GROUPS PROPS', this.props);}
     let rightButtonConfig = this._renderAddButton()
     let titleConfig = {title: 'My Groups', tintColor: 'white'}
     return (
@@ -168,7 +199,7 @@ class Groups extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -228,6 +259,4 @@ let styles = {
     paddingRight: 20,
     backgroundColor: 'transparent',
   }
-}
-
-module.exports = Groups
+});

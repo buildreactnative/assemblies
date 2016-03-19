@@ -110,25 +110,6 @@ export default class Dashboard extends Component {
       if (DEV) {console.log('ERR: ', err)}
     }).done();
   }
-  // _fetchSuggestedGroups(){
-  //   if (DEV) {console.log('URL', url)}
-  //   fetch(`${BASE_URL}/groups`, {
-  //     method: "GET",
-  //     headers: HEADERS,
-  //   })
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     if (DEV) {console.log('DATA SG GROUPS', data)}
-  //     this.setState({
-  //       suggestedGroups: _.reject(data, (gp) => {
-  //         return _.contains(groupIds, gp.id)
-  //       })
-  //     })
-  //   })
-  //   .catch((error) => {
-  //     if (DEV) {console.log(error)}
-  //   }).done();
-  // }
   _mutateState(newState, callback){
     this.setState(newState);
   }
@@ -150,6 +131,7 @@ export default class Dashboard extends Component {
     )
   }
   _sendData(newState){
+    console.log('NEW STATE', newState, this.state);
     this.setState(newState);
   }
   render() {
@@ -169,7 +151,11 @@ export default class Dashboard extends Component {
             })
           }}
           >
-          <MessagesView {...this.state} {...this.props} sendData={this._sendData.bind(this)}/>
+          <MessagesView
+            {...this.state}
+            {...this.props}
+            sendData={this._sendData.bind(this)}
+          />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Groups"
@@ -182,7 +168,11 @@ export default class Dashboard extends Component {
             })
           }}
           >
-          <GroupView {...this.state}/>
+          <GroupView
+            {...this.props}
+            {...this.state}
+            sendData={this._sendData.bind(this)}
+          />
         </Icon.TabBarItem>
         <Icon.TabBarItem
           title="Calendar"
@@ -198,7 +188,7 @@ export default class Dashboard extends Component {
           <CalendarView
             {...this.props }
             {...this.state }
-            sendData={this._mutateState.bind(this)}
+            sendData={this._sendData.bind(this)}
           />
         </Icon.TabBarItem>
         <Icon.TabBarItem
@@ -215,7 +205,7 @@ export default class Dashboard extends Component {
           <ActivityView
             {...this.props}
             {...this.state}
-            sendData={this._mutateState.bind(this)}
+            sendData={this._sendData.bind(this)}
           />
         </Icon.TabBarItem>
         <Icon.TabBarItem
@@ -230,9 +220,10 @@ export default class Dashboard extends Component {
           }}
           >
           <Settings
-            changeState={this._mutateState.bind(this)}
-            logout={this._logout.bind(this)}
+            {...this.props}
             {...this.state}
+            changeState={this._sendData.bind(this)}
+            logout={this._logout.bind(this)}
           />
         </Icon.TabBarItem>
 
