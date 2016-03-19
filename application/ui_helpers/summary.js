@@ -68,7 +68,6 @@ export default class Summary extends React.Component{
   _renderClosed(){
     let {summary} = this.props;
     let truncatedText = truncate(summary, 140);
-    let longText = "Locavore vice readymade photo booth four loko. Drinking vinegar chia lomo cray. Try-hard cardigan bespoke, cold-pressed chillwave letterpress single-origin coffee knausgaard. Hammock tumblr lomo ethical post-ironic, XOXO PBR&B cray banh mi master cleanse farm-to-table. Celiac marfa echo park YOLO, drinking vinegar fap etsy mixtape chillwave jean shorts microdosing knausgaard pinterest. Gluten-free butcher 3 wolf moon humblebrag, occupy deep v schlitz mustache williamsburg portland selvage polaroid selfies chicharrones. Aesthetic kombucha flexitarian taxidermy portland PBR&B, green juice lo-fi.";
     return (
       <View style={styles.container} onLayout={(e) => {
           if (! this.state.minHeight) {

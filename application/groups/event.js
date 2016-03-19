@@ -228,7 +228,7 @@ export default class Event extends Component{
       />
         <ScrollView style={styles.scrollView}>
         {this.state.showMap ? <EventLocation event={event} group={group}/> : this._renderEmptyMap()}
-        <Summary summary={longText}/>
+        <Summary summary={event.summary}/>
         <Text style={styles.h2}>Address</Text>
         <Text style={styles.h3}>{event.location ? event.location.city : ''}</Text>
         <Text style={styles.h2}>Date</Text>
