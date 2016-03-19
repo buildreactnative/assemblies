@@ -1,13 +1,14 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import EventList from './event_list';
-import FakeEvent from './fake_event';
-import moment from 'moment';
-import {truncate} from 'underscore.string';
-import {BASE_URL, DEV} from '../utilities/fixtures';
-import _ from 'underscore';
+import _                from 'underscore';
+import NavigationBar    from 'react-native-navbar';
+import Icon             from 'react-native-vector-icons/Ionicons';
+import moment           from 'moment';
+import {truncate}       from 'underscore.string';
+import EventList        from './event_list';
+import Summary          from '../ui_helpers/summary';
+import FakeEvent        from './fake_event';
+import Colors           from '../styles/colors';
+import Globals          from '../styles/globals';
+import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -15,7 +16,6 @@ import React, {
   StyleSheet,
   Text,
   View,
-  TabBarIOS,
   Image,
   TouchableOpacity,
   Dimensions,
@@ -26,7 +26,7 @@ import React, {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class Group extends React.Component{
+class Group extends Component{
   constructor(props){
     super(props);
     this.state = {
@@ -37,45 +37,51 @@ class Group extends React.Component{
     }
   }
   componentDidMount(){
-    let {group, events,} = this.props;
+    let {group, events, allEvents, groupUsers} = this.props;
     let eventIds = group.events;
-    let groupEvents = _.reject(events, (evt) => ! _.contains(eventIds, evt.id));
-    if (groupEvents.length == eventIds ){
+    let userIds = _.keys(group.members);
+    let groupEvents = _.reject(_.uniq(events.concat(allEvents)), (evt) => {
+      return ! _.contains(eventIds, evt.id);
+    });
+    let groupMembers = _.reject(groupUsers, (usr) => {
+      return ! _.contains(userIds, user.id)
+    });
+    console.log('PROPS', groupEvents, groupMembers);
+    console.log('PARAMS', eventIds, userIds, group, this.props);
+    if (groupEvents.length == eventIds.length ){
       this.setState({events: groupEvents})
     } else {
       fetch(`${BASE_URL}/events?{"id": {"$in": ${JSON.stringify(eventIds)}}}`, {
-        method: "GET",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
+        method: 'GET',
+        headers: HEADERS,
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (DEV) {console.log('DATA EVENTS', data)}
+        let events = data;
+        this.setState({events: events})
+      })
+      .catch((error) => {
+        if (DEV) {console.log(error)}
+      }).done();
+    }
+    if (groupMembers.length != userIds.length){
+      let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`
+      fetch(url, {
+        method: 'GET',
+        headers: HEADERS,
       })
       .then((response) => response.json())
       .then((data) => {
         if (DEV) {console.log('DATA USERS', data)}
-        this.setState({events: data})
+        this.setState({members: data});
       })
       .catch((error) => {
         if (DEV) {console.log(error)}
-      })
+      }).done();
+    } else {
+      this.setState({members: groupMembers});
     }
-    let userIds = Object.keys(group.members);
-    let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`
-    fetch(url, {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('DATA USERS', data)}
-      this.setState({members: data})
-    })
-    .catch((error) => {
-      if (DEV) {console.log(error)}
-    })
   }
   _renderBackButton(){
     return (
