@@ -212,6 +212,7 @@ export default class Event extends Component{
   render(){
     let {group, currentUser, events} = this.props;
     let {event, members} = this.state;
+    let longText = "Locavore vice readymade photo booth four loko. Drinking vinegar chia lomo cray. Try-hard cardigan bespoke, cold-pressed chillwave letterpress single-origin coffee knausgaard. Hammock tumblr lomo ethical post-ironic, XOXO PBR&B cray banh mi master cleanse farm-to-table. Celiac marfa echo park YOLO, drinking vinegar fap etsy mixtape chillwave jean shorts microdosing knausgaard pinterest. Gluten-free butcher 3 wolf moon humblebrag, occupy deep v schlitz mustache williamsburg portland selvage polaroid selfies chicharrones. Aesthetic kombucha flexitarian taxidermy portland PBR&B, green juice lo-fi.";
     let isMember = group ? _.contains(currentUser.groupIds, group.id) : false;
     let isAdmin = group ? isMember && group.members[currentUser.id].admin : false;
     let isOwner = group ? isMember && group.members[currentUser.id].owner : false;
@@ -227,7 +228,7 @@ export default class Event extends Component{
       />
         <ScrollView style={styles.scrollView}>
         {this.state.showMap ? <EventLocation event={event} group={group}/> : this._renderEmptyMap()}
-        <Summary summary={event.summary}/>
+        <Summary summary={longText}/>
         <Text style={styles.h2}>Address</Text>
         <Text style={styles.h3}>{event.location ? event.location.city : ''}</Text>
         <Text style={styles.h2}>Date</Text>
