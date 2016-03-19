@@ -8,6 +8,9 @@ import EventLocation  from './event_location';
 import Colors         from '../styles/colors';
 import Globals        from '../styles/globals';
 import Summary        from '../ui_helpers/summary';
+import Address        from '../ui_helpers/address';
+import EventDate      from '../ui_helpers/event_date';
+import CommentHeader  from '../ui_helpers/comment_header';
 import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
@@ -229,19 +232,17 @@ export default class Event extends Component{
         <ScrollView style={styles.scrollView}>
         {this.state.showMap ? <EventLocation event={event} group={group}/> : this._renderEmptyMap()}
         <Summary summary={event.summary}/>
-        <Text style={styles.h2}>Address</Text>
-        <Text style={styles.h3}>{event.location ? event.location.city : ''}</Text>
-        <Text style={styles.h2}>Date</Text>
-        <Text style={styles.h3}>{moment(event.start).format('dddd, MMM Do, h:mm')}</Text>
+        <Address location={event.location}/>
+        <EventDate start={event.start} />
+
         {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
-        <View style={styles.commentTitleContainer}>
-          <Text style={styles.h2}>Comments </Text>
-          <TouchableOpacity onPress={()=>this.setState({showCommentForm: ! this.state.showCommentForm})}>
-            <Icon name="plus-circled" size={30} color="#bbb"/>
-          </TouchableOpacity>
-        </View>
-        {this.state.showCommentForm ? this._renderCommentForm() : null}
-        <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} {...this.props}/>
+        <CommentHeader
+          isToggled={this.state.showCommentForm}
+          event={event}
+          {...this.props}
+          toggleCommentForm={()=> {this.setState({showCommentForm: ! this.state.showCommentForm})}}/>
+          {this.state.showCommentForm ? this._renderCommentForm() : null}
+
         <View style={styles.break}></View>
         <Text style={styles.h2}>Going</Text>
         <View style={styles.break}></View>
@@ -416,6 +417,7 @@ let styles = StyleSheet.create({
   joinContainer: {
     flex: 1,
     paddingHorizontal: 20,
+    marginVertical: 10,
   },
   joinButton: {
     flex: 1,

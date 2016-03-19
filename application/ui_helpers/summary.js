@@ -112,7 +112,7 @@ export default class Summary extends React.Component{
     let {summary} = this.props;
     let truncatedText = truncate(summary, 140);
     return (
-      <Animated.View style={{backgroundColor: 'white', overflow: 'hidden', margin: 10, marginTop: 0, height: this.state.animation}}>
+      <Animated.View style={{backgroundColor: 'white', overflow: 'hidden', marginHorizontal: 10, marginBottom: 1, height: this.state.animation}}>
         {this.state.expanded ? this._renderExpanded() : this._renderClosed()}
         {summary == truncatedText ? null : this._renderHiddenLayout()}
       </Animated.View>
@@ -133,7 +133,5 @@ let styles = StyleSheet.create({
   },
   container: {
     paddingBottom: 10,
-    borderBottomLeftRadius: 3,
-    borderBottomRightRadius: 4,
   }
 })
