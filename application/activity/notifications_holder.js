@@ -95,7 +95,6 @@ export default class NotificationsHolder extends Component{
           <Text style={styles.bodyText}>Notifications</Text>
           <View style={styles.break}></View>
           {this.props.notifications.length ? this._renderNotifications() : this._renderNoNotifications()}
-
         </View>
       </ScrollView>
     )

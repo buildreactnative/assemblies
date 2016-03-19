@@ -197,8 +197,9 @@ export default class Dashboard extends Component {
           }}
           >
           <CalendarView
+            {...this.props }
             {...this.state }
-            changeState={this._mutateState.bind(this)}
+            sendData={this._mutateState.bind(this)}
           />
         </Icon.TabBarItem>
         <Icon.TabBarItem

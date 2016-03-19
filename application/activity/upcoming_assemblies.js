@@ -33,7 +33,7 @@ export default class UpcomingAssemblies extends Component{
     let {currentUser} = this.props;
     let d = new Date();
     d.setHours(0);
-    let url = `${BASE_URL}/events?{"$and": [{"start": {"$gt": ${JSON.stringify(d.valueOf())} }}, {"location.state": ${JSON.stringify(currentUser.location.state)}}]}`;
+    let url = `${BASE_URL}/events?{"$and": [{"start": {"$gt": ${JSON.stringify(d.valueOf())} }}, {"location.state": ${JSON.stringify("US")}}]}`;
     fetch(url, {
       method: "GET",
       headers: HEADERS,

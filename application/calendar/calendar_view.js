@@ -1,31 +1,27 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import Groups from '../groups/groups';
-import Group from '../groups/group';
-import CreateGroup from '../groups/create_group';
-import CreateEvent from '../groups/create_event';
-import GroupMembers from '../groups/group_members';
-import GroupEvents from '../groups/group_events';
-import CreateEventConfirm from '../groups/create_event_confirm';
-import CreateGroupConfirm from '../groups/create_group_confirm';
-import Profile from '../messages/profile';
-import Event from '../groups/event';
-import MessageList from '../messages/messages_list';
-import MessageBox from '../messages/message_box';
-import CalendarList from './calendar_list';
-import _ from 'underscore';
-import {BASE_URL, DEV} from '../utilities/fixtures';
+import Colors               from '../styles/colors';
+import Icon                 from 'react-native-vector-icons/Ionicons';
+import NavigationBar        from 'react-native-navbar';
+import Groups               from '../groups/groups';
+import Group                from '../groups/group';
+import CreateGroup          from '../groups/create_group';
+import CreateEvent          from '../groups/create_event';
+import GroupMembers         from '../groups/group_members';
+import GroupEvents          from '../groups/group_events';
+import CreateEventConfirm   from '../groups/create_event_confirm';
+import CreateGroupConfirm   from '../groups/create_group_confirm';
+import Profile              from '../messages/profile';
+import Event                from '../groups/event';
+import MessageList          from '../messages/messages_list';
+import MessageBox           from '../messages/message_box';
+import CalendarList         from './calendar_list';
+import _                    from 'underscore';
+import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
   Component,
   StyleSheet,
-  Text,
   View,
-  TabBarIOS,
-  Image,
-  TouchableOpacity,
   Dimensions,
   NativeModules,
   Navigator,
@@ -34,10 +30,9 @@ import React, {
 } from 'react-native';
 
 const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
-
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
 
-class CalendarView extends React.Component{
+export default class CalendarView extends Component{
   render(){
     return (
       <View style={styles.container}>
@@ -51,8 +46,8 @@ class CalendarView extends React.Component{
               return (
                 <CalendarList
                   {...this.props}
-                  groups={this.props.groups.concat(this.props.suggestedGroups)}
-                  changeState={this.props.changeState}
+                  groups={this.props.groups}
+                  sendData={this.props.sendData}
                   events={this.props.events.sort(function(a, b){
                     return a.start > b.start
                   })}
@@ -130,9 +125,8 @@ class CalendarView extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
-  }
-}
-module.exports = CalendarView;
+  },
+});

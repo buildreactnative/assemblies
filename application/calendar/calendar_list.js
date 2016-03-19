@@ -1,22 +1,19 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
+import _                from 'underscore';
+import NavigationBar    from 'react-native-navbar';
+import Icon             from 'react-native-vector-icons/Ionicons';
+import moment           from 'moment';
+import CalendarSection  from './calendar_section';
+import Colors           from '../styles/colors';
 import UpcomingAssembly from '../activity/upcoming_assembly';
-import NavigationBar from 'react-native-navbar';
-import CalendarSection from './calendar_section';
 import {calendarFixture} from '../fixtures/calendar_fixtures';
-import {DEV} from '../utilities/fixtures';
-import NoMessages from '../messages/no_messages';
-import _ from 'underscore';
+import {DEV, HEADERS, BASE_URL} from '../utilities/fixtures';
+import NoMessages       from '../messages/no_messages';
 
 import React, {
-  ScrollView,
   Component,
   StyleSheet,
   Text,
   View,
-  TabBarIOS,
-  Image,
   ListView,
   TouchableOpacity,
   Dimensions,
@@ -37,13 +34,53 @@ class CalendarList extends React.Component{
   }
   componentDidMount(){
     if (DEV) {console.log('EVENTS', this.props.events);}
-    let newState = this._loadData(this.props.events);
-    if (newState) {
-      this.setState(newState);
+    if (! this.props.fetchedAllEvents || ! this.props.fetchedAllEventsGroups){
+      this._fetchAllEvents();
     }
   }
+  _fetchAllEvents(){
+    let {currentUser} = this.props;
+    let d = new Date();
+    d.setHours(0);
+    let url = `${BASE_URL}/events?{"$and": [{"start": {"$gt": ${JSON.stringify(d.valueOf())} }}, {"location.state": ${JSON.stringify("US")}}]}`;
+    fetch(url, {
+      method: "GET",
+      headers: HEADERS,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('EVENTS ALL', data);}
+      let allEvents = data;
+      let groupIds = data.map((evt) => evt.groupId);
+
+      let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
+      if (DEV) {console.log('URL', url)}
+      fetch(url, {
+        method: "GET",
+        headers: HEADERS,
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (DEV) {console.log('DATA GROUPS', data)}
+        this.props.sendData({
+          allEvents               : allEvents,
+          groups                  : data,
+          fetchedAllEvents        : true,
+          fetchedAllEventsGroups  : true,
+        });
+      })
+      .catch((error) => {
+        if (DEV) {console.log(error)}
+      }).done();
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
+  }
   componentWillReceiveProps(nextProps){
-    if (nextProps.events != this.props.events) {
+    if (nextProps.events != this.props.events ||
+        nextProps.groups != this.props.groups
+    ) {
       let newState = this._loadData(nextProps.events)
       if (newState){
         this.setState(newState);
@@ -113,7 +150,7 @@ class CalendarList extends React.Component{
     )
   }
   _renderRow(rowData, sectionID, rowID){
-    if (DEV) {console.log('ROW DATA', rowData);}
+    if (DEV) {console.log('ROW DATA', rowData, this.props.groups);}
     let group = _.find(this.props.groups, (g) => {
       return g.id == rowData.groupId
     })
@@ -151,7 +188,7 @@ class CalendarList extends React.Component{
   }
   render(){
     let titleConfig = {title: 'Calendar', tintColor: 'white'}
-    if (DEV) {console.log('DATA SOURCES', this.state.dataSource)}
+    if (DEV) {console.log('DATA SOURCES', this.state, this.props)}
     return (
       <View style={styles.container}>
         <NavigationBar
