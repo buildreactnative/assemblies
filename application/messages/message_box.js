@@ -32,44 +32,39 @@ export default class MessageBox extends Component{
     this.state = {
       loading           : true,
       newMessage        : '',
+      messages          : props.messages,
       keyboardOffset    : 0,
-      users             : [],
+      users             : props.messageUsers,
       height            : new Animated.Value(0),
     }
   }
-  // _fetchMessages(){
-  //   let {userIds} = this.props;
-  //   let url = `${BASE_URL}/messages?{"participants":${JSON.stringify(userIds.sort())}}`;
-  //   fetch(url, {
-  //     method: "GET",
-  //     headers: HEADERS,
-  //   })
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     if (DEV) {console.log('MESSAGES', data);}
-  //     if (data != this.state.messages){
-  //       this.setState({messages: data})
-  //     }
-  //   })
-  // }
-  // _fetchUsers(){
-  //   let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(this.props.userIds)}}}`;
-  //   fetch(url, {
-  //     method: "GET",
-  //     headers: {
-  //       'Accept': 'application/json',
-  //       'Content-Type':'application/json'
-  //     }
-  //   })
-  //   .then((response) => response.json())
-  //   .then((data) => {
-  //     if (DEV) {console.log('USERS', data);}
-  //     this.setState({users: data})
-  //   })
-  //   .catch((err) => {
-  //     if (DEV) {console.log('ERR: ', err)}
-  //   })
-  // }
+  _fetchMessages(){
+    let {userIds} = this.props;
+    let url = `${BASE_URL}/messages?{"participantsString":${userIds.sort().join(':')}}`;
+    fetch(url, {method: "GET", headers: HEADERS,})
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('MESSAGES', data);}
+      if (data != this.state.messages){
+        this.setState({messages: data})
+      }
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR: ', err);}
+    }).done();
+  }
+  _fetchUsers(){
+    let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(this.props.userIds)}}}`;
+    fetch(url, {method: "GET", headers: HEADERS})
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('USERS', data);}
+      this.setState({users: data})
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR: ', err)}
+    }).done();
+  }
   inputFocused(refName) {
     console.log('FOCUS INPUT', Easing);
     Animated.timing(
@@ -92,20 +87,23 @@ export default class MessageBox extends Component{
     ).start();
   }
   componentDidMount(){
-    // if (this.state.messages = []){
-    //   this._fetchMessages()
-    // }
     InteractionManager.runAfterInteractions(() => {
+      if (this.state.messages = []){
+        this._fetchMessages();
+      }
+      if (! this.state.messageUsers) {
+        this._fetchUsers();
+      }
       this.setState({loading: false});
     });
     this.refs.scroll.scrollTo(0);
-    if (DEV) {console.log('USER IDS', this.props.userIds);}
   }
   _renderLoading(){
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
+        <ActivityIndicatorIOS size='large'/>
       </View>
-    )
+    );
   }
   _renderBackButton(){
     return (
@@ -114,7 +112,35 @@ export default class MessageBox extends Component{
       }}>
         <Icon name="ios-arrow-back" size={25} color="white" style={{paddingBottom: 3, paddingLeft: 20,}}/>
       </TouchableOpacity>
-    )
+    );
+  }
+  _createMessage(){
+    let {currentUser} = this.props;
+    let uniqueParticipants = _.uniq(this.state.users.map((usr)=>usr.id)).sort()
+    if (uniqueParticipants.length < 2) {
+      return; // don't allow users to message themselves
+    }
+    let msg = {
+      text                : this.state.newMessage,
+      participants        : uniqueParticipants,
+      participantsString  : uniqueParticipants.join(':'),
+      createdAt           : new Date().valueOf(),
+      senderName          : `${currentUser.firstName} ${currentUser.lastName}`,
+      senderAvatar        : currentUser.avatarUrl,
+      senderId            : currentUser.id,
+    }
+    let url = `${BASE_URL}/messages`
+    fetch(url, { method: 'POST', headers: HEADERS, body: JSON.stringify(msg) })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('MSG', data);}
+      this.setState({newMessage: '',});
+      this.props.sendData({messages: this.props.messages.concat(data)})
+      this._createNotification(data)
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR: ', err)}
+    }).done();
   }
   _createNotification(data){
     let {currentUser} = this.props;
@@ -125,22 +151,20 @@ export default class MessageBox extends Component{
     })
     relatedUserIds[currentUser.id].seen = true;
     let notification = {
-      type: 'message',
-      relatedUserIds: relatedUserIds,
-      message: `You have a new message from ${data.senderName}`,
-      timestamp: new Date().valueOf(),
-      seen: false,
+      type              : 'message',
+      relatedUserIds    : relatedUserIds,
+      message           : `You have a new message from ${data.senderName}`,
+      timestamp         : new Date().valueOf(),
     }
     if (DEV) {console.log('PARAMS', notification)}
-    fetch(url, {
-      method: "POST",
-      headers: HEADERS,
-      body: JSON.stringify(notification)
-    })
+    fetch(url, { method: "POST", headers: HEADERS, body: JSON.stringify(notification)})
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('NOTIFICATION', data);}
     })
+    .catch((err) => {
+      if (DEV) {console.log('ERR: ', err);}
+    }).done();
   }
   render(){
     console.log('MESSAGE BOX PROPS', this.props, this.state);
@@ -173,7 +197,7 @@ export default class MessageBox extends Component{
               console.log('DONE EDITING');
               this.inputBlur();
             }}
-            returnKeyType='send'
+            multiline={true}
             value={this.state.newMessage}
             placeholder='Say something...'
             onChange={(e) => {this.setState({newMessage: e.nativeEvent.text}); }}
@@ -182,37 +206,7 @@ export default class MessageBox extends Component{
           <TouchableOpacity
             style={this.state.newMessage ? styles.buttonActive : styles.buttonInactive}
             underlayColor='#D97573'
-            onPress={()=>{
-              let msg = {
-                text: this.state.newMessage,
-                participants: _.uniq(this.state.users.map((usr)=>usr.id).concat(currentUser.id)),
-                participantsString: _.uniq(this.state.users.map((usr)=>usr.id).concat(currentUser.id)).join(':'),
-                createdAt: new Date().valueOf(),
-                senderName: `${currentUser.firstName} ${currentUser.lastName}`,
-                senderAvatar: currentUser.avatarUrl
-              }
-              let url = `${BASE_URL}/messages`
-              fetch(url, {
-                method: "POST",
-                headers: {
-                  'Accept':'application/json',
-                  'Content-Type':'application/json'
-                },
-                body: JSON.stringify(msg)
-              })
-              .then((response) => response.json())
-              .then((data) => {
-                if (DEV) {console.log('MSG', data);}
-                this.setState({
-                  messages: this.state.messages.concat(data),
-                  newMessage: '',
-                })
-                this._createNotification(data)
-              })
-              .catch((err) => {
-                if (DEV) {console.log('ERR: ', err)}
-              })
-            }}
+            onPress={this._createMessage.bind(this)}
           >
             <Text style={Globals.submitButtonText}>Send</Text>
           </TouchableOpacity>
