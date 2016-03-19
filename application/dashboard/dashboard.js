@@ -31,7 +31,7 @@ export default class Dashboard extends Component {
       loading                   : true,
       fetchedGroups             : false,
       fetchedMessages           : false,
-      fetchedLastEvent          : false,
+      fetchedNextEvent          : false,
       fetchedAllEvents          : false,
       fetchedUserEvents         : false,
       fetchedSuggestedGroups    : false,
@@ -84,7 +84,9 @@ export default class Dashboard extends Component {
     let d = new Date();
     d.setHours(0);
     console.log('VALUE', d.valueOf());
-    let url = `${BASE_URL}/events?{"$and": [{"groupId": {"$in": ${JSON.stringify(currentUser.groupIds)}}}, {"start" : {"$gte": ${JSON.stringify(d.valueOf())}}}]}`;
+    let fakeArr = ['abcdefg'];
+    let realArr = currentUser.groupIds;
+    let url = `${BASE_URL}/events?{"$and": [{"groupId": {"$in": ${JSON.stringify(fakeArr)}}}, {"start" : {"$gte": ${JSON.stringify(d.valueOf())}}}]}`;
     console.log("URL", url);
     fetch(url, {
       method: "GET",

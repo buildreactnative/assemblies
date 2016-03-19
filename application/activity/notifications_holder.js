@@ -84,6 +84,35 @@ export default class NotificationsHolder extends Component{
       });
     }
   }
+  _renderNextEvent(nextEvent){
+    return (
+      <TouchableOpacity onPress={() => this._goToEvent(nextEvent)}>
+        <Text style={{color: Colors.brandPrimary, fontWeight: '500'}}>{nextEvent ? nextEvent.name : ''}</Text>
+      </TouchableOpacity>
+    );
+  }
+  _renderCreateGroup(){
+    if (! this.props.fetchedNextEvent ) {
+      return (
+        <Text></Text>
+      )
+    }
+    return (
+      <View style={{justifyContent: 'center', alignItems: 'center', paddingTop: 4,}}>
+        <Text style={styles.nextEvent}>No events selected. </Text>
+        <TouchableOpacity
+          onPress={()=>{
+            this.props.sendData({
+              selectedTab: 'Groups',
+            })
+          }}
+          >
+          <Text style={{color: Colors.brandPrimary, fontWeight: '500'}}>Explore Assemblies</Text>
+        </TouchableOpacity>
+      </View>
+
+    )
+  }
   render(){
     let {nextEvent} = this.props;
     let mapRegion = null;
@@ -104,9 +133,8 @@ export default class NotificationsHolder extends Component{
         <View style={{backgroundColor: 'white'}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={styles.bodyText}>Next Assembly: </Text>
-            <TouchableOpacity onPress={() => this._goToEvent(nextEvent)}>
-              <Text style={{color: Colors.brandPrimary, fontWeight: '500'}}>{nextEvent ? nextEvent.name : ''}</Text>
-            </TouchableOpacity>
+
+            {nextEvent ? this._renderNextEvent(nextEvent) : this._renderCreateGroup()}
           </View>
           <Text style={styles.dateText}>{nextEvent ? moment(new Date(parseInt(nextEvent.start))).format('dddd MMM Do, h:mm a') : ''}</Text>
         </View>
@@ -128,6 +156,12 @@ let styles = StyleSheet.create({
     fontWeight: '400',
 		paddingHorizontal: 15,
     paddingVertical: 10,
+  },
+  nextEvent: {
+    color: Colors.bodyTextLight,
+    fontSize: 14,
+    fontWeight: '300',
+    fontStyle: 'italic',
   },
   dateText: {
     fontSize: 14,
