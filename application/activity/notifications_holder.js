@@ -1,9 +1,10 @@
+import _              from 'underscore';
+import Icon           from 'react-native-vector-icons/Ionicons';
+import moment         from 'moment';
+import Notification   from './notification';
 import Colors         from '../styles/colors';
 import Globals        from '../styles/globals';
-import Icon           from 'react-native-vector-icons/Ionicons';
 import ActivityView   from '../activity/activity_view';
-import Notification   from './notification';
-import moment         from 'moment';
 import NoMessages     from '../messages/no_messages';
 import {DEV}          from '../utilities/fixtures';
 
@@ -69,6 +70,20 @@ export default class NotificationsHolder extends Component{
       </View>
     );
   }
+  _goToEvent(event){
+    if (! event ) {
+      return;
+    } else {
+      let group = _.find(this.props.groups, (g) => {
+        return g.id == event.groupId
+      })
+      this.props.navigator.push({
+        name: 'Event',
+        event: event,
+        group: group,
+      });
+    }
+  }
   render(){
     let {nextEvent} = this.props;
     let mapRegion = null;
@@ -87,7 +102,12 @@ export default class NotificationsHolder extends Component{
         automaticallyAdjustContentInsets={false}
         style={styles.container}>
         <View style={{backgroundColor: 'white'}}>
-          <Text style={styles.bodyText}>Next Assembly: {nextEvent ? nextEvent.name : ''}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={styles.bodyText}>Next Assembly: </Text>
+            <TouchableOpacity onPress={() => this._goToEvent(nextEvent)}>
+              <Text style={{color: Colors.brandPrimary, fontWeight: '500'}}>{nextEvent ? nextEvent.name : ''}</Text>
+            </TouchableOpacity>
+          </View>
           <Text style={styles.dateText}>{nextEvent ? moment(new Date(parseInt(nextEvent.start))).format('dddd MMM Do, h:mm a') : ''}</Text>
         </View>
         {nextEvent ? this._renderMap(mapRegion) : this._renderEmptyMap()}

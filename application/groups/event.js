@@ -211,10 +211,10 @@ class Event extends React.Component{
   render(){
     let {group, currentUser, events} = this.props;
     let {event, members} = this.state;
-    let isMember = _.contains(currentUser.groupIds, group.id);
-    let isAdmin = isMember && group.members[currentUser.id].admin;
-    let isOwner = isMember && group.members[currentUser.id].owner;
-    if (DEV) {console.log('EVENTS', events, group.events);}
+    let isMember = group ? _.contains(currentUser.groupIds, group.id) : false;
+    let isAdmin = group ? isMember && group.members[currentUser.id].admin : false;
+    let isOwner = group ? isMember && group.members[currentUser.id].owner : false;
+    if (DEV) {console.log('EVENTS', events, group);}
     let backButton = this._renderBackButton();
     return (
       <View style={styles.container}>
@@ -246,8 +246,8 @@ class Event extends React.Component{
         <View style={styles.break}></View>
         {this.state.members.map((member, idx) => {
           if (DEV) {console.log('MEMBER', member)}
-          let isOwner = group.members[member.id].owner;
-          let isAdmin = group.members[member.id].admin;
+          let isOwner = group ? group.members[member.id].owner : false;
+          let isAdmin = group ? group.members[member.id].admin : false;
           let status = isOwner ? 'owner' : isAdmin ? 'admin' : 'member'
           return (
             <TouchableOpacity
