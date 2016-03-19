@@ -51,7 +51,12 @@ export default class UpcomingAssemblies extends Component{
       .then((response) => response.json())
       .then((data) => {
         if (DEV) {console.log('DATA GROUPS', data)}
-        this.props.sendData({allEvents: allEvents, groups: data});
+        this.props.sendData({
+          allEvents               : allEvents,
+          groups                  : data,
+          fetchedAllEvents        : true,
+          fetchedAllEventsGroups  : true,
+        });
       })
       .catch((error) => {
         if (DEV) {console.log(error)}
@@ -60,6 +65,17 @@ export default class UpcomingAssemblies extends Component{
     .catch((err) => {
       if (DEV) {console.log('ERR:', err);}
     }).done();
+  }
+  _weekEvents(events){
+    let today = new Date();
+    let weekEvents = _.filter(events, (e) => {
+      let eventDate = new Date(e.start);
+      return (
+        eventDate.valueOf() > today.valueOf() &&
+        (eventDate.valueOf() - today.valueOf()) < 7*24*60*60*1000
+      )
+    });
+    return weekEvents;
   }
   _todayEvents(events){
     let today = new Date();
@@ -97,37 +113,49 @@ export default class UpcomingAssemblies extends Component{
       <View style={[Globals.map, {backgroundColor: Colors.inactive}]}></View>
     );
   }
+  _renderEvents(events){
+    return (
+      <View style={styles.notificationsHolder}>
+        {events.map((event, idx) => {
+          let {groups} = this.props;
+          return (
+            <UpcomingAssembly currentUser={this.props.currentUser} event={event} groups={groups} key={idx} />
+          )
+        })}
+      </View>
+    );
+  }
   render(){
     if (DEV) {console.log('ALL PROPS', this.props);}
     let events = this.props.allEvents;
     let todayEvents = this._todayEvents(events);
+    let weekEvents = this._weekEvents(events);
     let mapRegion = MAP_REGION;
     if (todayEvents.length) {
       mapRegion = {
         latitude        : todayEvents[0].location.lat,
         longitude       : todayEvents[0].location.lng,
         latitudeDelta   : 0.01,
-        longitudeDelta  : 0.01
+        longitudeDelta  : 0.01,
+      };
+    } else if (weekEvents.length){
+      mapRegion = {
+        latitude        : weekEvents[0].location.lat,
+        longitude       : weekEvents[0].location.lng,
+        latitudeDelta   : 0.01,
+        longitudeDelta  : 0.01,
       };
     }
     return (
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{paddingBottom: 80}}
-        >
+        contentContainerStyle={{paddingBottom: 80}}>
         <Text style={styles.bodyText}>Assemblies Near Me</Text>
-        {todayEvents.length ? this._renderMap(todayEvents, mapRegion) : this._renderEmptyMap()}
+        {weekEvents.length ? this._renderMap(todayEvents, mapRegion) : this._renderEmptyMap()}
         <View style={styles.notificationsContainer}>
-          <Text style={styles.bodyText}>Today</Text>
+          <Text style={styles.bodyText}>{todayEvents.length ? 'Today' : 'This week'}</Text>
           <View style={styles.break}></View>
-          <View style={styles.notificationsHolder}>
-          {todayEvents.map((event, idx) => {
-            let {groups} = this.props;
-            return (
-              <UpcomingAssembly currentUser={this.props.currentUser} event={event} groups={groups} key={idx} />
-            )
-          })}
-          </View>
+          {todayEvents.length ? this._renderEvents(todayEvents) : this._renderEvents(weekEvents)}
         </View>
       </ScrollView>
     )

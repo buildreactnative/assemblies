@@ -35,6 +35,8 @@ export default class Dashboard extends Component {
       fetchedAllEvents          : false,
       fetchedUserEvents         : false,
       fetchedSuggestedGroups    : false,
+      fetchedNotifications      : false,
+      fetchedAllEventsGroups    : false,
       groups                    : [],
       allEvents                 : [],
       events                    : [],
@@ -70,16 +72,14 @@ export default class Dashboard extends Component {
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('NOTIFICATIONS', data);}
-      this.setState({
-        notifications: _.reject(data, (n) => n.relatedUserIds[currentUser.id].seen)
-      });
-      this._fetchLastEvent();
+      let notifications = _.reject(data, (n) => n.relatedUserIds[currentUser.id].seen);
+      this._fetchLastEvent(notifications);
     })
     .catch((err) => {
       if (DEV) {console.log('ERR:', err);}
     }).done();
   }
-  _fetchLastEvent(){
+  _fetchLastEvent(notifications){
     let {currentUser} = this.props;
     let d = new Date();
     d.setHours(0);
@@ -98,47 +98,16 @@ export default class Dashboard extends Component {
       });
       let nextEvent = _.first(_.filter(sortedEvents, (e) => e.attending[currentUser.id] == true));
       this.setState({
-        nextEvent : nextEvent,
-        events    : data,
+        nextEvent               : nextEvent,
+        notifications           : notifications,
+        events                  : data,
+        fetchedNotifications    : true,
+        fetchedNextEvent        : true,
+        fetchedUserEvents       : true,
       });
     })
     .catch((err) => {
       if (DEV) {console.log('ERR: ', err)}
-    }).done();
-  }
-  _fetchAllEvents(){
-    let d = new Date();
-    d.setHours(0);
-    let url = `${BASE_URL}/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
-    fetch(url, {
-      method: "GET",
-      headers: HEADERS,
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('EVENTS ALL', data);}
-      this.setState({allEvents: data});
-    })
-    .catch((err) => {
-      if (DEV) {console.log('ERR:', err);}
-    }).done();
-  }
-  _fetchGroups(){
-    let {currentUser} = this.props;
-    let groupIds = currentUser ? currentUser.groupIds : [];
-    let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
-    if (DEV) {console.log('URL', url)}
-    fetch(url, {
-      method: "GET",
-      headers: HEADERS,
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('DATA GROUPS', data)}
-      this.setState({groups: data})
-    })
-    .catch((error) => {
-      if (DEV) {console.log(error)}
     }).done();
   }
   // _fetchSuggestedGroups(){
