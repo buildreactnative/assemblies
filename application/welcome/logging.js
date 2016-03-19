@@ -44,7 +44,7 @@ export default class Logging extends Component{
     .done();
   }
   render(){
-    console.log('LOGGING IN', this.props.sessionId);
+    if (DEV) {console.log('LOGGING IN', this.props.sessionId);}
     return (
       <View><Text>{this.state.connectionError}</Text></View>
     )

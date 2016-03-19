@@ -86,14 +86,12 @@ export default class UpcomingAssemblies extends Component{
     let date = today.getDate();
     let todayEvents = _.filter(events, (e)=>{
       let eventDate = new Date(e.start);
-      console.log('EVENT DATE', eventDate, year, month, date);
       return (
         eventDate.getMonth() == month &&
         eventDate.getDate() == date &&
         eventDate.getFullYear() == year
       );
     });
-    console.log('TODAY EVENTS', todayEvents);
     return todayEvents;
   }
   _renderMap(todayEvents, mapRegion){

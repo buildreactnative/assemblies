@@ -238,7 +238,6 @@ export default class Event extends Component{
           event={event}
           {...this.props}
           openCommentForm={()=>{
-            console.log('OPEN COMMENT FORM');
             this.setState({showCommentForm: true})
           }}
           toggleCommentForm={()=> {this.setState({showCommentForm: ! this.state.showCommentForm})}}/>

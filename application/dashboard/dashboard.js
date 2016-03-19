@@ -83,11 +83,9 @@ export default class Dashboard extends Component {
     let {currentUser} = this.props;
     let d = new Date();
     d.setHours(0);
-    console.log('VALUE', d.valueOf());
     // let fakeArr = ['abcdefg'];
     let groupIds = currentUser.groupIds;
     let url = `${BASE_URL}/events?{"$and": [{"groupId": {"$in": ${JSON.stringify(groupIds)}}}, {"start" : {"$gte": ${JSON.stringify(d.valueOf())}}}]}`;
-    console.log("URL", url);
     fetch(url, {
       method: "GET",
       headers: HEADERS,
@@ -155,7 +153,6 @@ export default class Dashboard extends Component {
     this.setState(newState);
   }
   render() {
-    console.log('DASHBOARD STATE', this.state);
     if (this.state.loading) {
       return this._renderLoading();
     }

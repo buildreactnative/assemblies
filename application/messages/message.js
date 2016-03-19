@@ -22,7 +22,6 @@ let {
 class Message extends React.Component{
   render(){
     let {message, user} = this.props;
-    console.log('PROPS', this.props);
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={()=>{

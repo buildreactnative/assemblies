@@ -38,7 +38,6 @@ export default class CommentHeader extends React.Component{
     };
   }
   _setMaxHeight(event){
-    console.log('EVENT', event.nativeEvent.layout.height);
     if (!! event.nativeEvent && event.nativeEvent.layout.height > this.state.maxHeight){
       this.setState({
         maxHeight: event.nativeEvent.layout.height,

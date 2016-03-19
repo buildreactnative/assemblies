@@ -41,7 +41,6 @@ class MessagesList extends React.Component{
     }
   }
   _loadConversations(props){
-    console.log('MESSAGES', props.messages);
     let conversations = {};
     let userIds = [];
     props.messages.forEach((msg) => {

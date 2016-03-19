@@ -41,7 +41,6 @@ export default class MessageBox extends Component{
   }
   _fetchMessages(){
     let {userIds} = this.props;
-    console.log('FETCH MESSAGES', userIds);
     let url = `${BASE_URL}/messages?{"participantsString":${JSON.stringify(userIds.sort().join(':'))}}`;
     fetch(url, {method: "GET", headers: HEADERS,})
     .then((response) => response.json())
@@ -179,7 +178,6 @@ export default class MessageBox extends Component{
     );
   }
   render(){
-    console.log('MESSAGE BOX PROPS', this.props, this.state);
     let {currentUser, messageUsers, userIds} = this.props;
     let {messages} = this.state;
     let username = messageUsers ? messageUsers.map((usr) => usr.firstName).join(', ') : this.state.users.map((usr) => usr.firstName).join(', ');
