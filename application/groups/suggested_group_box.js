@@ -35,6 +35,9 @@ class SuggestedGroupBox extends React.Component{
           owner         : false,
           notifications : true,
         };
+        group.members = members;
+        currentUser.groupIds = currentUser.groupIds.concat(group.id);
+        this.props.addUserToGroup(group, currentUser);
         fetch(`${BASE_URL}/groups/${group.id}`, {
           method: 'PUT',
           headers: HEADERS,
@@ -53,9 +56,15 @@ class SuggestedGroupBox extends React.Component{
           .then((data) => {
             let currentUser = data;
             if (DEV) {console.log('ADD GROUP_ID TO USER', data);}
-            this.props.addUserToGroup(group, currentUser);
-          });
-        });
+            // this.props.addUserToGroup(group, currentUser);
+          })
+          .catch((err) => {
+            if (DEV){console.log('ERR:', err);}
+          }).done();
+        })
+        .catch((err) => {
+          if (DEV) {console.log('ERR:', err);}
+        }).done();
       }}>
         <Icon name="ios-plus-outline" size={30} color="white" />
       </TouchableOpacity>
