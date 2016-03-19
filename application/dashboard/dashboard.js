@@ -32,6 +32,7 @@ export default class Dashboard extends Component {
       fetchedGroups             : false,
       fetchedMessages           : false,
       fetchedLastEvent          : false,
+      fetchedAllEvents          : false,
       fetchedUserEvents         : false,
       fetchedSuggestedGroups    : false,
       groups                    : [],
@@ -49,7 +50,6 @@ export default class Dashboard extends Component {
       this.setState({loading: false});
       if (!! this.props.currentUser){
         this._fetchNotifications();
-        this._fetchLastEvent();
       }
     });
   }
@@ -57,7 +57,6 @@ export default class Dashboard extends Component {
     if (nextProps.currentUser != this.state.currentUser && ! this.state.loading){
       this.setState({currentUser: nextProps.currentUser})
       this._fetchNotifications();
-      this._fetchLastEvent();
     }
   }
 
@@ -74,6 +73,7 @@ export default class Dashboard extends Component {
       this.setState({
         notifications: _.reject(data, (n) => n.relatedUserIds[currentUser.id].seen)
       });
+      this._fetchLastEvent();
     })
     .catch((err) => {
       if (DEV) {console.log('ERR:', err);}
@@ -95,22 +95,12 @@ export default class Dashboard extends Component {
       if (DEV) {console.log('FETCHED EVENTS', data);}
       let sortedEvents = data.sort((a, b) => {
         return a.start > b.start;
-      })
-      let nextEvent = null;
-      let found = false;
-      for (i=0; i<sortedEvents.length; i++){
-        let sortedEvent = sortedEvents[i];
-        if (!! sortedEvent.attending[currentUser.id] && ! found) {
-          nextEvent = sortedEvent;
-          found = true;
-        }
-      }
-      this._fetchGroups();
+      });
+      let nextEvent = _.first(_.filter(sortedEvents, (e) => e.attending[currentUser.id] == true));
       this.setState({
-        nextEvent: nextEvent,
-        events: data,
-      })
-      this._fetchAllEvents();
+        nextEvent : nextEvent,
+        events    : data,
+      });
     })
     .catch((err) => {
       if (DEV) {console.log('ERR: ', err)}
@@ -151,25 +141,25 @@ export default class Dashboard extends Component {
       if (DEV) {console.log(error)}
     }).done();
   }
-  _fetchSuggestedGroups(){
-    if (DEV) {console.log('URL', url)}
-    fetch(`${BASE_URL}/groups`, {
-      method: "GET",
-      headers: HEADERS,
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('DATA SG GROUPS', data)}
-      this.setState({
-        suggestedGroups: _.reject(data, (gp) => {
-          return _.contains(groupIds, gp.id)
-        })
-      })
-    })
-    .catch((error) => {
-      if (DEV) {console.log(error)}
-    }).done();
-  }
+  // _fetchSuggestedGroups(){
+  //   if (DEV) {console.log('URL', url)}
+  //   fetch(`${BASE_URL}/groups`, {
+  //     method: "GET",
+  //     headers: HEADERS,
+  //   })
+  //   .then((response) => response.json())
+  //   .then((data) => {
+  //     if (DEV) {console.log('DATA SG GROUPS', data)}
+  //     this.setState({
+  //       suggestedGroups: _.reject(data, (gp) => {
+  //         return _.contains(groupIds, gp.id)
+  //       })
+  //     })
+  //   })
+  //   .catch((error) => {
+  //     if (DEV) {console.log(error)}
+  //   }).done();
+  // }
   _mutateState(newState, callback){
     this.setState(newState);
   }
@@ -254,8 +244,9 @@ export default class Dashboard extends Component {
           }}
           >
           <ActivityView
+            {...this.props}
             {...this.state}
-            changeState={this._mutateState.bind(this)}
+            sendData={this._mutateState.bind(this)}
           />
         </Icon.TabBarItem>
         <Icon.TabBarItem

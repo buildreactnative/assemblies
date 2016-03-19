@@ -4,7 +4,7 @@ import Icon             from 'react-native-vector-icons/Ionicons';
 import ActivityView     from '../activity/activity_view';
 import UpcomingAssembly from './upcoming_assembly';
 import _                from 'underscore';
-import {DEV}            from '../utilities/fixtures';
+import {DEV, BASE_URL, HEADERS} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -21,6 +21,46 @@ import React, {
 const MAP_REGION = {};
 
 export default class UpcomingAssemblies extends Component{
+  componentDidMount(){
+    if ((! this.props.allEvents.length || ! this.props.groups.length) &&
+        (! this.props.fetchedAllEvents || ! this.props.fetchedGroups)
+    ){
+      this._fetchAllEvents();
+    }
+  }
+  _fetchAllEvents(){
+    let d = new Date();
+    d.setHours(0);
+    let url = `${BASE_URL}/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
+    fetch(url, {
+      method: "GET",
+      headers: HEADERS,
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('EVENTS ALL', data);}
+      let allEvents = data;
+      let groupIds = data.map((evt) => evt.groupId);
+
+      let url = `${BASE_URL}/groups?{"id": {"$in": ${JSON.stringify(groupIds)}}}`
+      if (DEV) {console.log('URL', url)}
+      fetch(url, {
+        method: "GET",
+        headers: HEADERS,
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (DEV) {console.log('DATA GROUPS', data)}
+        this.props.sendData({allEvents: allEvents, groups: data});
+      })
+      .catch((error) => {
+        if (DEV) {console.log(error)}
+      }).done();
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
+  }
   _todayEvents(events){
     let today = new Date();
     let year = today.getFullYear();
