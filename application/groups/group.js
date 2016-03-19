@@ -30,28 +30,50 @@ class Group extends Component{
   constructor(props){
     super(props);
     this.state = {
-      members: [],
-      events: [],
       alreadyJoined: !! props.group.members[props.currentUser.id],
       joined : false,
     }
   }
-  componentDidMount(){
-    let {group, events, allEvents, groupUsers} = this.props;
+  _events(){
+    let {allEvents, events, group} = this.props;
     let eventIds = group.events;
+    let groupEvents = _.reject(_.uniq(events.concat(allEvents)), (evt) => {
+      return ! _.contains(eventIds, evt.id);
+    });
+    return _.uniq(groupEvents);
+  }
+  _members(){
+    let {groupUsers, group, currentUser} = this.props;
+    let userIds = _.keys(group.members);
+    let groupMembers = _.reject(groupUsers, (usr) => {
+      return ! _.contains(userIds, usr.id)
+    });
+    return _.uniq(groupMembers);
+  }
+  componentDidMount(){
+    let {group, events, allEvents, groupUsers, currentUser,} = this.props;
+    let eventIds = group.events;
+    let isMember = !! group.members[currentUser.id]
     let userIds = _.keys(group.members);
     let groupEvents = _.reject(_.uniq(events.concat(allEvents)), (evt) => {
       return ! _.contains(eventIds, evt.id);
     });
     let groupMembers = _.reject(groupUsers, (usr) => {
-      return ! _.contains(userIds, user.id)
+      return ! _.contains(userIds, usr.id)
     });
     console.log('PROPS', groupEvents, groupMembers);
     console.log('PARAMS', eventIds, userIds, group, this.props);
-    if (groupEvents.length == eventIds.length ){
-      this.setState({events: groupEvents})
-    } else {
-      fetch(`${BASE_URL}/events?{"id": {"$in": ${JSON.stringify(eventIds)}}}`, {
+    let unknownEventIds = _.reject(eventIds, (id) => {
+      return _.contains(groupEvents.concat(events).map((e) => e.id), id)
+    });
+    let unknownUserIds = _.reject(userIds, (id) => {
+      return _.contains(groupUsers.map((usr) => usr.id), id)
+    });
+    console.log('UNKNOWN', unknownEventIds, unknownUserIds);
+    console.log('UNKNOWN PARAMS', eventIds, groupEvents.concat(events));
+    console.log('UNKNOWN USERS', groupMembers, groupUsers, userIds);
+    if (groupEvents.length != eventIds.length ){
+      fetch(`${BASE_URL}/events?{"id": {"$in": ${JSON.stringify(unknownEventIds)}}}`, {
         method: 'GET',
         headers: HEADERS,
       })
@@ -59,14 +81,18 @@ class Group extends Component{
       .then((data) => {
         if (DEV) {console.log('DATA EVENTS', data)}
         let events = data;
-        this.setState({events: events})
+        if (isMember){
+          this.props.sendData({events: _.uniq(this.props.events.concat(events))})
+        } else {
+          this.sendData({allEvents: _.uniq(this.props.allEvents.concat(events))})
+        }
       })
       .catch((error) => {
         if (DEV) {console.log(error)}
       }).done();
     }
     if (groupMembers.length != userIds.length){
-      let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(userIds)}}}`
+      let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(unknownUserIds)}}}`
       fetch(url, {
         method: 'GET',
         headers: HEADERS,
@@ -74,13 +100,13 @@ class Group extends Component{
       .then((response) => response.json())
       .then((data) => {
         if (DEV) {console.log('DATA USERS', data)}
-        this.setState({members: data});
+        this.props.sendData({
+          groupUsers: _.uniq(this.props.groupUsers.concat(data)),
+        });
       })
       .catch((error) => {
         if (DEV) {console.log(error)}
       }).done();
-    } else {
-      this.setState({members: groupMembers});
     }
   }
   _renderBackButton(){
@@ -107,13 +133,13 @@ class Group extends Component{
   }
   _renderEvents(){
     let {currentUser, group, navigator} = this.props;
-    if (DEV) {console.log('EVENTS GROUP', this.state.events);}
+    if (DEV) {console.log('EVENTS GROUP', this._events());}
     return (
       <EventList
         currentUser={currentUser}
         group={group}
         navigator={this.props.navigator}
-        events={this.state.events}
+        events={this._events()}
       />
     )
   }
@@ -131,7 +157,8 @@ class Group extends Component{
     )
   }
   _renderJoinIcon(){
-    let {joined} = this.state;
+    let {group, currentUser} = this.props;
+    let joined = !! group.members[currentUser.id];
     if (joined) {
       return (
         <Icon name="checkmark-circled" size={20} color="white" style={styles.joinIcon}/>
@@ -156,34 +183,27 @@ class Group extends Component{
               notifications: true
             }
             fetch(`${BASE_URL}/groups/${group.id}`, {
-              method: "PUT",
-              headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-              },
+              method: 'PUT',
+              headers: HEADERS,
               body: JSON.stringify({members: members})
             })
             .then((response) => response.json())
             .then((data) => {
               if (DEV) {console.log('ADD USER TO GROUP', data);}
               fetch(`${BASE_URL}/users/${currentUser.id}`, {
-                method: "PUT",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
+                method: 'PUT',
+                headers: HEADERS,
                 body: JSON.stringify({groupIds: currentUser.groupIds.concat(group.id)})
               })
               .then((response) => response.json())
               .then((data) => {
                 if (DEV) {console.log('ADD GROUP_ID TO USER', data);}
-                this.props.addUserToGroup(group.id, currentUser.id)
+                this.props.addUserToGroup(group, currentUser)
                 this.setState({joined: true, members: this.state.members.concat(currentUser)})
               });
             });
           }}
-          style={styles.joinButton}
-        >
+          style={styles.joinButton}>
           {this._renderJoinIcon()}
           <Text style={styles.joinText}>{this.state.joined ? 'Joined' : 'Join'}</Text>
         </TouchableOpacity>
@@ -192,7 +212,8 @@ class Group extends Component{
   }
   render(){
     let {group, currentUser} = this.props;
-    let {events, members} = this.state;
+    let events = this._events();
+    let members = this._members();
     let isMember = _.contains(currentUser.groupIds, group.id);
     let isAdmin = isMember && group.members[currentUser.id].admin;
     let isOwner = isMember && group.members[currentUser.id].owner;
@@ -228,7 +249,7 @@ class Group extends Component{
         <View style={styles.break}></View>
         <Text style={styles.h2}>Members</Text>
         <View style={styles.break}></View>
-        {this.state.members.map((member, idx) => {
+        {members.map((member, idx) => {
           if (DEV) {console.log('MEMBER', member)}
           let isOwner = group.members[member.id].owner;
           let isAdmin = group.members[member.id].admin;
