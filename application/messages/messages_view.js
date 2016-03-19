@@ -84,6 +84,7 @@ export default class MessagesView extends Component{
                   messages={this.props.messages}
                   messageUsers={messageUsers}
                   navigator={navigator}
+                  hasMessages={true}
                 />
               )
             } else if (route.name == 'Profile') {

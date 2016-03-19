@@ -33,7 +33,7 @@ export default class MessageBox extends Component{
     this.state = {
       loading           : true,
       newMessage        : '',
-      messages          : props.messages,
+      messages          : props.messages || [],
       keyboardOffset    : 0,
       users             : props.messageUsers,
       height            : 50,
@@ -41,7 +41,8 @@ export default class MessageBox extends Component{
   }
   _fetchMessages(){
     let {userIds} = this.props;
-    let url = `${BASE_URL}/messages?{"participantsString":${userIds.sort().join(':')}}`;
+    console.log('FETCH MESSAGES', userIds);
+    let url = `${BASE_URL}/messages?{"participantsString":${JSON.stringify(userIds.sort().join(':'))}}`;
     fetch(url, {method: "GET", headers: HEADERS,})
     .then((response) => response.json())
     .then((data) => {
@@ -52,7 +53,8 @@ export default class MessageBox extends Component{
     })
     .catch((err) => {
       if (DEV) {console.log('ERR: ', err);}
-    }).done();
+    })
+    .done();
   }
   _fetchUsers(){
     let url = `${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(this.props.userIds)}}}`;
@@ -66,12 +68,17 @@ export default class MessageBox extends Component{
       if (DEV) {console.log('ERR: ', err)}
     }).done();
   }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.messages != this.state.messages && this.props.hasMessages){
+      this.setState({messages: nextProps.messages});
+    }
+  }
   componentDidMount(){
     InteractionManager.runAfterInteractions(() => {
-      if (this.state.messages = []){
+      if (! this.props.hasMessages){
         this._fetchMessages();
       }
-      if (! this.state.messageUsers) {
+      if (! this.props.hasMessages) {
         this._fetchUsers();
       }
       this.setState({loading: false});
@@ -114,9 +121,10 @@ export default class MessageBox extends Component{
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('MSG', data);}
-      this.setState({newMessage: '',});
-      this.props.sendData({messages: this.props.messages.concat(data)})
-      this._createNotification(data)
+      this.setState({newMessage: '', messages: this.state.messages.concat(data)});
+      this.props.sendData({messages: this.props.messages.concat(data)});
+      this._createNotification(data);
+      this.refs.message.blur();
     })
     .catch((err) => {
       if (DEV) {console.log('ERR: ', err)}
@@ -148,7 +156,8 @@ export default class MessageBox extends Component{
   }
   render(){
     console.log('MESSAGE BOX PROPS', this.props, this.state);
-    let {currentUser, messages, messageUsers, userIds} = this.props;
+    let {currentUser, messageUsers, userIds} = this.props;
+    let {messages} = this.state;
     let username = messageUsers ? messageUsers.map((usr) => usr.firstName).join(', ') : '';
     let titleConfig = {title: username, tintColor: 'white'}
     let back = this._renderBackButton();
@@ -160,8 +169,13 @@ export default class MessageBox extends Component{
           title={titleConfig}
           leftButton={back}
         />
-        <InvertibleScrollView ref="scroll">
-          {_.reject(messages, (m) => m.participants.sort().join(':') != userIds.sort().join(':')).map((msg, idx) => {
+        <InvertibleScrollView
+          inverted={true}
+          contentContainerStyle={{paddingBottom: 50}}
+          ref="scroll">
+          {_.reject(messages, (m) => m.participants.sort().join(':') != userIds.sort().join(':'))
+            .sort((a, b) => {return b.createdAt - a.createdAt})
+            .map((msg, idx) => {
             let user = _.find(this.state.users.concat(this.props.currentUser), (usr) => `${usr.firstName} ${usr.lastName}` == msg.senderName)
             if (DEV) {console.log('USER', user);}
             return (
