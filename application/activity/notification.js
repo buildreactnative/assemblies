@@ -62,6 +62,7 @@ class Notification extends React.Component{
                 this.props.navigator.push({
                   name: type,
                   notification: notification,
+                  userIds: Object.keys(notification.relatedUserIds)
                 })
               }}
               style={styles.subjectTextContainer}>

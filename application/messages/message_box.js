@@ -35,7 +35,7 @@ export default class MessageBox extends Component{
       newMessage        : '',
       messages          : props.messages || [],
       keyboardOffset    : 0,
-      users             : props.messageUsers,
+      users             : props.messageUsers || [],
       height            : 50,
     }
   }
@@ -158,7 +158,7 @@ export default class MessageBox extends Component{
     console.log('MESSAGE BOX PROPS', this.props, this.state);
     let {currentUser, messageUsers, userIds} = this.props;
     let {messages} = this.state;
-    let username = messageUsers ? messageUsers.map((usr) => usr.firstName).join(', ') : '';
+    let username = messageUsers ? messageUsers.map((usr) => usr.firstName).join(', ') : this.state.users.map((usr) => usr.firstName).join(', ');
     let titleConfig = {title: username, tintColor: 'white'}
     let back = this._renderBackButton();
     return (
@@ -171,7 +171,7 @@ export default class MessageBox extends Component{
         />
         <InvertibleScrollView
           inverted={true}
-          contentContainerStyle={{paddingBottom: 50}}
+          contentContainerStyle={{paddingTop: 50}}
           ref="scroll">
           {_.reject(messages, (m) => m.participants.sort().join(':') != userIds.sort().join(':'))
             .sort((a, b) => {return b.createdAt - a.createdAt})
