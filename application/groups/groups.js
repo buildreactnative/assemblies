@@ -177,7 +177,7 @@ export default class Groups extends Component{
   }
   render(){
     let {groups, suggestedGroups,} = this.props;
-    if (DEV) {console.log('GROUPS PROPS', this.props);}
+    if (DEV) {console.log('GROUPS PROPS', this.props.groups.map((g) => g.name), this.props.suggestedGroups.map((g) => g.name));}
     let rightButtonConfig = this._renderAddButton()
     let titleConfig = {title: 'My Groups', tintColor: 'white'}
     return (
@@ -189,9 +189,9 @@ export default class Groups extends Component{
           rightButton={rightButtonConfig}
         />
         <ScrollView style={styles.assembliesContainer}>
-          <Text style={styles.h2}>Your Assemblies:</Text>
+          <Text style={styles.h2}>Your Assemblies</Text>
           {groups.length ? this._renderGroupBoxes(groups) : this._renderNoGroups()}
-          <Text style={styles.h2}>You Might Like:</Text>
+          <Text style={styles.h2}>You Might Like</Text>
           {suggestedGroups.length ? this._renderSuggestedGroupBoxes(suggestedGroups) : this._renderNoSuggestions()}
         </ScrollView>
       </View>
@@ -205,7 +205,7 @@ let styles = StyleSheet.create({
   },
   groupsContainer: {
     flexDirection: 'row',
-    paddingLeft: 4,
+    paddingHorizontal: 5,
   },
   group: {
     opacity: 0.9,
@@ -220,8 +220,9 @@ let styles = StyleSheet.create({
   },
   h2: {
     fontSize: 20,
-    fontWeight: '300',
+    fontWeight: '400',
     paddingHorizontal: 10,
+    color: Colors.bodyText,
   },
   h3: {
     fontSize: 18,

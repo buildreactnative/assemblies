@@ -94,12 +94,12 @@ let styles = {
     opacity: 0.9,
     flex: 1,
     height: 150,
-    width: (deviceWidth / 2) - 18,
+    width: (deviceWidth / 2) - 15,
   },
   groupImage: {
     height: 150,
-    width: (deviceWidth / 2) - 20,
-    margin: 10,
+    width: (deviceWidth / 2) - 15,
+    margin: 5,
     opacity: 0.8,
   },
   groupText: {

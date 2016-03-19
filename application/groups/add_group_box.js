@@ -50,8 +50,8 @@ let styles = {
   groupImage: {
     height: (deviceWidth / 2) - 15,
     width: (deviceWidth / 2) - 15,
-    margin: 5,
     opacity: 0.8,
+    margin: 5,
   },
   groupText: {
     color: 'white',

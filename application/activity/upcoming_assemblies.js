@@ -23,7 +23,7 @@ const MAP_REGION = {};
 
 export default class UpcomingAssemblies extends Component{
   componentDidMount(){
-    if ((! this.props.allEvents.length || ! this.props.groups.length) &&
+    if ((! this.props.allEvents.length || ! this.props.allEventsGroups.length) &&
         (! this.props.fetchedAllEvents || ! this.props.fetchedGroups)
     ){
       this._fetchAllEvents();
@@ -55,7 +55,7 @@ export default class UpcomingAssemblies extends Component{
         if (DEV) {console.log('DATA GROUPS', data)}
         this.props.sendData({
           allEvents               : allEvents,
-          groups                  : data,
+          allEventsGroups         : data,
           fetchedAllEvents        : true,
           fetchedAllEventsGroups  : true,
         });
@@ -122,7 +122,7 @@ export default class UpcomingAssemblies extends Component{
     )
   }
   _goToEvent(event){
-    let group = _.find(this.props.groups, (g) => {
+    let group = _.find(this.props.allEventsGroups, (g) => {
       return g.id == event.groupId
     })
     this.props.navigator.push({
@@ -142,12 +142,12 @@ export default class UpcomingAssemblies extends Component{
       return (
         <View style={styles.notificationsHolder}>
           {events.map((event, idx) => {
-            let {groups} = this.props;
+            let {allEventsGroups} = this.props;
             return (
               <TouchableOpacity
                 key={idx}
                 onPress={() => {this._goToEvent(event)}}>
-                <UpcomingAssembly currentUser={this.props.currentUser} event={event} groups={groups} key={idx} />
+                <UpcomingAssembly currentUser={this.props.currentUser} event={event} groups={allEventsGroups} key={idx} />
               </TouchableOpacity>
             )
           })}

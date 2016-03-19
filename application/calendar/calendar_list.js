@@ -65,7 +65,7 @@ class CalendarList extends React.Component{
         if (DEV) {console.log('DATA GROUPS', data)}
         this.props.sendData({
           allEvents               : allEvents,
-          groups                  : data,
+          allEventsGroups         : data,
           fetchedAllEvents        : true,
           fetchedAllEventsGroups  : true,
         });
@@ -80,7 +80,7 @@ class CalendarList extends React.Component{
   }
   componentWillReceiveProps(nextProps){
     if (nextProps.allEvents != this.props.allEvents ||
-        nextProps.groups != this.props.groups
+        nextProps.allEventsGroups != this.props.allEventsGroups
     ) {
       let newState = this._loadData(nextProps.allEvents)
       if (newState){
@@ -152,7 +152,7 @@ class CalendarList extends React.Component{
   }
   _renderRow(rowData, sectionID, rowID){
     if (DEV) {console.log('ROW DATA', rowData, this.props.groups);}
-    let group = _.find(this.props.groups, (g) => {
+    let group = _.find(this.props.allEventsGroups, (g) => {
       return g.id == rowData.groupId
     })
     if (DEV) {console.log('GROUP', group);}
@@ -164,7 +164,7 @@ class CalendarList extends React.Component{
           group: group,
         })
       }}>
-        <UpcomingAssembly event={rowData} groups={this.props.groups} currentUser={this.props.currentUser}/>
+        <UpcomingAssembly event={rowData} groups={this.props.allEventsGroups} currentUser={this.props.currentUser}/>
       </TouchableOpacity>
     )
   }
