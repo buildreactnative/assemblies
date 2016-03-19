@@ -4,6 +4,7 @@ import Icon           from 'react-native-vector-icons/Ionicons';
 import ActivityView   from '../activity/activity_view';
 import Notification   from './notification';
 import moment         from 'moment';
+import NoMessages     from '../messages/no_messages';
 import {DEV}          from '../utilities/fixtures';
 
 import React, {
@@ -46,6 +47,28 @@ export default class NotificationsHolder extends Component{
       <View style={[Globals.map, {backgroundColor: Colors.inactive}]}></View>
     )
   }
+  _renderNotifications(){
+    return (
+      <View style={styles.notificationsHolder}>
+        {this.props.notifications.map((notification, idx) => {
+          return (
+            <Notification {...this.props} notification={notification} key={idx}/>
+          )
+        })}
+        <View style={styles.emptySpace}></View>
+      </View>
+    );
+  }
+  _renderNoNotifications(){
+    return (
+      <View style={{height: 100}}>
+        <NoMessages
+          text='You do not have any notifications at this time.'
+          textStyle={{fontSize: 14, fontStyle: 'italic'}}
+          viewStyle={{paddingTop: 10}}/>
+      </View>
+    );
+  }
   render(){
     let {nextEvent} = this.props;
     let mapRegion = null;
@@ -68,18 +91,11 @@ export default class NotificationsHolder extends Component{
           <Text style={styles.dateText}>{nextEvent ? moment(new Date(parseInt(nextEvent.start))).format('dddd MMM Do, h:mm a') : ''}</Text>
         </View>
         {nextEvent ? this._renderMap(mapRegion) : this._renderEmptyMap()}
-
         <View style={styles.notificationsContainer}>
           <Text style={styles.bodyText}>Notifications</Text>
           <View style={styles.break}></View>
-          <View style={styles.notificationsHolder}>
-            {this.props.notifications.map((notification, idx) => {
-              return (
-                <Notification {...this.props} notification={notification} key={idx}/>
-              )
-            })}
-            <View style={styles.emptySpace}></View>
-          </View>
+          {this.props.notifications.length ? this._renderNotifications() : this._renderNoNotifications()}
+
         </View>
       </ScrollView>
     )

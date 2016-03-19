@@ -3,6 +3,7 @@ import Globals          from '../styles/globals';
 import Icon             from 'react-native-vector-icons/Ionicons';
 import ActivityView     from '../activity/activity_view';
 import UpcomingAssembly from './upcoming_assembly';
+import NoMessages       from '../messages/no_messages';
 import _                from 'underscore';
 import {DEV, BASE_URL, HEADERS} from '../utilities/fixtures';
 
@@ -29,9 +30,10 @@ export default class UpcomingAssemblies extends Component{
     }
   }
   _fetchAllEvents(){
+    let {currentUser} = this.props;
     let d = new Date();
     d.setHours(0);
-    let url = `${BASE_URL}/events?{"start": {"$gt": ${JSON.stringify(d.valueOf())}}}`;
+    let url = `${BASE_URL}/events?{"$and": [{"start": {"$gt": ${JSON.stringify(d.valueOf())} }}, {"location.state": ${JSON.stringify(currentUser.location.state)}}]}`;
     fetch(url, {
       method: "GET",
       headers: HEADERS,
@@ -113,17 +115,33 @@ export default class UpcomingAssemblies extends Component{
       <View style={[Globals.map, {backgroundColor: Colors.inactive}]}></View>
     );
   }
-  _renderEvents(events){
+  _renderNoEvents(){
     return (
-      <View style={styles.notificationsHolder}>
-        {events.map((event, idx) => {
-          let {groups} = this.props;
-          return (
-            <UpcomingAssembly currentUser={this.props.currentUser} event={event} groups={groups} key={idx} />
-          )
-        })}
-      </View>
-    );
+      <NoMessages
+        textStyle={{fontSize: 14, fontStyle: 'italic'}}
+        viewStyle={{paddingTop: 10}}
+        text='No events scheduled in your area yet.' />
+    )
+  }
+  _renderEvents(events){
+    if (! events.length && this.props.fetchedAllEvents) {
+      return (
+        <View style={{flex: 1, height: 100,}}>
+          {this._renderNoEvents()}
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.notificationsHolder}>
+          {events.map((event, idx) => {
+            let {groups} = this.props;
+            return (
+              <UpcomingAssembly currentUser={this.props.currentUser} event={event} groups={groups} key={idx} />
+            )
+          })}
+        </View>
+      );
+    }
   }
   render(){
     if (DEV) {console.log('ALL PROPS', this.props);}

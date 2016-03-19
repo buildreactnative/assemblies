@@ -27,8 +27,8 @@ export default class NoMessages extends Component{
       <View style={{flex: 1, backgroundColor: '#f7f7f7',}}>
         <Animatable.View animation="fadeIn" duration={500} style={{flex: 1, alignItems: 'stretch', backgroundColor: '#f7f7f7'}}>
           <Animatable.View animation="slideInUp" duration={500} easing="ease-out" style={{flex: 1, alignItems: 'stretch', height: 50, backgroundColor: '#f7f7f7'}}>
-            <View style={{flex: 1, paddingTop: 100, paddingHorizontal: 40, alignItems: 'stretch',}}>
-              <Text style={{textAlign: 'center', fontSize: 20, color: Colors.bodyTextLight, lineHeight: 26}}>
+            <View style={[{flex: 1, paddingTop: 100, paddingHorizontal: 40, alignItems: 'stretch',}, this.props.viewStyle]}>
+              <Text style={[{textAlign: 'center', fontSize: 20, color: Colors.bodyTextLight, lineHeight: 26}, this.props.textStyle]}>
                 {text}
               </Text>
             </View>
@@ -39,3 +39,8 @@ export default class NoMessages extends Component{
     );
   }
 };
+
+NoMessages.defaultProps = {
+  textStyle: {},
+  viewStyle: {},
+}
