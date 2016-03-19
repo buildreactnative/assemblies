@@ -38,7 +38,7 @@ class EventLocation extends React.Component{
       longitudeDelta  : 0.01
     }
     return (
-      <View>
+      <View style={{backgroundColor: Colors.inactive}}>
         <MapView
           style={Globals.map}
           region={mapRegion}
@@ -72,23 +72,18 @@ let styles = {
     textAlign: 'center',
   },
   bottomPanel: {
-    flex: 0.5,
-    marginTop: 8,
-    backgroundColor: 'white',
-    opacity: 0.8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bottomPanel: {
     flex: 0.3,
-    backgroundColor: 'white',
+    backgroundColor: Colors.brandPrimaryDark,
+    paddingVertical: 8,
+    marginHorizontal: 10,
+    marginTop: 10,
     opacity: 0.8,
     justifyContent: 'center',
     alignItems: 'center',
   },
   memberText: {
     textAlign: 'center',
-    color: Colors.brandPrimary,
+    color: 'white',
     fontSize: 18,
     fontWeight: '400',
   },

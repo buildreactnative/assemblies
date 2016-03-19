@@ -1,13 +1,14 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import CommentList from './comment_list';
-import EventLocation from './event_location';
-import moment from 'moment';
-import {truncate} from 'underscore.string';
-import {BASE_URL, DEV} from '../utilities/fixtures';
-import _ from 'underscore';
+import _              from 'underscore';
+import {truncate}     from 'underscore.string';
+import Icon           from 'react-native-vector-icons/Ionicons';
+import NavigationBar  from 'react-native-navbar';
+import moment         from 'moment';
+import CommentList    from './comment_list';
+import EventLocation  from './event_location';
+import Colors         from '../styles/colors';
+import Globals        from '../styles/globals';
+import Summary        from '../ui_helpers/summary';
+import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -17,7 +18,6 @@ import React, {
   TextInput,
   TouchableHighlight,
   View,
-  TabBarIOS,
   Image,
   TouchableOpacity,
   Dimensions,
@@ -28,7 +28,7 @@ import React, {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class Event extends React.Component{
+export default class Event extends Component{
   constructor(props){
     super(props);
     if (DEV) {console.log('SUPER', props.event.attending, props.currentUser.id)}
@@ -50,10 +50,7 @@ class Event extends React.Component{
       let attending = Object.keys(event.attending)
       fetch(`${BASE_URL}/users?{"id": {"$in": ${JSON.stringify(attending)}}}`, {
         method: "GET",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
+        headers: HEADERS,
       })
       .then((response) => response.json())
       .then((data) => {
@@ -63,7 +60,7 @@ class Event extends React.Component{
       .catch((error) => {
         if (DEV) {console.log(error)}
         this.setState({showMap: true})
-      })
+      }).done();
     });
   }
   _renderBackButton(){
@@ -127,27 +124,34 @@ class Event extends React.Component{
   _createNotification(data){
     let {currentUser, event} = this.props;
     let url = `${BASE_URL}/notifications`;
+    let userIds = _.reject(Object.keys(event.attending), (id) => id == currentUser.id);
+    let relatedUserIds = {};
+    userIds.forEach((id) => {
+      relatedUserIds[id] = {seen: false};
+    });
+    relatedUserIds[currentUser.id] = {seen: true};
     let notification = {
-      type: 'comment',
-      relatedUserIds: _.reject(Object.keys(event.attending), (id) => id == currentUser.id),
-      message: `New comment in ${event.name}`,
-      timestamp: new Date().valueOf(),
-      eventId: event.id,
-      groupId: event.groupId,
-      seen: false,
-    }
+      type            : 'comment',
+      relatedUserIds  : relatedUserIds,
+      userIdString    : userIds.sort().join(':'),
+      message         : `New comment in ${event.name}`,
+      timestamp       : new Date().valueOf(),
+      eventId         : event.id,
+      groupId         : event.groupId,
+      seen            : false,
+    };
     fetch(url, {
       method: "POST",
-      headers: {
-        'Accept':'application/json',
-        'Content-Type': 'application/json'
-      },
+      headers: HEADERS,
       body: JSON.stringify(notification)
     })
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('NOTIFICATION', data);}
     })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
   }
   _renderCommentForm(){
     return (
@@ -178,10 +182,7 @@ class Event extends React.Component{
             if (DEV) {console.log('COMMENT', comment);}
             fetch(`${BASE_URL}/events/${this.props.event.id}`, {
               method: "PUT",
-              headers: {
-                'Accept':'application/json',
-                'Content-Type':'application/json',
-              },
+              headers: HEADERS,
               body: JSON.stringify({comments: comments.concat(comment)})
             })
             .then((response) => response.json())
@@ -226,8 +227,7 @@ class Event extends React.Component{
       />
         <ScrollView style={styles.scrollView}>
         {this.state.showMap ? <EventLocation event={event} group={group}/> : this._renderEmptyMap()}
-        <Text style={styles.h2}>Summary</Text>
-        <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(event.summary, 140)}</Text>
+        <Summary summary={event.summary}/>
         <Text style={styles.h2}>Address</Text>
         <Text style={styles.h3}>{event.location ? event.location.city : ''}</Text>
         <Text style={styles.h2}>Date</Text>
@@ -273,7 +273,7 @@ class Event extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   backButton: {
     paddingLeft: 20,
     paddingBottom: 10,
@@ -286,6 +286,7 @@ let styles = {
   },
   container: {
     flex: 1,
+    backgroundColor: Colors.inactive,
   },
   inputBox: {
     height: 60,
@@ -366,14 +367,17 @@ let styles = {
   },
   bottomPanel: {
     flex: 0.3,
-    backgroundColor: 'white',
+    backgroundColor: Colors.brandPrimaryDark,
     opacity: 0.8,
     justifyContent: 'center',
+    paddingVertical: 8,
+    marginHorizontal: 10,
+    marginTop: 10,
     alignItems: 'center',
   },
   memberText: {
     textAlign: 'center',
-    color: Colors.brandPrimary,
+    color: 'white',
     fontSize: 18,
     fontWeight: '400',
   },
@@ -462,6 +466,4 @@ let styles = {
   memberInfo: {
     paddingLeft: 30,
   },
-}
-
-module.exports = Event;
+});
