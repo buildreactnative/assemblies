@@ -124,6 +124,17 @@ export default class ActivityView extends Component{
               return (
                 <MessageBox user={route.user} userIds={userIds} {...this.props} navigator={navigator}/>
               )
+            } else if (route.name == 'Chat'){
+              let userIds = [this.props.currentUser.id, route.user.id]
+              return (
+                <MessageBox
+                  {...this.props}
+                  user={route.user}
+                  userIds={userIds}
+                  messageUsers={null}
+                  navigator={navigator}
+                />
+              )
             }
           }}/>
       </View>

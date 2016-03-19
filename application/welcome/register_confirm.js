@@ -37,7 +37,7 @@ import React, {
 
 const DEFAULT_AVATAR = 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png';
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
+let ImagePickerManager = require('NativeModules').ImagePickerManager;
 
 export default class RegisterConfirm extends Component{
   constructor(props){
@@ -104,14 +104,14 @@ export default class RegisterConfirm extends Component{
     )
   }
   showImagePicker(){
-    UIImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
+    ImagePickerManager.showImagePicker(IMAGE_OPTIONS, (response) => {
       if (DEV) {console.log('Response = ', response);}
 
       if (response.didCancel) {
         if (DEV) {console.log('User cancelled image picker');}
       }
       else if (response.error) {
-        if (DEV) {console.log('UIImagePickerManager Error: ', response.error);}
+        if (DEV) {console.log('ImagePickerManager Error: ', response.error);}
       }
       else if (response.customButton) {
         if (DEV) {console.log('User tapped custom button: ', response.customButton);}
