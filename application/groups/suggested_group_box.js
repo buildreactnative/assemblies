@@ -1,7 +1,7 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import _ from 'underscore';
-import {BASE_URL, DEV} from '../utilities/fixtures';
+import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -30,34 +30,30 @@ class SuggestedGroupBox extends React.Component{
       <TouchableOpacity style={styles.groupAdd} onPress={()=>{
         let members = group.members;
         members[currentUser.id] = {
-          confirmed: true,
-          admin: false,
-          owner: false,
-          notifications: true
-        }
+          confirmed     : true,
+          admin         : false,
+          owner         : false,
+          notifications : true,
+        };
         fetch(`${BASE_URL}/groups/${group.id}`, {
-          method: "PUT",
-          headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-          },
+          method: 'PUT',
+          headers: HEADERS,
           body: JSON.stringify({members: members})
         })
         .then((response) => response.json())
         .then((data) => {
+          let group = data;
           if (DEV) {console.log('ADD USER TO GROUP', data);}
           fetch(`${BASE_URL}/users/${currentUser.id}`, {
-            method: "PUT",
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
+            method: 'PUT',
+            headers: HEADERS,
             body: JSON.stringify({groupIds: currentUser.groupIds.concat(group.id)})
           })
           .then((response) => response.json())
           .then((data) => {
+            let currentUser = data;
             if (DEV) {console.log('ADD GROUP_ID TO USER', data);}
-            this.props.addUserToGroup(group.id, currentUser.id)
+            this.props.addUserToGroup(group, currentUser);
           });
         });
       }}>

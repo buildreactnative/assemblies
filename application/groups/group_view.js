@@ -33,47 +33,43 @@ const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
 export default class GroupView extends Component{
   createGroup(group){
-    if (! group) {return;}
-    this.props.changeState({
-      groups: this.state.groups.concat(group),
-    })
+    // if (! group) {return;}
+    // this.props.changeState({
+    //   groups: this.state.groups.concat(group),
+    // })
   }
-  addUserToGroup(groupId, userId){
-    let {currentUser} = this.props;
-    let {groups} = this.state;
-    groups.forEach((gp, idx) => {
-      if (gp.id == groupId){
-        gp.members[userId] = true;
-      }
-    })
-    currentUser.groupIds.push(groupId)
-    this.props.updateUser(currentUser)
-    this.props.changeState({groups: groups})
+  addUserToGroup(group, currentUser){
+    let {suggestedGroups} = this.props;
+    let idx = _.findIndex(suggestedGroups, (g) => g.id == group.id);
+    this.props.sendData({
+      suggestedGroups: [...suggestedGroups.slice(0, idx), group, ...suggestedGroups.slice(idx+1)],
+    });
+    this.props.updateUser(currentUser);
   }
   addEvent(event){
-    if (DEV) {console.log('EVENT', event);}
-    if (! event) {
-      return;
-    }
-    let {groups} = this.props;
-    let group;
-    groups.forEach((gp, id) => {
-      if (gp.id == event.groupId){
-        group = groups[id];
-        groups[id].events.push(event.id)
-      }
-    })
-    if (DEV) {console.log('UPDATED GROUPS', groups)}
-    fetch(`${BASE_URL}/groups/${event.groupId}`, {
-      method: "PUT",
-      headers: HEADERS,
-      body: JSON.stringify({events: group.events.concat(event.id)})
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      this.props.changeState({events: this.state.events.concat(event), groups: groups})
-      if (DEV) {console.log('UPDATED GROUP EVENT DATA', data);}
-    });
+    // if (DEV) {console.log('EVENT', event);}
+    // if (! event) {
+    //   return;
+    // }
+    // let {groups} = this.props;
+    // let group;
+    // groups.forEach((gp, id) => {
+    //   if (gp.id == event.groupId){
+    //     group = groups[id];
+    //     groups[id].events.push(event.id)
+    //   }
+    // })
+    // if (DEV) {console.log('UPDATED GROUPS', groups)}
+    // fetch(`${BASE_URL}/groups/${event.groupId}`, {
+    //   method: "PUT",
+    //   headers: HEADERS,
+    //   body: JSON.stringify({events: group.events.concat(event.id)})
+    // })
+    // .then((response) => response.json())
+    // .then((data) => {
+    //   this.props.changeState({events: this.state.events.concat(event), groups: groups})
+    //   if (DEV) {console.log('UPDATED GROUP EVENT DATA', data);}
+    // });
   }
   render(){
     return (

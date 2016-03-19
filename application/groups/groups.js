@@ -95,18 +95,13 @@ export default class Groups extends Component{
           return (
             <View style={styles.groupsContainer} key={idx}>
               {groupDouble.map((group, idx) => {
-                if (!group) {
-                  return (
-                    <GroupBox group={group} key={idx}/>
-                  )
-                }
+                if (!group) { return <GroupBox group={group} key={idx}/>;}
                 return (
                   <TouchableOpacity key={idx} onPress={()=>{
                     this.props.navigator.push({
                       name: 'Group',
                       group: group,
-                    })
-                  }}>
+                    })}}>
                     <SuggestedGroupBox {...this.props} group={group}/>
                   </TouchableOpacity>
                 )
@@ -133,11 +128,7 @@ export default class Groups extends Component{
           return (
             <View style={styles.groupsContainer} key={idx}>
               {groupDouble.map((group, idx) => {
-                if (!group) {
-                  return (
-                    <AddGroupBox group={null} {...this.props} key={idx}/>
-                  )
-                }
+                if (!group) { return <AddGroupBox group={null} {...this.props} key={idx}/>;}
                 return (
                   <TouchableOpacity key={idx} onPress={()=>{
                     this.props.navigator.push({
