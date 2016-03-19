@@ -20,58 +20,34 @@ let {
 } = React;
 
 class Message extends React.Component{
-  constructor(props) {
-    super(props);
-    this.state = {
-      translateAnim: new Animated.Value(1),
-    }
-  }
-  // componentDidMount() {
-  //    Animated.timing(          // Uses easing functions
-  //      this.state.translateAnim,    // The value to drive
-  //      {toValue: 1},           // Configuration
-  //    ).start();                // Don't forget start!
-  // }
   render(){
-    let {message} = this.props;
+    let {message, user} = this.props;
+    console.log('PROPS', this.props);
     return (
-      <Animated.View
-        style={{
-           opacity: 1,
-           transform: [{
-             translateY: this.state.translateAnim.interpolate({
-               inputRange: [0, 1],
-               outputRange: [150, 0]
-             }),
-           }],
-         }}
-      >
-        <View style={styles.container}>
-          <TouchableOpacity onPress={()=>{
-            let {user} = this.props;
-            this.props.navigator.push({
-              name: 'Profile',
-              user: user,
-              username: message.senderName,
-              avatar: message.senderAvatar,
-            })
-          }}>
-            <Image
-              style={styles.icon}
-              source={{uri: message.senderAvatar}}
-            />
-          </TouchableOpacity>
-          <View style={styles.messageBox}>
-            <View style={styles.row}>
-              <Text style={styles.author}>{message.senderName}</Text>
-              <Text style={styles.sent}>{moment(new Date(parseInt(message.createdAt))).fromNow()}</Text>
-            </View>
-            <View style={styles.messageView}>
-              <Text style={styles.messageText}>{message.text}</Text>
-            </View>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={()=>{
+          this.props.navigator.push({
+            name      : 'Profile',
+            user      : this.props.user,
+            username  : `${this.props.user.firstName} ${this.props.user.lastName}`,
+            avatar    : this.props.user.avatarUrl,
+          })
+        }}>
+          <Image
+            style={styles.icon}
+            source={{uri: user.avatarUrl}}
+          />
+        </TouchableOpacity>
+        <View style={styles.messageBox}>
+          <View style={styles.row}>
+            <Text style={styles.author}>{`${user.firstName} ${user.lastName}`}</Text>
+            <Text style={styles.sent}>{moment(new Date(parseInt(message.createdAt))).fromNow()}</Text>
+          </View>
+          <View style={styles.messageView}>
+            <Text style={styles.messageText}>{message.text}</Text>
           </View>
         </View>
-      </Animated.View>
+      </View>
     )
   }
 }

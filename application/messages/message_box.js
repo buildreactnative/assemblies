@@ -158,6 +158,26 @@ export default class MessageBox extends Component{
       if (DEV) {console.log('ERR: ', err);}
     }).done();
   }
+  _renderScrollView(){
+    let {currentUser, messageUsers, userIds} = this.props;
+    let {messages} = this.state;
+    return (
+      <InvertibleScrollView
+        inverted={true}
+        contentContainerStyle={{paddingTop: 10}}
+        ref="scroll">
+        {_.reject(messages, (m) => m.participants.sort().join(':') != userIds.sort().join(':'))
+          .sort((a, b) => {return b.createdAt - a.createdAt})
+          .map((msg, idx) => {
+          let user = _.find(this.state.users, (usr) => {return usr.id == msg.senderId});
+          if (DEV) {console.log('USER', user, msg);}
+          return (
+            <Message message={msg} user={user} key={idx} navigator={this.props.navigator}/>
+          )
+        })}
+      </InvertibleScrollView>
+    );
+  }
   render(){
     console.log('MESSAGE BOX PROPS', this.props, this.state);
     let {currentUser, messageUsers, userIds} = this.props;
@@ -173,20 +193,7 @@ export default class MessageBox extends Component{
           title={titleConfig}
           leftButton={back}
         />
-        <InvertibleScrollView
-          inverted={true}
-          contentContainerStyle={{paddingTop: 50}}
-          ref="scroll">
-          {_.reject(messages, (m) => m.participants.sort().join(':') != userIds.sort().join(':'))
-            .sort((a, b) => {return b.createdAt - a.createdAt})
-            .map((msg, idx) => {
-              if (DEV) {console.log('USER', user, msg);}
-            let user = _.find(this.state.users, (usr) => usr.id == msg.senderId)
-            return (
-              <Message message={msg} user={user} key={idx} navigator={this.props.navigator}/>
-            )
-          })}
-        </InvertibleScrollView>
+      {this.state.users.length && this.state.messages.length ? this._renderScrollView() : <InvertibleScrollView ref="scroll"/>}
         <View style={styles.inputBox}>
           <TextInput
             ref="message"
