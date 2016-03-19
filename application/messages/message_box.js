@@ -189,15 +189,15 @@ export default class MessageBox extends Component{
             multiline={true}
             value={this.state.newMessage}
             placeholder='Say something...'
+            placeholderTextColor={Colors.bodyTextLight}
             onChange={(e) => {this.setState({newMessage: e.nativeEvent.text}); }}
             style={styles.input}
             />
           <TouchableOpacity
             style={this.state.newMessage ? styles.buttonActive : styles.buttonInactive}
             underlayColor='#D97573'
-            onPress={this._createMessage.bind(this)}
-          >
-            <Text style={Globals.submitButtonText}>Send</Text>
+            onPress={this._createMessage.bind(this)}>
+            <Text style={this.state.newMessage ? styles.submitButtonText : styles.inactiveButtonText}>Send</Text>
           </TouchableOpacity>
         </View>
         <KeyboardSpacer topSpacing={-50}/>
@@ -213,6 +213,7 @@ let styles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: '#F3EFEF',
+    backgroundColor: Colors.inactive,
     flexDirection: 'row',
   },
   input: {
@@ -220,26 +221,18 @@ let styles = StyleSheet.create({
     padding: 8,
     flex: 1,
     marginRight: 5,
-    fontSize: 12,
+    fontSize: 14,
     borderColor: '#E0E0E0',
     margin: 10,
     borderColor: '#b4b4b4',
     borderRadius: 8,
-    color: 'black',
+    color: Colors.bodyText,
     backgroundColor: 'white',
   },
   buttonActive: {
     flex: 0.4,
     backgroundColor: "#E0514B",
-    borderRadius: 6,
-    justifyContent: 'center',
-    margin: 10,
-  },
-  buttonInactive: {
-    flex: 0.4,
-    backgroundColor: "#E0514B",
-    flex: 0.4,
-    backgroundColor: "#E0514B",
+    backgroundColor: Colors.brandPrimary,
     borderRadius: 6,
     justifyContent: 'center',
     margin: 10,
@@ -319,4 +312,16 @@ let styles = StyleSheet.create({
     color: 'white',
     fontSize: 22,
   },
+  submitButtonText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '400',
+    color: 'white',
+  },
+  inactiveButtonText: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: '400',
+    color: '#999'
+  }
 });
