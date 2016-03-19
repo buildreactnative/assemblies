@@ -46,9 +46,9 @@ class assembly extends Component {
     try {
       var userParams = await AsyncStorage.getItem('USER_PARAMS');
       if (userParams !== null){
-        console.log('USER PARAMS', userParams);
+        if (DEV) {console.log('USER PARAMS', userParams);}
         let parsedUser = JSON.parse(userParams);
-        console.log('USER PARAMS', parsedUser);
+        if (DEV) {console.log('USER PARAMS', parsedUser);}
         if (!! parsedUser && parsedUser.username && parsedUser.password){
           let errors = null;
           if (DEV) {console.log("LOGIN", `${BASE_URL}/users/login`)}
@@ -111,7 +111,7 @@ class assembly extends Component {
     if (! foundUser) {
       return this._loading();
     }
-    console.log('INITIAL ROUTE', this.state.initialRoute);
+    if (DEV) {console.log('INITIAL ROUTE', this.state.initialRoute);}
     return (
       <View style={styles.container}>
         <Navigator
