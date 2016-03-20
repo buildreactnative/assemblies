@@ -69,6 +69,26 @@ export default class CalendarView extends Component{
       if (DEV) {console.log('ERR:', err);}
     }).done();
   }
+  addEvent(event, group){
+    if (DEV) {console.log('EVENT', event);}
+    if (! event || ! group) {
+      return;
+    }
+    let idx = _.findIndex(this.props.groups, (g) => g.id == group.id);
+    this.props.sendData({
+      groups: [...this.props.groups.slice(0, idx), group, ...this.props.groups.slice(idx+1)],
+      events: this.props.events.concat(event),
+    })
+    if (DEV) {console.log('UPDATED GROUPS', this.props.groups)}
+    fetch(`${BASE_URL}/groups/${event.groupId}`, {
+      method    : 'PUT',
+      headers   : HEADERS,
+      body      : JSON.stringify({events: group.events})
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
+  }
   addUserToGroup(group, currentUser){
     let {suggestedGroups} = this.props;
     let idx = _.findIndex(suggestedGroups, (g) => g.id == group.id);
@@ -108,6 +128,7 @@ export default class CalendarView extends Component{
                 <Group
                   addUserToGroup={this.addUserToGroup.bind(this)}
                   unsubscribe={this.unsubscribe.bind(this)}
+                  addEvent={this.addEvent.bind(this)}
                   {...this.props}
                   {...route}
                   navigator={navigator}
