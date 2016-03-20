@@ -165,47 +165,59 @@ class Group extends Component{
       )
     } else {
       return (
-        <Icon name="plus" size={20} color="white" style={styles.joinIcon}/>
+        <View style={{width: 20, height: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 10, borderWidth: 1, borderColor: 'white'}}>
+          <Icon name="plus" size={12} color='white' style={styles.joinIcon}/>
+        </View>
       )
     }
+  }
+  _addUserToGroup(){
+    let {group, currentUser} = this.props;
+    let members = group.members;
+    members[currentUser.id] = {
+      confirmed     : true,
+      admin         : false,
+      owner         : false,
+      notifications : true
+    };
+    let {groupIds} = currentUser;
+    group.members = members;
+    currentUser.groupIds = groupIds.concat(group.id);
+    this.props.addUserToGroup(group, currentUser);
+    fetch(`${BASE_URL}/groups/${group.id}`, {
+      method    : 'PUT',
+      headers   : HEADERS,
+      body      : JSON.stringify({members: members})
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('ADD USER TO GROUP', data);}
+      fetch(`${BASE_URL}/users/${currentUser.id}`, {
+        method    : 'PUT',
+        headers   : HEADERS,
+        body      : JSON.stringify({groupIds: currentUser.groupIds.concat(group.id)})
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (DEV) {console.log('ADD GROUP_ID TO USER', data);}
+      })
+      .catch((err) => {
+        if (DEV) {console.log('ERR:', err);}
+      }).done();
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
   }
   _renderJoin(){
     let {group, currentUser} = this.props;
     return (
       <View style={styles.joinContainer}>
         <TouchableOpacity
-          onPress={()=>{
-            let members = group.members;
-            members[currentUser.id] = {
-              confirmed: true,
-              admin: false,
-              owner: false,
-              notifications: true
-            }
-            fetch(`${BASE_URL}/groups/${group.id}`, {
-              method: 'PUT',
-              headers: HEADERS,
-              body: JSON.stringify({members: members})
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              if (DEV) {console.log('ADD USER TO GROUP', data);}
-              fetch(`${BASE_URL}/users/${currentUser.id}`, {
-                method: 'PUT',
-                headers: HEADERS,
-                body: JSON.stringify({groupIds: currentUser.groupIds.concat(group.id)})
-              })
-              .then((response) => response.json())
-              .then((data) => {
-                if (DEV) {console.log('ADD GROUP_ID TO USER', data);}
-                this.props.addUserToGroup(group, currentUser)
-                this.setState({joined: true, members: this.state.members.concat(currentUser)})
-              });
-            });
-          }}
+          onPress={this._addUserToGroup.bind(this)}
           style={styles.joinButton}>
-          {this._renderJoinIcon()}
           <Text style={styles.joinText}>{this.state.joined ? 'Joined' : 'Join'}</Text>
+          {this._renderJoinIcon()}
         </TouchableOpacity>
       </View>
     )
@@ -378,7 +390,7 @@ let styles = {
     textAlign: 'center',
   },
   joinIcon: {
-    paddingVertical: 10,
+
   },
   eventInfo: {
     flex: 1,
