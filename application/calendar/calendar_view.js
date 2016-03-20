@@ -89,6 +89,18 @@ export default class CalendarView extends Component{
       if (DEV) {console.log('ERR:', err);}
     }).done();
   }
+  changeEvent(event){
+    let idx = _.findIndex(this.props.events, (e) => e.id == event.id);
+    let allEventsIdx = _.findIndex(this.props.allEvents, (e) => e.id == event.id);
+    let newAllEvents = this.props.allEvents;
+    if (allEventsIdx != -1){
+      newAllEvents = [...this.props.allEvents.slice(0, allEventsIdx), event, ...this.props.allEvents.slice(allEventsIdx+1)];
+    }
+    this.props.sendData({
+      events      : [...this.props.events.slice(0, idx), event, ...this.props.events.slice(idx+1)],
+      allEvents   : newAllEvents,
+    });
+  }
   addUserToGroup(group, currentUser){
     let {suggestedGroups} = this.props;
     let idx = _.findIndex(suggestedGroups, (g) => g.id == group.id);
@@ -129,6 +141,7 @@ export default class CalendarView extends Component{
                   addUserToGroup={this.addUserToGroup.bind(this)}
                   unsubscribe={this.unsubscribe.bind(this)}
                   addEvent={this.addEvent.bind(this)}
+                  changeEvent={this.changeEvent.bind(this)}
                   {...this.props}
                   {...route}
                   navigator={navigator}

@@ -101,6 +101,18 @@ export default class MessagesView extends Component{
     });
     this.props.updateUser(currentUser);
   }
+  changeEvent(event){
+    let idx = _.findIndex(this.props.events, (e) => e.id == event.id);
+    let allEventsIdx = _.findIndex(this.props.allEvents, (e) => e.id == event.id);
+    let newAllEvents = this.props.allEvents;
+    if (allEventsIdx != -1){
+      newAllEvents = [...this.props.allEvents.slice(0, allEventsIdx), event, ...this.props.allEvents.slice(allEventsIdx+1)];
+    }
+    this.props.sendData({
+      events      : [...this.props.events.slice(0, idx), event, ...this.props.events.slice(idx+1)],
+      allEvents   : newAllEvents,
+    });
+  }
   _fetchMessages(){
     let {currentUser} = this.props;
     let url = `${BASE_URL}/messages?{"participantsString": {"$regex": ".*${currentUser.id}.*"}}`;
@@ -165,6 +177,7 @@ export default class MessagesView extends Component{
                   addUserToGroup={this.addUserToGroup.bind(this)}
                   unsubscribe={this.unsubscribe.bind(this)}
                   addEvent={this.addEvent.bind(this)}
+                  changeEvent={this.changeEvent.bind(this)}
                   {...this.props}
                   {...route}
                   navigator={navigator}

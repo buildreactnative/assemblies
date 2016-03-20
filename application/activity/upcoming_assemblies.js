@@ -118,7 +118,7 @@ export default class UpcomingAssemblies extends Component{
       <NoMessages
         textStyle={{fontSize: 14, fontStyle: 'italic'}}
         viewStyle={{paddingTop: 10}}
-        text='No events scheduled in your area yet.' />
+        text='No events scheduled in your area this week yet.' />
     )
   }
   _goToEvent(event){
