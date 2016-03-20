@@ -89,6 +89,18 @@ export default class GroupView extends Component{
       groups  : _.reject(this.props.groups, (g) => g.id == group.id),
     });
   }
+  changeEvent(event){
+    let idx = _.findIndex(this.props.events, (e) => e.id == event.id);
+    let allEventsIdx = _.findIndex(this.props.allEvents, (e) => e.id == event.id);
+    let newAllEvents = this.props.allEvents;
+    if (allEventsIdx != -1){
+      newAllEvents = [...this.props.allEvents.slice(0, allEventsIdx), event, ...this.props.allEvents.slice(allEventsIdx+1)];
+    }
+    this.props.sendData({
+      events      : [...this.props.events.slice(0, idx), event, ...this.props.events.slice(idx+1)],
+      allEvents   : newAllEvents,
+    });
+  }
   addEvent(event, group){
     if (DEV) {console.log('EVENT', event);}
     if (! event || ! group) {
@@ -131,6 +143,7 @@ export default class GroupView extends Component{
             } else if (route.name == 'Group') {
               return (
                 <Group
+                  changeEvent={this.changeEvent.bind(this)}
                   addUserToGroup={this.addUserToGroup.bind(this)}
                   unsubscribe={this.unsubscribe.bind(this)}
                   deleteGroup={this.deleteGroup.bind(this)}

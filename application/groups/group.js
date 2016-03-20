@@ -38,10 +38,12 @@ export default class Group extends Component{
   _events(){
     let {allEvents, events, group} = this.props;
     let eventIds = group.events;
-    let groupEvents = _.reject(_.uniq(events.concat(allEvents)), (evt) => {
+    let groupEvents = _.reject(events.concat(allEvents), (evt) => {
       return ! _.contains(eventIds, evt.id);
     });
-    return _.uniq(groupEvents);
+    return _.uniq(groupEvents, (item, key, a) => {
+      return item.id;
+    });
   }
   _members(){
     let {groupUsers, group, currentUser} = this.props;
@@ -207,6 +209,7 @@ export default class Group extends Component{
       <EventList
         currentUser={currentUser}
         group={group}
+        changeEvent={this.props.changeEvent}
         navigator={this.props.navigator}
         events={_.filter(this._events(), (e) => e.start >= new Date().valueOf())}
       />

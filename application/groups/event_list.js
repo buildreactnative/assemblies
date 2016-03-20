@@ -1,12 +1,10 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
-import {truncate} from 'underscore.string';
-import _ from 'underscore';
-import EventItem from './event_item';
-// import Swipeout from 'react-native-swipeout';
-import Swipeout from '../third_party/swipeout/index';
-import {BASE_URL, DEV} from '../utilities/fixtures';
+import _                from 'underscore';
+import Icon             from 'react-native-vector-icons/Ionicons';
+import moment           from 'moment';
+import {truncate}       from 'underscore.string';
+import Colors           from '../styles/colors';
+import Swipeout         from '../third_party/swipeout/index';
+import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
   ScrollView,
@@ -15,8 +13,6 @@ import React, {
   Text,
   View,
   ListView,
-  TabBarIOS,
-  Image,
   TouchableOpacity,
   Dimensions,
   NativeModules,
@@ -26,37 +22,10 @@ import React, {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class EventList extends React.Component{
+export default class EventList extends Component{
   constructor(props){
     super(props);
-    let rows = props.events.map((evt) => {
-      return {
-        event: evt,
-        right: [
-          {
-            text: 'Going',
-            type: 'primary',
-            onPress: ()=>{
-              this._updateEvent(evt, 'going');
-            },
-          },
-          {
-            text: 'Maybe',
-            type: 'secondary',
-            onPress: ()=>{
-              this._updateEvent(evt, 'maybe');
-            },
-          },
-          {
-            text: 'Not Going',
-            type: 'delete',
-            onPress: ()=>{
-              this._updateEvent(evt, 'not going');
-            },
-           }
-        ]
-      }
-    })
+    let rows = this._mapEvents(props.events);
     if (DEV) {console.log('ROWS', rows, props.events);}
     let ds = new ListView.DataSource({rowHasChanged: (row1, row2) => true})
     this.state = {
@@ -64,8 +33,8 @@ class EventList extends React.Component{
       scrollEnabled: true
     }
   }
-  _loadData(events){
-    let rows = events.map((evt) => {
+  _mapEvents(events){
+    return events.map((evt) => {
       return {
         event: evt,
         right: [
@@ -93,6 +62,9 @@ class EventList extends React.Component{
         ]
       }
     })
+  }
+  _loadData(events){
+    let rows = this._mapEvents(events);
     this._updateDataSource(rows);
   }
   componentWillReceiveProps(nextProps){
@@ -112,26 +84,30 @@ class EventList extends React.Component{
       delete maybe[currentUser.id]
     }
     attending[currentUser.id] = true;
+    event.attending = attending;
+    event.maybe = maybe;
+    event.notAttending = notAttending;
+    this.props.changeEvent(event);
     fetch(`${BASE_URL}/events/${event.id}`, {
-      method: "PUT",
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        attending: attending,
-        maybe: maybe,
-        notAttending: notAttending
+      method    : 'PUT',
+      headers   : HEADERS,
+      body      : JSON.stringify({
+        attending     : attending,
+        maybe         : maybe,
+        notAttending  : notAttending
       })
     })
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('RES', data);}
-      let {events} = this.props;
-      let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
-      events[eventIndex] = data;
-      this._loadData(events);
-    });
+      // let {events} = this.props;
+      // let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
+      // events[eventIndex] = data;
+      // this._loadData(events);
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
   }
   _maybe(event){
     let {currentUser} = this.props;
@@ -145,26 +121,30 @@ class EventList extends React.Component{
       delete notAttending[currentUser.id]
     }
     maybe[currentUser.id] = true;
+    event.attending = attending;
+    event.maybe = maybe;
+    event.notAttending = notAttending;
+    this.props.changeEvent(event);
     fetch(`${BASE_URL}/events/${event.id}`, {
-      method: "PUT",
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        attending: attending,
-        maybe: maybe,
-        notAttending: notAttending
+      method    : 'PUT',
+      headers   : HEADERS,
+      body      : JSON.stringify({
+        attending     : attending,
+        maybe         : maybe,
+        notAttending  : notAttending
       })
     })
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('RES', data);}
-      let {events} = this.props;
-      let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
-      events[eventIndex] = data;
-      this._loadData(events);
-    });
+      // let {events} = this.props;
+      // let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
+      // events[eventIndex] = data;
+      // this._loadData(events);
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
   }
   _notGoing(event){
     if (DEV) {console.log('NOT GOING EVENT', event);}
@@ -179,26 +159,30 @@ class EventList extends React.Component{
       delete maybe[currentUser.id]
     }
     notAttending[currentUser.id] = true;
+    event.attending = attending;
+    event.maybe = maybe;
+    event.notAttending = notAttending;
+    this.props.changeEvent(event);
     fetch(`${BASE_URL}/events/${event.id}`, {
-      method: "PUT",
-      headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        attending: attending,
-        maybe: maybe,
-        notAttending: notAttending
+      method    : "PUT",
+      headers   : HEADERS,
+      body      : JSON.stringify({
+        attending     : attending,
+        maybe         : maybe,
+        notAttending  : notAttending
       })
     })
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('RES', data);}
-      let {events} = this.props;
-      let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
-      events[eventIndex] = data;
-      this._loadData(events);
-    });
+      // let {events} = this.props;
+      // let eventIndex = _.indexOf(events.map((evt) => evt.id), event.id)
+      // events[eventIndex] = data;
+      // this._loadData(events);
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
   }
   _updateEvent(evt, type){
     if (DEV) {console.log('UPDATE EVENT', evt, type);}
@@ -213,7 +197,6 @@ class EventList extends React.Component{
         this._notGoing(evt);
       break;
     }
-
   }
   _allowScroll(scrollEnabled){
     this.setState({scrollEnabled: scrollEnable})
@@ -248,9 +231,9 @@ class EventList extends React.Component{
           <TouchableOpacity style={styles.eventInfo}
             onPress={()=>{
               this.props.navigator.push({
-                name: 'Event',
-                event: rowData.event,
-                group: this.props.group,
+                name    : 'Event',
+                event   : rowData.event,
+                group   : this.props.group,
               })
             }}
           >
@@ -282,7 +265,7 @@ class EventList extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   backButton: {
     paddingLeft: 20,
     paddingBottom: 10,
@@ -451,6 +434,4 @@ let styles = {
   memberInfo: {
     paddingLeft: 30,
   },
-}
-
-module.exports = EventList;
+});
