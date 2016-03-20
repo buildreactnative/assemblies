@@ -74,8 +74,8 @@ class Group extends Component{
     console.log('UNKNOWN USERS', groupMembers, groupUsers, userIds);
     if (groupEvents.length != eventIds.length ){
       fetch(`${BASE_URL}/events?{"id": {"$in": ${JSON.stringify(unknownEventIds)}}}`, {
-        method: 'GET',
-        headers: HEADERS,
+        method    : 'GET',
+        headers   : HEADERS,
       })
       .then((response) => response.json())
       .then((data) => {
@@ -139,7 +139,7 @@ class Group extends Component{
         currentUser={currentUser}
         group={group}
         navigator={this.props.navigator}
-        events={this._events()}
+        events={_.filter(this._events(), (e) => e.start >= new Date().valueOf())}
       />
     )
   }
