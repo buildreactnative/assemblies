@@ -44,7 +44,7 @@ export default class GroupView extends Component{
     if (idx != -1){
       this.props.sendData({
         groups          : _.reject(this.props.groups, (g) => g.id == group.id),
-        suggestedGroups : [...this.props.suggestedGroups.slice(0, idx), group, ...suggestedGroups.slice(idx+1)],
+        suggestedGroups : [...this.props.suggestedGroups.slice(0, idx), group, ...this.props.suggestedGroups.slice(idx+1)],
       });
     } else {
       this.props.sendData({

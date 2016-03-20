@@ -28,6 +28,12 @@ import React, {
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 export default class Group extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      alreadyJoined : !! props.group.members[props.currentUser.id],
+    }
+  }
   _events(){
     let {allEvents, events, group} = this.props;
     let eventIds = group.events;
@@ -289,7 +295,7 @@ export default class Group extends Component{
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(group.summary, 140)}</Text>
         <Text style={styles.h2}>Technologies</Text>
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
-        {! group.members[currentUser.id] ? this._renderJoin() : null}
+        {! this.state.alreadyJoined ? this._renderJoin() : null}
         <Text style={styles.h2}>Events</Text>
         <View style={styles.break}></View>
         {Object.keys(group.events).length ? this._renderEvents() : this._renderNoEvents()}
