@@ -39,6 +39,13 @@ export default class GroupView extends Component{
     });
     this.props.updateUser(currentUser);
   }
+  unsubscribe(group, currentUser){
+    this.props.sendData({
+      groups: _.reject(this.props.groups, (g) => g.id == group.id),
+      suggestedGroups: this.props.suggestedGroups.concat(group),
+    });
+    this.props.updateUser(currentUser)
+  }
   addUserToGroup(group, currentUser){
     let {suggestedGroups} = this.props;
     let idx = _.findIndex(suggestedGroups, (g) => g.id == group.id);
@@ -95,6 +102,7 @@ export default class GroupView extends Component{
               return (
                 <Group
                   addUserToGroup={this.addUserToGroup.bind(this)}
+                  unsubscribe={this.unsubscribe.bind(this)}
                   {...this.props}
                   {...route}
                   navigator={navigator}

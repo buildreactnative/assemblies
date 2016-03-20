@@ -61,6 +61,12 @@ export default class NotificationsHolder extends Component{
     );
   }
   _renderNoNotifications(){
+    if (! this.props.fetchedNotifications) {
+      return (
+        <View style={{height: 100}}>
+        </View>
+      );
+    }
     return (
       <View style={{height: 100}}>
         <NoMessages

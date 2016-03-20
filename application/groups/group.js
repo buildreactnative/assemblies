@@ -9,8 +9,6 @@ import FakeEvent        from './fake_event';
 import Colors           from '../styles/colors';
 import Globals          from '../styles/globals';
 import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
-const BUTTONS       = ['Create Event', 'Unsubscribe', 'Delete Group', 'Cancel',];
-const CANCEL_INDEX  = 3;
 import React, {
   ScrollView,
   Component,
@@ -122,23 +120,41 @@ class Group extends Component{
     )
   }
   _renderAddButton(){
+    let {group, currentUser} = this.props;
+    let isMember = _.contains(currentUser.groupIds, group.id);
+    let isAdmin = isMember && group.members[currentUser.id].admin;
+    let isOwner = isMember && group.members[currentUser.id].owner;
+    let BUTTONS = ['Cancel'];
+    if (isOwner ) {
+      BUTTONS.unshift('Delete Group');
+    }
+    if (! isOwner && isMember ) {
+      BUTTONS.unshift('Unsubscribe');
+    }
+    if (isAdmin || isOwner) {
+      BUTTONS.unshift('Create Event');
+    }
+    // let BUTTONS = ['Create Event', 'Unsubscribe', 'Delete Group', 'Cancel',]
     return (
       <TouchableOpacity style={styles.addButton} onPress={()=> {
         let options = {
           options                 : BUTTONS,
-          cancelButtonIndex       : CANCEL_INDEX,
+          cancelButtonIndex       : BUTTONS.length-1,
         };
         ActionSheetIOS.showActionSheetWithOptions(options, (buttonIndex) => {
-          if (buttonIndex == 0) {
-            console.log('OPTION');
+          if (BUTTONS[buttonIndex] == 'Create Event') {
+            console.log('CREATE EVENT');
             this.props.navigator.push({
               name: 'CreateEvent',
               group: this.props.group,
             });
-          } else if (buttonIndex == 1) {
-            console.log('OPTION')
-          } else if (buttonIndex == 2) {
-            console.log('OPTION')
+          } else if (BUTTONS[buttonIndex] == 'Unsubscribe') {
+            console.log('UNSUBSCRIBE');
+            delete group.members[currentUser.id];
+            currentUser.groupIds = _.reject(currentUser.groupIds, (id) => group.id == id)
+            this.props.unsubscribe(group, currentUser);
+          } else if (BUTTONS[buttonIndex] == 'Delete Group') {
+            console.log('DELETE GROUP');
           }
         });
       }}>
@@ -159,7 +175,6 @@ class Group extends Component{
     );
   }
   _renderAddEvent(){
-
     return (
       <View style={styles.goingContainer}>
         <Text style={styles.goingText}>Create an event</Text>
