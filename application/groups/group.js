@@ -9,7 +9,8 @@ import FakeEvent        from './fake_event';
 import Colors           from '../styles/colors';
 import Globals          from '../styles/globals';
 import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
-
+const BUTTONS       = ['Create Event', 'Unsubscribe', 'Delete Group', 'Cancel',];
+const CANCEL_INDEX  = 3;
 import React, {
   ScrollView,
   Component,
@@ -21,6 +22,7 @@ import React, {
   Dimensions,
   NativeModules,
   InteractionManager,
+  ActionSheetIOS,
   ActivityIndicatorIOS,
 } from 'react-native';
 
@@ -122,12 +124,25 @@ class Group extends Component{
   _renderAddButton(){
     return (
       <TouchableOpacity style={styles.addButton} onPress={()=> {
-        this.props.navigator.push({
-          name: 'CreateEvent',
-          group: this.props.group,
+        let options = {
+          options                 : BUTTONS,
+          cancelButtonIndex       : CANCEL_INDEX,
+        };
+        ActionSheetIOS.showActionSheetWithOptions(options, (buttonIndex) => {
+          if (buttonIndex == 0) {
+            console.log('OPTION');
+            this.props.navigator.push({
+              name: 'CreateEvent',
+              group: this.props.group,
+            });
+          } else if (buttonIndex == 1) {
+            console.log('OPTION')
+          } else if (buttonIndex == 2) {
+            console.log('OPTION')
+          }
         });
       }}>
-        <Icon name="ios-plus-outline" size={25} color="#ccc" />
+        <Icon name="more" size={25} color="#ccc" />
       </TouchableOpacity>
     )
   }
@@ -143,16 +158,26 @@ class Group extends Component{
       />
     );
   }
+  _renderAddEvent(){
+
+    return (
+      <View style={styles.goingContainer}>
+        <Text style={styles.goingText}>Create an event</Text>
+        <Icon name="checkmark-circled" size={30} color="green" />
+      </View>
+    )
+  }
   _renderNoEvents(){
+    let {group, currentUser} = this.props;
+    let isMember = _.contains(currentUser.groupIds, group.id);
+    let isAdmin = isMember && group.members[currentUser.id].admin;
+    let isOwner = isMember && group.members[currentUser.id].owner;
     return (
       <View style={styles.eventContainer}>
         <View style={styles.eventInfo}>
           <Text style={styles.h5}>No events scheduled</Text>
         </View>
-        <View style={styles.goingContainer}>
-          <Text style={styles.goingText}>Create an event</Text>
-          <Icon name="checkmark-circled" size={30} color="green" />
-        </View>
+        {isAdmin || isOwner ? this._renderAddEvent() : null}
       </View>
     )
   }
@@ -162,13 +187,13 @@ class Group extends Component{
     if (joined) {
       return (
         <Icon name="checkmark-circled" size={20} color="white" style={styles.joinIcon}/>
-      )
+      );
     } else {
       return (
         <View style={{width: 20, height: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 10, borderWidth: 1, borderColor: 'white'}}>
           <Icon name="plus" size={12} color='white' style={styles.joinIcon}/>
         </View>
-      )
+      );
     }
   }
   _addUserToGroup(){
@@ -231,7 +256,8 @@ class Group extends Component{
     let isOwner = isMember && group.members[currentUser.id].owner;
     if (DEV) {console.log('EVENTS', events, group.events);}
     let backButton = this._renderBackButton();
-    let addButton = isAdmin ? this._renderAddButton() : <View></View>;
+    // let addButton = isAdmin ? this._renderAddButton() : <View></View>;
+    let addButton = this._renderAddButton();
     return (
       <View style={styles.container}>
       <NavigationBar
