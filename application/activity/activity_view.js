@@ -32,6 +32,50 @@ export default class ActivityView extends Component{
       tab: 'notifications',
     };
   }
+  unsubscribe(group, currentUser){
+    let idx = _.findIndex(this.props.suggestedGroups, (g) => g.id == group.id);
+    if (idx != -1){
+      this.props.sendData({
+        groups          : _.reject(this.props.groups, (g) => g.id == group.id),
+        suggestedGroups : [...this.props.suggestedGroups.slice(0, idx), group, ...this.props.suggestedGroups.slice(idx+1)],
+      });
+    } else {
+      this.props.sendData({
+        groups          : _.reject(this.props.groups, (g) => g.id == group.id),
+        suggestedGroups : this.props.suggestedGroups.concat(group),
+      });
+    }
+    this.props.updateUser(currentUser);
+    let url = `${BASE_URL}/groups/${group.id}`;
+    fetch(url, {
+      method    : 'PUT',
+      headers   : HEADERS,
+      body      : JSON.stringify({members: group.members})
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      let url = `${BASE_URL}/users/${currentUser.id}`;
+      fetch(url, {
+        method    : 'PUT',
+        headers   : HEADERS,
+        body      : JSON.stringify({groupIds: currentUser.groupIds})
+      })
+      .catch((err) => {
+        if (DEV) {console.log('ERR: ', err);}
+      }).done();
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
+  }
+  addUserToGroup(group, currentUser){
+    let {suggestedGroups} = this.props;
+    let idx = _.findIndex(suggestedGroups, (g) => g.id == group.id);
+    this.props.sendData({
+      suggestedGroups: [...suggestedGroups.slice(0, idx), group, ...suggestedGroups.slice(idx+1)],
+    });
+    this.props.updateUser(currentUser);
+  }
   render(){
     let {tab,} = this.state;
     let tabContent = tab == 'upcoming' ? <UpcomingAssemblies {...this.props} {...this.state}/> : <NotificationsHolder {...this.state}/>
@@ -53,50 +97,35 @@ export default class ActivityView extends Component{
                   navigator={navigator}
                 />
               )
-            } else if (route.name == 'Groups') {
-              return (
-                <Groups
-                  {...this.props}
-                  navigator={navigator}
-                  addUserToGroup={()=>{
-                    if (DEV) {console.log('ADD USER')}
-                  }}
-                />
-              )
             } else if (route.name == 'CreateGroup'){
               return <CreateGroup {...this.props} navigator={navigator} />
             } else if (route.name == 'Group') {
               return (
                 <Group
-                  addUserToGroup={()=>{
-                    if (DEV) {console.log('ADD USER')}
-                  }}
+                  addUserToGroup={this.addUserToGroup.bind(this)}
+                  unsubscribe={this.unsubscribe.bind(this)}
                   {...this.props}
                   {...route}
                   navigator={navigator}
                 />
               )
-            } else if (route.name == 'Members') {
-              return <GroupMembers {...this.props} navigator={navigator} />
-            } else if (route.name == 'Events' ) {
-              return <GroupEvents {...this.props} navigator={navigator}  />
             } else if (route.name == 'CreateEvent'){
               return <CreateEvent {...this.props} {...route} navigator={navigator}  />
             } else if (route.name == 'CreateEventConfirm'){
               return (
-                <CreateEventConfirm {...this.props} {...route}
+                <CreateEventConfirm
+                  {...this.props}
+                  {...route}
                   navigator={navigator}
-                  addEvent={()=>{
-                    if (DEV) {console.log('ADD EVENT')}
-                  }}
+                  addEvent={()=>{if (DEV) {console.log('ADD EVENT')}}}
                 />
               )
             } else if (route.name == 'CreateGroupConfirm'){
               return (
-                <CreateGroupConfirm {...this.props} {...route}
-                  createGroup={()=>{
-                    if (DEV) {console.log('CREATE GROUP')}
-                  }}
+                <CreateGroupConfirm
+                  {...this.props}
+                  {...route}
+                  createGroup={()=>{if (DEV) {console.log('CREATE GROUP')}}}
                   navigator={navigator}
                 />
               )
@@ -116,14 +145,24 @@ export default class ActivityView extends Component{
               )
             } else if (route.name == 'Event'){
               return (
-                <Event {...route} {...this.props} {...this.state} navigator={navigator}/>
-              )
+                <Event
+                  {...route}
+                  {...this.props}
+                  {...this.state}
+                  navigator={navigator}
+                />
+              );
             } else if (route.name == 'message') {
               if (DEV) {console.log(route, this.state, this.props)}
               let userIds = Object.keys(route.notification.relatedUserIds)
               return (
-                <MessageBox user={route.user} userIds={userIds} {...this.props} navigator={navigator}/>
-              )
+                <MessageBox
+                  user={route.user}
+                  userIds={userIds}
+                  {...this.props}
+                  navigator={navigator}
+                />
+              );
             } else if (route.name == 'Chat'){
               let userIds = [this.props.currentUser.id, route.user.id]
               return (
@@ -134,7 +173,7 @@ export default class ActivityView extends Component{
                   messageUsers={null}
                   navigator={navigator}
                 />
-              )
+              );
             }
           }}/>
       </View>
