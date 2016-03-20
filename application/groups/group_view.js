@@ -40,11 +40,40 @@ export default class GroupView extends Component{
     this.props.updateUser(currentUser);
   }
   unsubscribe(group, currentUser){
-    this.props.sendData({
-      groups: _.reject(this.props.groups, (g) => g.id == group.id),
-      suggestedGroups: this.props.suggestedGroups.concat(group),
-    });
-    this.props.updateUser(currentUser)
+    let idx = _.findIndex(this.props.suggestedGroups, (g) => g.id == group.id);
+    if (idx != -1){
+      this.props.sendData({
+        groups          : _.reject(this.props.groups, (g) => g.id == group.id),
+        suggestedGroups : [...this.props.suggestedGroups.slice(0, idx), group, ...suggestedGroups.slice(idx+1)],
+      });
+    } else {
+      this.props.sendData({
+        groups          : _.reject(this.props.groups, (g) => g.id == group.id),
+        suggestedGroups : this.props.suggestedGroups.concat(group),
+      });
+    }
+    this.props.updateUser(currentUser);
+    let url = `${BASE_URL}/groups/${group.id}`;
+    fetch(url, {
+      method    : 'PUT',
+      headers   : HEADERS,
+      body      : JSON.stringify({members: group.members})
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      let url = `${BASE_URL}/users/${currentUser.id}`;
+      fetch(url, {
+        method    : 'PUT',
+        headers   : HEADERS,
+        body      : JSON.stringify({groupIds: currentUser.groupIds})
+      })
+      .catch((err) => {
+        if (DEV) {console.log('ERR: ', err);}
+      }).done();
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
   }
   addUserToGroup(group, currentUser){
     let {suggestedGroups} = this.props;

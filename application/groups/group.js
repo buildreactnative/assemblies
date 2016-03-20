@@ -9,6 +9,7 @@ import FakeEvent        from './fake_event';
 import Colors           from '../styles/colors';
 import Globals          from '../styles/globals';
 import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
+
 import React, {
   ScrollView,
   Component,
@@ -26,14 +27,7 @@ import React, {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class Group extends Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      alreadyJoined: !! props.group.members[props.currentUser.id],
-      joined : false,
-    }
-  }
+export default class Group extends Component{
   _events(){
     let {allEvents, events, group} = this.props;
     let eventIds = group.events;
@@ -256,7 +250,7 @@ class Group extends Component{
         <TouchableOpacity
           onPress={this._addUserToGroup.bind(this)}
           style={styles.joinButton}>
-          <Text style={styles.joinText}>{this.state.joined ? 'Joined' : 'Join'}</Text>
+          <Text style={styles.joinText}>{!! group.members[currentUser.id] ? 'Joined' : 'Join'}</Text>
           {this._renderJoinIcon()}
         </TouchableOpacity>
       </View>
@@ -295,7 +289,7 @@ class Group extends Component{
         <Text style={[styles.h4, {paddingHorizontal: 20,}]}>{truncate(group.summary, 140)}</Text>
         <Text style={styles.h2}>Technologies</Text>
         <Text style={styles.h3}>{group.technologies.join(', ')}</Text>
-        {! this.state.alreadyJoined ? this._renderJoin() : null}
+        {! group.members[currentUser.id] ? this._renderJoin() : null}
         <Text style={styles.h2}>Events</Text>
         <View style={styles.break}></View>
         {Object.keys(group.events).length ? this._renderEvents() : this._renderNoEvents()}
@@ -331,7 +325,7 @@ class Group extends Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   backButton: {
     paddingLeft: 20,
     paddingBottom: 10,
@@ -464,6 +458,4 @@ let styles = {
   memberInfo: {
     paddingLeft: 30,
   },
-}
-
-module.exports = Group;
+});
