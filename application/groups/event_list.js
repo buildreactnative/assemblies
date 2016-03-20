@@ -214,6 +214,15 @@ export default class EventList extends Component{
       dataSource: this.state.dataSource.cloneWithRows(data)
     })
   }
+  _renderWantToGo(event){
+    return (
+      <TouchableOpacity onPress={()=>{
+          this._updateEvent(event, 'going')
+        }}>
+        <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>
+      </TouchableOpacity>
+    )
+  }
   _renderRow(rowData: string, sectionID: number, rowID: number) {
     let {currentUser} = this.props;
     let attending = rowData.event.attending;
@@ -244,7 +253,7 @@ export default class EventList extends Component{
           </TouchableOpacity>
           <View style={styles.goingContainer}>
             <Text style={styles.goingText}>{!! going ? "You're Going" : "Want to go?"}</Text>
-            {going ? <Icon name="checkmark-circled" size={30} color={Colors.brandPrimary} /> : <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>}
+            {going ? <Icon name="checkmark-circled" size={30} color={Colors.brandPrimary} /> : this._renderWantToGo(rowData.event) }
           </View>
         </View>
       </Swipeout>
