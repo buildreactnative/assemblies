@@ -183,7 +183,6 @@ class CalendarList extends React.Component{
     );
   }
   _renderEmptyCalendar(){
-    console.log('PROPS', this.props);
     if ( this.props.fetchedAllEvents && this.props.fetchedAllEventsGroups){
       return (
         <NoMessages text='No events scheduled. Explore groups in the groups tab or create your own to start an event.'/>

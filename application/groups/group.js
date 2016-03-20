@@ -64,17 +64,12 @@ export default class Group extends Component{
     let groupMembers = _.reject(groupUsers, (usr) => {
       return ! _.contains(userIds, usr.id)
     });
-    console.log('PROPS', groupEvents, groupMembers);
-    console.log('PARAMS', eventIds, userIds, group, this.props);
     let unknownEventIds = _.reject(eventIds, (id) => {
       return _.contains(groupEvents.concat(events).map((e) => e.id), id)
     });
     let unknownUserIds = _.reject(userIds, (id) => {
       return _.contains(groupUsers.map((usr) => usr.id), id)
     });
-    console.log('UNKNOWN', unknownEventIds, unknownUserIds);
-    console.log('UNKNOWN PARAMS', eventIds, groupEvents.concat(events));
-    console.log('UNKNOWN USERS', groupMembers, groupUsers, userIds);
     if (groupEvents.length != eventIds.length ){
       fetch(`${BASE_URL}/events?{"id": {"$in": ${JSON.stringify(unknownEventIds)}}}`, {
         method    : 'GET',
@@ -146,18 +141,15 @@ export default class Group extends Component{
         };
         ActionSheetIOS.showActionSheetWithOptions(options, (buttonIndex) => {
           if (BUTTONS[buttonIndex] == 'Create Event') {
-            console.log('CREATE EVENT');
             this.props.navigator.push({
               name: 'CreateEvent',
               group: this.props.group,
             });
           } else if (BUTTONS[buttonIndex] == 'Unsubscribe') {
-            console.log('UNSUBSCRIBE');
             delete group.members[currentUser.id];
             currentUser.groupIds = _.reject(currentUser.groupIds, (id) => group.id == id)
             this.props.unsubscribe(group, currentUser);
           } else if (BUTTONS[buttonIndex] == 'Delete Group') {
-            console.log('DELETE GROUP');
             Alert.alert(
               'Delete Group',
               'Are you sure?',

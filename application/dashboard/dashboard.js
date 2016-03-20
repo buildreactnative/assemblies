@@ -134,7 +134,6 @@ export default class Dashboard extends Component {
     )
   }
   _sendData(newState){
-    console.log('NEW STATE', newState, this.state);
     this.setState(newState);
   }
   render() {
