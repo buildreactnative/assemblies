@@ -17,6 +17,7 @@ import React, {
   Text,
   View,
   Image,
+  Alert,
   TouchableOpacity,
   Dimensions,
   NativeModules,
@@ -155,6 +156,43 @@ export default class Group extends Component{
             this.props.unsubscribe(group, currentUser);
           } else if (BUTTONS[buttonIndex] == 'Delete Group') {
             console.log('DELETE GROUP');
+            Alert.alert(
+              'Delete Group',
+              'Are you sure?',
+              [
+                {text: 'Cancel', onPress: () => {
+                  if (DEV) {console.log('CANCEL DELETE');}
+                }},
+                {text: 'OK', onPress: () => {
+                  if (DEV) {console.log('CONFIRM DELETE');}
+                  let url = `${BASE_URL}/groups/${group.id}`;
+                  currentUser.groupIds = _.reject(currentUser.groupIds, (g) => g == group.id);
+                  fetch(url, {
+                    method    : 'DELETE',
+                    headers   : HEADERS,
+                  })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    let url = `${BASE_URL}/events/?{"id": {"$in": ${JSON.stringify(group.events)}}}`
+                    fetch(url, {
+                      method   : 'DELETE',
+                      headers  : HEADERS,
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                      this.props.deleteGroup(group, currentUser);
+                      this.props.navigator.pop();
+                    })
+                    .catch((err) => {
+                      if (DEV) {console.log('ERR: ', err);}
+                    })
+                  })
+                  .catch((err) => {
+                    if (DEV) {console.log('ERR:', err);}
+                  }).done();
+                }},
+              ]
+            )
           }
         });
       }}>

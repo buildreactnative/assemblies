@@ -83,6 +83,12 @@ export default class GroupView extends Component{
     });
     this.props.updateUser(currentUser);
   }
+  deleteGroup(group, currentUser){
+    this.props.updateUser(currentUser);
+    this.props.sendData({
+      groups  : _.reject(this.props.groups, (g) => g.id == group.id),
+    });
+  }
   addEvent(event){
     // if (DEV) {console.log('EVENT', event);}
     // if (! event) {
@@ -132,6 +138,7 @@ export default class GroupView extends Component{
                 <Group
                   addUserToGroup={this.addUserToGroup.bind(this)}
                   unsubscribe={this.unsubscribe.bind(this)}
+                  deleteGroup={this.deleteGroup.bind(this)}
                   {...this.props}
                   {...route}
                   navigator={navigator}
