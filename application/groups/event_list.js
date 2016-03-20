@@ -12,6 +12,7 @@ import React, {
   StyleSheet,
   Text,
   View,
+  Image,
   ListView,
   TouchableOpacity,
   Dimensions,
@@ -243,7 +244,7 @@ export default class EventList extends Component{
           </TouchableOpacity>
           <View style={styles.goingContainer}>
             <Text style={styles.goingText}>{!! going ? "You're Going" : "Want to go?"}</Text>
-            <Icon name="checkmark-circled" size={30} color="green" />
+            {going ? <Icon name="checkmark-circled" size={30} color={Colors.brandPrimary} /> : <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>}
           </View>
         </View>
       </Swipeout>
