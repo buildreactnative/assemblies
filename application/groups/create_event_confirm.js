@@ -96,6 +96,7 @@ export default class CreateEventConfirm extends Component{
     let notification = {
       type            : 'event',
       relatedUserIds  : relatedUserIds,
+      userIdString    : _.reject(_.keys(group.members), (m) => m == currentUser.id).join(':'),
       message         : `New event in ${group.name}`,
       timestamp       : new Date().valueOf(),
       eventId         : event.id,

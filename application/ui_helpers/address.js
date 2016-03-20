@@ -32,7 +32,7 @@ export default class Address extends React.Component{
     return (
       <View style={styles.container}>
         <Text style={styles.h2}>Address</Text>
-        <Text style={styles.h4}>{location ? location.city : ''}</Text>
+        <Text style={styles.h4}>{location ? location.formattedAddress : ''}</Text>
       </View>
     )
   }

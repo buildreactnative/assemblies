@@ -108,8 +108,9 @@ export default class GroupView extends Component{
     }
     let idx = _.findIndex(this.props.groups, (g) => g.id == group.id);
     this.props.sendData({
-      groups: [...this.props.groups.slice(0, idx), group, ...this.props.groups.slice(idx+1)],
-      events: this.props.events.concat(event),
+      groups    : [...this.props.groups.slice(0, idx), group, ...this.props.groups.slice(idx+1)],
+      events    : this.props.events.concat(event),
+      allEvents : this.props.allEvents.concat(event),
     })
     if (DEV) {console.log('UPDATED GROUPS', this.props.groups)}
     fetch(`${BASE_URL}/groups/${event.groupId}`, {

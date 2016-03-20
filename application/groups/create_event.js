@@ -88,8 +88,10 @@ class CreateEvent extends React.Component{
               if (DEV) {console.log(details);}
               this.setState({
                 location: _.extend({}, details.geometry.location, {
-                  city: details.address_components[0].long_name,
-                  state: details.address_components[2].short_name,
+                  city: _.find(details.address_components, (c) => c.types[0] == 'locality'),
+                  state: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_1'),
+                  county: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_2'),
+                  formattedAddress: details.formatted_address,
                 })
               });
               this.refs.name.focus();

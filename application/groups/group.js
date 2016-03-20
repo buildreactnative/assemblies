@@ -343,7 +343,7 @@ export default class Group extends Component{
         {! this.state.alreadyJoined ? this._renderJoin() : null}
         <Text style={styles.h2}>Events</Text>
         <View style={styles.break}></View>
-        {Object.keys(group.events).length ? this._renderEvents() : this._renderNoEvents()}
+        {this._events().length ? this._renderEvents() : this._renderNoEvents()}
         <View style={styles.break}></View>
         <Text style={styles.h2}>Members</Text>
         <View style={styles.break}></View>
