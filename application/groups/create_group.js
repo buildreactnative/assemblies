@@ -1,23 +1,12 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
+import _                from 'underscore';
+import Icon             from 'react-native-vector-icons/Ionicons';
+import NavigationBar    from 'react-native-navbar';
+import Colors           from '../styles/colors';
+import Globals          from '../styles/globals';
+import ErrorMessage     from '../ui_helpers/error_message';
 import {GooglePlacesAutocomplete} from '../third_party/google_places/autocomplete';
-import ErrorMessage from '../ui_helpers/error_message';
-import _ from 'underscore';
 import {autocompleteStyles} from '../utilities/style_utilities';
-import {TECHNOLOGIES,} from '../utilities/fixtures';
-import {
-  overlayStyles,
-  optionTextStyles,
-  optionStyles,
-  selectStyles,
-} from '../utilities/style_utilities'
-import DropDown, {
-  Select,
-  Option,
-  OptionList,
-} from '../select/index';
+
 import React, {
   ScrollView,
   Component,
@@ -25,8 +14,6 @@ import React, {
   Text,
   TextInput,
   View,
-  TabBarIOS,
-  Image,
   TouchableOpacity,
   Dimensions,
   NativeModules,
@@ -35,20 +22,19 @@ import React, {
 } from 'react-native';
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
-class CreateGroup extends React.Component{
+export default class CreateGroup extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      technologies: [],
-      name: '',
-      location: null,
-      summary: '',
-      members: {},
-      imageUrl: "http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg",
-      events: {},
-      error: '',
+      imageUrl        : "http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg",
+      error           : '',
+      name            : '',
+      summary         : '',
+      members         : {},
+      events          : {},
+      technologies    : [],
+      location        : null,
     }
   }
   inputFocused (refName) {
@@ -170,16 +156,14 @@ class CreateGroup extends React.Component{
           onPress={()=>{
             let {name, location, summary} = this.state;
             if (name == '' || ! location) {
-              this.setState({
-                error: 'Must fill out required fields *.'
-              });
+              this.setState({ error: 'Must fill out required fields *.'});
               return;
             }
             this.props.navigator.push({
-              name: 'CreateGroupConfirm',
-              groupName: name,
-              location: location,
-              summary: summary,
+              name        : 'CreateGroupConfirm',
+              groupName   : name,
+              location    : location,
+              summary     : summary,
             })
           }}
           style={[Globals.submitButton, {marginBottom: 50}]}
@@ -191,7 +175,7 @@ class CreateGroup extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -281,6 +265,4 @@ let styles = {
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
-}
-
-module.exports = CreateGroup
+});

@@ -141,7 +141,7 @@ class Group extends Component{
         navigator={this.props.navigator}
         events={_.filter(this._events(), (e) => e.start >= new Date().valueOf())}
       />
-    )
+    );
   }
   _renderNoEvents(){
     return (

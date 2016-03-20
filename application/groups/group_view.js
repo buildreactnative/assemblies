@@ -32,11 +32,12 @@ const CUSTOM_CONFIG = Navigator.SceneConfigs.HorizontalSwipeJump;
 
 CUSTOM_CONFIG.gestures = {}; // disable gestures for side swipe
 export default class GroupView extends Component{
-  createGroup(group){
-    // if (! group) {return;}
-    // this.props.changeState({
-    //   groups: this.state.groups.concat(group),
-    // })
+  createGroup(group, currentUser){
+    let {groups} = this.props;
+    this.props.sendData({
+      groups: groups.concat(group),
+    });
+    this.props.updateUser(currentUser);
   }
   addUserToGroup(group, currentUser){
     let {suggestedGroups} = this.props;

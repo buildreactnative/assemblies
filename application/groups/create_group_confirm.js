@@ -1,22 +1,25 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import COLOR_FIXTURES from '../styles/color_fixtures';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import _ from 'underscore';
+import _                from 'underscore';
+import Icon             from 'react-native-vector-icons/Ionicons';
+import NavigationBar    from 'react-native-navbar';
+import Colors           from '../styles/colors';
+import Globals          from '../styles/globals';
+import COLOR_FIXTURES   from '../styles/color_fixtures';
 import {autocompleteStyles} from '../utilities/style_utilities';
-import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV} from '../utilities/fixtures';
+import {TECHNOLOGIES, IMAGE_OPTIONS, BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
+
 import {
   overlayStyles,
   optionTextStyles,
   optionStyles,
   selectStyles,
 } from '../utilities/style_utilities'
+
 import DropDown, {
   Select,
   Option,
   OptionList,
 } from '../select/index';
+
 import React, {
   ScrollView,
   Component,
@@ -24,7 +27,6 @@ import React, {
   Text,
   TextInput,
   View,
-  TabBarIOS,
   Image,
   TouchableOpacity,
   Dimensions,
@@ -34,29 +36,29 @@ import React, {
 } from 'react-native';
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
-let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
+let ImagePickerManager = require('NativeModules').ImagePickerManager;
 
-class CreateGroupConfirm extends React.Component{
+export default class CreateGroupConfirm extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      technologies: [],
-      name: '',
-      location: null,
-      summary: '',
-      members: {},
-      imageUrl: "http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg",
-      events: {},
-      backgroundColor: 'transparent',
-    }
+      name            : '',
+      summary         : '',
+      imageUrl        : 'http://devbootcamp.com/assets/img/locations/nyc-about-photo.jpg',
+      backgroundColor : 'transparent',
+      technologies    : [],
+      members         : {},
+      events          : {},
+      location        : null,
+    };
   }
   showImagePicker(){
     let options = _.extend({}, IMAGE_OPTIONS, {aspectX: 2, maxWidth: deviceWidth, maxHeight: 300});
-    UIImagePickerManager.showImagePicker(options, (response) => {
+    ImagePickerManager.showImagePicker(options, (response) => {
       if (response.didCancel) {
         if (DEV) {console.log('User cancelled image picker');}
       } else if (response.error) {
-        if (DEV) {console.log('UIImagePickerManager Error: ', response.error);}
+        if (DEV) {console.log('ImagePickerManager Error: ', response.error);}
       } else if (response.customButton) {
         if (DEV) {console.log('User tapped custom button: ', response.customButton);}
       } else {
@@ -89,6 +91,59 @@ class CreateGroupConfirm extends React.Component{
   }
   _getOptionList(){
     return this.refs['OPTIONLIST']
+  }
+  _createGroup(){
+    let {groupName, summary, location, currentUser} = this.props;
+    let userId = currentUser.id;
+    let {imageUrl, technologies, backgroundColor,} = this.state;
+    let group = {
+      name          : groupName,
+      summary       : summary,
+      location      : location,
+      imageUrl      : imageUrl,
+      technologies  : technologies,
+      backgroundColor: backgroundColor,
+      members       : {},
+      events        : [],
+    };
+    if (!! userId ){
+      group.members[userId] = {
+        confirmed     : true,
+        admin         : true,
+        owner         : true,
+        notifications : true
+      }
+    }
+    // create group
+    fetch(`${BASE_URL}/groups`, {
+      method    : 'POST',
+      headers   : HEADERS,
+      body      : JSON.stringify(group)
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('DATA', data);}
+      let group = data; // add group to groups object
+      currentUser.groupIds = currentUser.groupIds.concat(data.id);
+      this.props.createGroup(data, currentUser);
+      fetch(`${BASE_URL}/users/${currentUser.id}`, {
+        method    : 'PUT',
+        headers   : HEADERS,
+        body      : JSON.stringify({groupIds: currentUser.groupIds.concat(data.id)})
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        let currentUser = data;
+        if (DEV) {console.log('USER DATA', data);}
+        this.props.navigator.popToTop();
+      })
+      .catch((err) => {
+        if (DEV) {console.log('ERR:', err);}
+      }).done();
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
   }
   render(){
     let {technologies,} = this.state;
@@ -150,68 +205,15 @@ class CreateGroupConfirm extends React.Component{
                 <TouchableOpacity
                   key={idx}
                   onPress={()=>this.setState({backgroundColor: color.code})}
-                  style={[styles.colorBox, {backgroundColor: color.code, borderColor: bgColor }]}
-                >
+                  style={[styles.colorBox, {backgroundColor: color.code, borderColor: bgColor }]}>
                 </TouchableOpacity>
-              )
+              );
             })}
           </View>
         </ScrollView>
         <TouchableOpacity
           style={[Globals.submitButton, {marginBottom: 50}]}
-          onPress={()=>{
-            let {groupName, summary, location, currentUser} = this.props;
-            let userId = currentUser ? currentUser.id : '';
-            let {imageUrl, technologies, backgroundColor,} = this.state;
-            let group = {
-              name: groupName,
-              summary: summary,
-              location: location || {},
-              imageUrl: imageUrl,
-              technologies: technologies,
-              backgroundColor: backgroundColor,
-              members: {},
-              events: [],
-            };
-            if (!! userId ){
-              group.members[userId] = {
-                confirmed: true,
-                admin: true,
-                owner: true,
-                notifications: true
-              }
-            }
-            // create group
-            fetch(`${BASE_URL}/groups`, {
-              method: "POST",
-              headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(group)
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              if (DEV) {console.log('DATA', data);}
-              this.props.createGroup(data);
-              // update groupIds array in user profile
-              fetch(`${BASE_URL}/users/${currentUser.id}`, {
-                method: "PUT",
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({groupIds: currentUser.groupIds.concat(data.id)})
-              })
-              .then((response) => response.json())
-              .then((data) => {
-                if (DEV) {console.log('USER DATA', data);}
-                this.props.updateUser(data);
-                this.props.navigator.popToTop();
-              })
-            })
-          }}
-        >
+          onPress={this._createGroup.bind(this)}>
           <Text style={Globals.submitButtonText}>Create Assembly</Text>
         </TouchableOpacity>
       </View>
@@ -219,7 +221,7 @@ class CreateGroupConfirm extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -321,6 +323,4 @@ let styles = {
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
-}
-
-module.exports = CreateGroupConfirm
+});
