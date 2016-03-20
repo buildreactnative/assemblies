@@ -43,7 +43,7 @@ class CalendarList extends React.Component{
     let {currentUser} = this.props;
     let d = new Date();
     d.setHours(0);
-    let url = `${BASE_URL}/events?{"$and": [{"start": {"$gt": ${JSON.stringify(d.valueOf())} }}, {"location.state": ${JSON.stringify("US")}}]}`;
+    let url = `${BASE_URL}/events?{"$and": [{"start": {"$gt": ${JSON.stringify(d.valueOf())} }}]}`;
     fetch(url, {
       method: "GET",
       headers: HEADERS,

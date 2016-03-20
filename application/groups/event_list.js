@@ -293,12 +293,6 @@ let styles = {
     paddingRight: 20,
     paddingBottom: 10,
   },
-  container: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
   topImage: {
     width: deviceWidth,
     height: 200,
@@ -372,8 +366,9 @@ let styles = {
     fontWeight: '400',
   },
   h4: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '300',
+    fontStyle: 'italic',
   },
   h3: {
     fontSize: 18,
@@ -400,7 +395,7 @@ let styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingBottom: 20,
   },
   joinContainer: {
     flex: 1,
@@ -430,7 +425,7 @@ let styles = {
   },
   h5: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: '400',
   },
   goingContainer: {
     flex: 0.8,

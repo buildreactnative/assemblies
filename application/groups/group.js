@@ -422,15 +422,15 @@ let styles = StyleSheet.create({
     fontWeight: '400',
   },
   h4: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '300',
   },
   h3: {
-    fontSize: 18,
+    fontSize: 16,
     color: Colors.brandPrimary,
     paddingHorizontal: 18,
     paddingVertical: 5,
-    fontWeight: '500',
+    fontWeight: '400',
   },
   break: {
     height: 1,
@@ -440,8 +440,8 @@ let styles = StyleSheet.create({
     marginVertical: 5,
   },
   h2: {
-    fontSize: 22,
-    fontWeight: '300',
+    fontSize: 20,
+    fontWeight: '400',
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
