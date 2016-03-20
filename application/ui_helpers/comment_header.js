@@ -65,6 +65,20 @@ export default class CommentHeader extends React.Component{
   }
   _renderExpanded(){
     let {event} = this.props;
+    if (! event.comments.length){
+      return (
+        <View style={styles.container}>
+          <View style={styles.row}>
+            <TouchableOpacity onPress={this._toggle.bind(this)}>
+              <Text style={styles.h2}>Comments {this.state.expanded ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={this.props.openCommentForm}>
+              <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
     return (
       <View style={styles.container}>
         <View style={styles.row}>
@@ -81,6 +95,9 @@ export default class CommentHeader extends React.Component{
   }
   _renderHiddenLayout(){
     let {event} = this.props;
+    if (! event.comments.length) {
+      return <View />
+    }
     return (
       <View onLayout={this._setMaxHeight.bind(this)} style={{position: this.state.measured ? 'absolute' : 'relative', opacity: this.state.measured ? 1 : 0}}>
         <View style={styles.row}>
