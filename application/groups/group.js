@@ -214,10 +214,14 @@ export default class Group extends Component{
   }
   _renderAddEvent(){
     return (
-      <View style={styles.goingContainer}>
+      <TouchableOpacity
+        onPress={()=>{
+          this.props.navigator.push({name: 'CreateEvent', group: this.props.group});
+        }}
+        style={styles.goingContainer}>
         <Text style={styles.goingText}>Create an event</Text>
-        <Icon name="checkmark-circled" size={30} color="green" />
-      </View>
+        <Icon name="plus-circled" size={30} color={Colors.brandPrimary} />
+      </TouchableOpacity>
     )
   }
   _renderNoEvents(){

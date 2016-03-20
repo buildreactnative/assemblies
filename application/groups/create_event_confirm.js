@@ -1,15 +1,15 @@
-import Colors from '../styles/colors';
-import Globals from '../styles/globals';
-import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
-import NavigationBar from 'react-native-navbar';
-import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
-import _ from 'underscore';
-import {autocompleteStyles} from '../utilities/style_utilities';
+import _              from 'underscore';
+import moment         from 'moment';
+import Icon           from 'react-native-vector-icons/Ionicons';
+import NavigationBar  from 'react-native-navbar';
+import Picker         from 'react-native-picker';
+import Colors         from '../styles/colors';
+import Globals        from '../styles/globals';
 import CalendarPicker from '../third_party/calendar/CalendarPicker';
-import Picker from 'react-native-picker';
-import ErrorMessage from '../ui_helpers/error_message';
-import {TECHNOLOGIES, BASE_URL, TIMES_RANGE, DEV} from '../utilities/fixtures';
+import ErrorMessage   from '../ui_helpers/error_message';
+import {GooglePlacesAutocomplete} from 'react-native-google-places-autocomplete';
+import {autocompleteStyles} from '../utilities/style_utilities';
+import {TECHNOLOGIES, BASE_URL, TIMES_RANGE, DEV, HEADERS} from '../utilities/fixtures';
 import {
   overlayStyles,
   optionTextStyles,
@@ -28,8 +28,6 @@ import React, {
   Text,
   TextInput,
   View,
-  TabBarIOS,
-  Image,
   TouchableOpacity,
   Dimensions,
   NativeModules,
@@ -40,7 +38,7 @@ import React, {
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 let UIImagePickerManager = require('NativeModules').UIImagePickerManager;
 
-class CreateEventConfirm extends React.Component{
+export default class CreateEventConfirm extends Component{
   constructor(props){
     super(props);
     let today = new Date();
@@ -87,38 +85,41 @@ class CreateEventConfirm extends React.Component{
       this.setState({date: date})
     }
   }
-  _createNotification(data){
+  _createNotification(event){
     let {currentUser, group} = this.props;
     let url = `${BASE_URL}/notifications`;
     let relatedUserIds = {};
-    Object.keys(group.members).forEach((m) => {
+    _.keys(group.members).forEach((m) => {
       relatedUserIds[m] = {seen: false}
-    })
+    });
     relatedUserIds[currentUser.id] = {seen: true};
     let notification = {
-      type: 'event',
-      relatedUserIds: relatedUserIds,
-      message: `New event in ${group.name}`,
-      timestamp: new Date().valueOf(),
-      eventId: data.id,
-      seen: false,
+      type            : 'event',
+      relatedUserIds  : relatedUserIds,
+      message         : `New event in ${group.name}`,
+      timestamp       : new Date().valueOf(),
+      eventId         : event.id,
+      groupId         : group.id,
     };
     if (DEV) {console.log('NOTIFICATION PARAMS', notification);}
     fetch(url, {
-      method: "POST",
-      headers: {
-        'Accept':'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(notification)
+      method    : 'POST',
+      headers   : HEADERS,
+      body      : JSON.stringify(notification)
     })
     .then((response) => response.json())
     .then((data) => {
       if (DEV) {console.log('NOTIFICATION', data);}
+      group.events.push(event.id)
+      this.props.addEvent(event, group);
+      this.props.navigator.push({
+        name: 'Group',
+        group: group,
+      })
     })
     .catch((err) => {
       if (DEV) {console.log('ERR: ', err)}
-    })
+    }).done();
   }
 
   _renderBackButton(){
@@ -311,37 +312,29 @@ class CreateEventConfirm extends React.Component{
             let start = new Date(dateVal + timeVal*1000*60*60);
             let end = new Date(dateVal + timeVal*1000*60*60 + parseInt(duration)*1000*60*60)
             let event = {
-              start: start.valueOf(),
-              end: end.valueOf(),
-              name: eventName,
-              summary: summary,
-              attending: {},
-              notAttending: {},
-              maybe: {},
-              location: location || {},
-              groupId: group.id,
-              comments: [],
-              capacity: parseInt(capacity),
+              start         : start.valueOf(),
+              end           : end.valueOf(),
+              name          : eventName,
+              summary       : summary,
+              attending     : {},
+              notAttending  : {},
+              maybe         : {},
+              location      : location || {},
+              groupId       : group.id,
+              comments      : [],
+              capacity        : parseInt(capacity),
             };
             event.attending[currentUser.id] = true;
             if (DEV) {console.log('EVENT', event);}
             fetch(`${BASE_URL}/events`, {
-              method: "POST",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(event)
+              method    : 'POST',
+              headers   : HEADERS,
+              body      : JSON.stringify(event)
             })
             .then((response) => response.json())
             .then((data) => {
               if (DEV) {console.log('EVENT CREATION DATA', data);}
               this._createNotification(data);
-              this.props.addEvent(data);
-              this.props.navigator.push({
-                name: 'Group',
-                group: group,
-              })
             })
             .catch((err) => {
               if (DEV) {console.log('ERR: ', err)}
@@ -359,7 +352,7 @@ class CreateEventConfirm extends React.Component{
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -449,6 +442,4 @@ let styles = {
     paddingHorizontal: 20,
     paddingVertical: 5,
   },
-}
-
-module.exports = CreateEventConfirm;
+});
