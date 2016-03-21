@@ -250,6 +250,25 @@ export default class Event extends Component{
 
         {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
         <CommentHeader
+          changeComment={(comment) => {
+            let idx = _.findIndex(event.comments, (c) => c.timestamp == comment.timestamp);
+            let newComments = [...event.comments.slice(0, idx), comment, ...event.comments.slice(idx+1)]
+            event.comments = newComments;
+            this.props.changeEvent(event);
+            let url = `${BASE_URL}/events/${event.id}`;
+            fetch(url, {
+              method: 'PUT',
+              headers: HEADERS,
+              body: JSON.stringify({comments: newComments})
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              if (DEV) {console.log('DATA:', data)}
+            })
+            .catch((err) => {
+              if (DEV) {console.log('ERR:', err);}
+            }).done();
+          }}
           {...this.props}
           event={event}
           newComment={this.state.newComment}

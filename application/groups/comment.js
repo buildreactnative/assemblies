@@ -150,6 +150,24 @@ export default class Comment extends Component{
       </View>
     );
   }
+  _likeComment(){
+    let {comment} = this.props;
+    if (DEV) {console.log('LIKE COMMENT', comment);}
+    if (comment.likes[this.props.currentUser.id]) {
+      comment.likes[this.props.currentUser.id] = false;
+    } else {
+      comment.likes[this.props.currentUser.id] = true;
+    }
+    this.props.changeComment(comment);
+  }
+  _toggleReplies(){
+    let {comment} = this.props;
+    if (DEV) {console.log('TOGGLE REPLIES', comment);}
+  }
+  _writeReply(){
+    let {comment} = this.props;
+    if (DEV) {console.log('WRITE REPLY', comment);}
+  }
   render(){
     let {comment} = this.props;
     let message = {
@@ -161,15 +179,21 @@ export default class Comment extends Component{
       <View>
         <Message message={message} user={user} {...this.props}/>
         <View style={styles.iconContainer}>
-          <TouchableOpacity style={styles.iconBox}>
+          <TouchableOpacity
+            onPress={this._likeComment.bind(this)}
+            style={styles.iconBox}>
             <Icon name='ios-heart' color={Colors.bodyTextLight} size={25}/>
             <Text style={styles.iconText}>{_.keys(comment.likes).length}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBox}>
+          <TouchableOpacity
+            onPress={this._toggleReplies.bind(this)}
+            style={styles.iconBox}>
             <Icon name='reply' color={Colors.bodyTextLight} size={25}/>
             <Text style={styles.iconText}>{comment.replies.length}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconBox}>
+          <TouchableOpacity
+            onPress={this._writeReply.bind(this)}
+            style={styles.iconBox}>
             <Icon name='edit' color={Colors.bodyTextLight} size={20}/>
           </TouchableOpacity>
         </View>
