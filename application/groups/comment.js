@@ -183,7 +183,7 @@ export default class Comment extends Component{
             onPress={this._likeComment.bind(this)}
             style={styles.iconBox}>
             <Icon name='ios-heart' color={Colors.bodyTextLight} size={25}/>
-            <Text style={styles.iconText}>{_.keys(comment.likes).length}</Text>
+            <Text style={styles.iconText}>{_.filter(_.keys(comment.likes), (k) => comment.likes[k] == true).length}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={this._toggleReplies.bind(this)}

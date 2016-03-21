@@ -64,7 +64,6 @@ export default class Event extends Component{
       })
       .catch((error) => {
         if (DEV) {console.log(error)}
-        // this.setState({showMap: true})
       }).done();
     });
   }
@@ -224,10 +223,30 @@ export default class Event extends Component{
       </View>
     );
   }
+  _changeComment(comment){
+    let {event} = this.props;
+    let idx = _.findIndex(event.comments, (c) => c.timestamp == comment.timestamp);
+    let newComments = [...event.comments.slice(0, idx), comment, ...event.comments.slice(idx+1)]
+    event.comments = newComments;
+    this.props.changeEvent(event);
+    let url = `${BASE_URL}/events/${event.id}`;
+    fetch(url, {
+      method: 'PUT',
+      headers: HEADERS,
+      body: JSON.stringify({comments: newComments})
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('DATA:', data)}
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
+  }
   render(){
-    let {group, currentUser, events} = this.props;
+    let {group, currentUser, events, event} = this.props;
     if (DEV) {console.log('THIS STATE', this.state);}
-    let {event, members} = this.state;
+    let {members} = this.state;
     let longText = "Locavore vice readymade photo booth four loko. Drinking vinegar chia lomo cray. Try-hard cardigan bespoke, cold-pressed chillwave letterpress single-origin coffee knausgaard. Hammock tumblr lomo ethical post-ironic, XOXO PBR&B cray banh mi master cleanse farm-to-table. Celiac marfa echo park YOLO, drinking vinegar fap etsy mixtape chillwave jean shorts microdosing knausgaard pinterest. Gluten-free butcher 3 wolf moon humblebrag, occupy deep v schlitz mustache williamsburg portland selvage polaroid selfies chicharrones. Aesthetic kombucha flexitarian taxidermy portland PBR&B, green juice lo-fi.";
     let isMember = group ? _.contains(currentUser.groupIds, group.id) : false;
     let isAdmin = group ? isMember && group.members[currentUser.id].admin : false;
@@ -250,25 +269,7 @@ export default class Event extends Component{
 
         {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
         <CommentHeader
-          changeComment={(comment) => {
-            let idx = _.findIndex(event.comments, (c) => c.timestamp == comment.timestamp);
-            let newComments = [...event.comments.slice(0, idx), comment, ...event.comments.slice(idx+1)]
-            event.comments = newComments;
-            this.props.changeEvent(event);
-            let url = `${BASE_URL}/events/${event.id}`;
-            fetch(url, {
-              method: 'PUT',
-              headers: HEADERS,
-              body: JSON.stringify({comments: newComments})
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              if (DEV) {console.log('DATA:', data)}
-            })
-            .catch((err) => {
-              if (DEV) {console.log('ERR:', err);}
-            }).done();
-          }}
+          changeComment={this._changeComment.bind(this)}
           {...this.props}
           event={event}
           newComment={this.state.newComment}
