@@ -179,7 +179,12 @@ export default class GroupView extends Component{
               )
             } else if (route.name == 'Event') {
               return (
-                <Event {...route} {...this.props} navigator={navigator} />
+                <Event
+                  {...route}
+                  {...this.props}
+                  changeEvent={this.changeEvent.bind(this)}
+                  navigator={navigator}
+                />
               )
             } else if (route.name == 'Chat') {
               return (

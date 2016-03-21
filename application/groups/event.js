@@ -11,6 +11,7 @@ import Summary        from '../ui_helpers/summary';
 import Address        from '../ui_helpers/address';
 import EventDate      from '../ui_helpers/event_date';
 import CommentHeader  from '../ui_helpers/comment_header';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
 import React, {
@@ -36,14 +37,16 @@ export default class Event extends Component{
     super(props);
     if (DEV) {console.log('SUPER', props.event.attending, props.currentUser.id)}
     this.state = {
-      event: props.event,
-      members: [],
-      going: !! props.event.attending[props.currentUser.id],
-      signedUp: false,
-      message: '',
-      showCommentForm: false,
-      showMap: false,
-      ready: false,
+      event             : props.event,
+      members           : [],
+      going             : !! props.event.attending[props.currentUser.id],
+      signedUp          : false,
+      message           : '',
+      newComment        : false,
+      showCommentForm   : false,
+      showComments      : false,
+      showMap           : false,
+      ready             : false,
     }
   }
   componentDidMount(){
@@ -154,12 +157,17 @@ export default class Event extends Component{
     }).done();
   }
   _renderCommentForm(){
+    if (! this.state.showCommentForm) {
+      return <View/>
+    }
     return (
-      <View style={[styles.inputBox, {opacity: this.state.showCommentForm ? 0 : 1}]}>
+      <View style={[styles.inputBox]}>
         <TextInput
           ref="input"
           value={this.state.message}
           placeholder='Say something...'
+          placeholderTextColor={Colors.bodyTextLight}
+          onBlur={()=> this.setState({showCommentForm: false})}
           onChange={(e) => {this.setState({message: e.nativeEvent.text}); }}
           style={styles.input}
           />
@@ -169,32 +177,40 @@ export default class Event extends Component{
           onPress={()=>{
             let {currentUser} = this.props;
             let {message, event} = this.state;
-            this.setState({message: ''});
+            this.refs.input.blur();
             let {comments} = event;
             let comment = {
-              avatarUrl: currentUser.avatarUrl,
-              name: `${currentUser.firstName} ${currentUser.lastName}`,
-              timestamp: new Date().valueOf(),
-              text: message,
-              replies: [],
-              likes: {},
+              authorId    : currentUser.id,
+              avatarUrl   : currentUser.avatarUrl,
+              name        : `${currentUser.firstName} ${currentUser.lastName}`,
+              timestamp   : new Date().valueOf(),
+              text        : message,
+              replies     : [],
+              likes       : {},
             };
             if (DEV) {console.log('COMMENT', comment);}
-            fetch(`${BASE_URL}/events/${this.props.event.id}`, {
-              method: "PUT",
-              headers: HEADERS,
-              body: JSON.stringify({comments: comments.concat(comment)})
+            let url = `${BASE_URL}/events/${this.props.event.id}`;
+            fetch(url, {
+              method    : "PUT",
+              headers   : HEADERS,
+              body      : JSON.stringify({comments: comments.concat(comment)})
             })
             .then((response) => response.json())
             .then((data) => {
               if (DEV) {console.log('DATA', data);}
               event.comments = comments.concat(comment);
-              this.setState({event: event})
-              this._createNotification(data)
+              this.props.changeEvent(data);
+              this._createNotification(data);
+              this.setState({message: '', newComment: true}, () => {
+                this.setState({newComment: false})
+              });
             })
+            .catch((err) => {
+              if (DEV) {console.log('ERR:', err);}
+            }).done();
           }}
         >
-          <Text style={Globals.submitButtonText}>Comment</Text>
+          <Text style={styles.submitButtonText}>Comment</Text>
         </TouchableOpacity>
       </View>
     )
@@ -211,6 +227,7 @@ export default class Event extends Component{
   }
   render(){
     let {group, currentUser, events} = this.props;
+    if (DEV) {console.log('THIS STATE', this.state);}
     let {event, members} = this.state;
     let longText = "Locavore vice readymade photo booth four loko. Drinking vinegar chia lomo cray. Try-hard cardigan bespoke, cold-pressed chillwave letterpress single-origin coffee knausgaard. Hammock tumblr lomo ethical post-ironic, XOXO PBR&B cray banh mi master cleanse farm-to-table. Celiac marfa echo park YOLO, drinking vinegar fap etsy mixtape chillwave jean shorts microdosing knausgaard pinterest. Gluten-free butcher 3 wolf moon humblebrag, occupy deep v schlitz mustache williamsburg portland selvage polaroid selfies chicharrones. Aesthetic kombucha flexitarian taxidermy portland PBR&B, green juice lo-fi.";
     let isMember = group ? _.contains(currentUser.groupIds, group.id) : false;
@@ -234,15 +251,17 @@ export default class Event extends Component{
 
         {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
         <CommentHeader
-          isToggled={this.state.showCommentForm}
+          isToggled={this.state.showComments}
           event={event}
           {...this.props}
           openCommentForm={()=>{
             this.setState({showCommentForm: true})
+            this.refs.input.focus();
           }}
-          toggleCommentForm={()=> {this.setState({showCommentForm: ! this.state.showCommentForm})}}/>
-
-
+          newComment={this.state.newComment}
+          toggleComments={()=> {
+            this.setState({showComments: ! this.state.showComments});
+          }}/>
         <View style={styles.break}></View>
         <Text style={styles.h2}>Going</Text>
         <View style={styles.break}></View>
@@ -271,6 +290,7 @@ export default class Event extends Component{
         })}
         </ScrollView>
         { this._renderCommentForm() }
+        <KeyboardSpacer />
       </View>
     )
   }
@@ -281,6 +301,12 @@ let styles = StyleSheet.create({
     paddingLeft: 20,
     paddingBottom: 10,
     backgroundColor: 'transparent',
+  },
+  submitButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '300'
   },
   addButton: {
     backgroundColor: 'transparent',
@@ -300,12 +326,12 @@ let styles = StyleSheet.create({
     height: 40,
     padding: 8,
     flex: 1,
-    fontSize: 18,
+    fontSize: 16,
     margin: 10,
     marginRight: 5,
     borderColor: '#b4b4b4',
     borderRadius: 8,
-    color: 'black',
+    color: Colors.bodyText,
     backgroundColor: 'white',
   },
   buttonActive: {

@@ -71,7 +71,6 @@ class Comment extends React.Component{
             comment.replies.push(reply)
             foundComments.push(comment);
 
-            if (DEV) {console.log('COMMENT', reply);}
             fetch(`${BASE_URL}/events/${this.props.event.id}`, {
               method: "PUT",
               headers: {
@@ -94,7 +93,7 @@ class Comment extends React.Component{
   }
   render(){
     let {comment} = this.props;
-    if (DEV) {console.log('COMMENT', comment);}
+    // if (DEV) {console.log('COMMENT', comment);}
     return (
       <View style={styles.messageBox}>
         <View style={styles.messageContainer}>

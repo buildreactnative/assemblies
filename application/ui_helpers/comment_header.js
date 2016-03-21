@@ -31,11 +31,16 @@ export default class CommentHeader extends React.Component{
   constructor(props){
     super(props);
     this.state = {
-      expanded: false,
+      // expanded: false,
       animation: new Animated.Value(),
       measured: false,
       maxHeight: 50,
     };
+  }
+  componentWillReceiveProps(nextProps){
+    if (!! nextProps.newComment && ! this.props.newComment){
+      this._toggle();
+    }
   }
   _setMaxHeight(event){
     if (!! event.nativeEvent && event.nativeEvent.layout.height > this.state.maxHeight){
@@ -50,10 +55,11 @@ export default class CommentHeader extends React.Component{
       minHeight: event.nativeEvent.layout.height,
     });
   }
+
   _toggle(){
-    let initialValue = this.state.expanded ? this.state.maxHeight : this.state.minHeight;
-    let finalValue = this.state.expanded ? this.state.minHeight : this.state.maxHeight;
-    this.setState({expanded: ! this.state.expanded})
+    let initialValue = this.props.isToggled ? this.state.maxHeight : this.state.minHeight;
+    let finalValue = this.props.isToggled ? this.state.minHeight : this.state.maxHeight;
+    this.props.toggleComments();
     this.state.animation.setValue(initialValue);
     if (this.props.event.comments.length){
       Animated.spring(
@@ -70,7 +76,7 @@ export default class CommentHeader extends React.Component{
         <View style={styles.container}>
           <View style={styles.row}>
             <TouchableOpacity onPress={this._toggle.bind(this)}>
-              <Text style={styles.h2}>Comments {this.state.expanded ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
+              <Text style={styles.h2}>Comments {this.props.isToggled ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={this.props.openCommentForm}>
               <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>
@@ -83,7 +89,7 @@ export default class CommentHeader extends React.Component{
       <View style={styles.container}>
         <View style={styles.row}>
           <TouchableOpacity onPress={this._toggle.bind(this)}>
-            <Text style={styles.h2}>Comments {this.state.expanded ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
+            <Text style={styles.h2}>Comments {this.props.isToggled ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.props.openCommentForm}>
             <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>
@@ -102,7 +108,7 @@ export default class CommentHeader extends React.Component{
       <View onLayout={this._setMaxHeight.bind(this)} style={{position: this.state.measured ? 'absolute' : 'relative', opacity: this.state.measured ? 1 : 0}}>
         <View style={styles.row}>
           <TouchableOpacity>
-            <Text style={styles.h2}>Comments {this.state.expanded ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
+            <Text style={styles.h2}>Comments {this.props.isToggled ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
           </TouchableOpacity>
         </View>
         <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} {...this.props}/>
@@ -130,7 +136,7 @@ export default class CommentHeader extends React.Component{
     let {event} = this.props;
     return (
       <Animated.View style={[styles.container, {height: this.state.animation}]}>
-        {this.state.expanded ? this._renderExpanded() : this._renderClosed()}
+        {this.props.isToggled ? this._renderExpanded() : this._renderClosed()}
         {this._renderHiddenLayout()}
       </Animated.View>
     )
