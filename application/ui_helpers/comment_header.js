@@ -95,13 +95,16 @@ export default class CommentHeader extends React.Component{
             <Icon name="plus-circled" size={30} color={Colors.brandPrimary}/>
           </TouchableOpacity>
         </View>
-        <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} {...this.props}/>
+        <CommentList
+          comments={_.sortBy(event.comments, (c) => -c.timestamp)}
+          {...this.props}
+        />
       </View>
     )
   }
   _renderHiddenLayout(){
     let {event} = this.props;
-    if (! event.comments.length) {
+    if (! event.comments.length || this.state.measured) {
       return <View />
     }
     return (
@@ -166,7 +169,6 @@ let styles = StyleSheet.create({
     backgroundColor: 'white',
     marginHorizontal: 10,
     overflow: 'hidden',
-    backgroundColor: 'white',
     marginBottom: 1,
   },
 });

@@ -3,7 +3,6 @@ import {truncate}     from 'underscore.string';
 import Icon           from 'react-native-vector-icons/Ionicons';
 import NavigationBar  from 'react-native-navbar';
 import moment         from 'moment';
-import CommentList    from './comment_list';
 import EventLocation  from './event_location';
 import Colors         from '../styles/colors';
 import Globals        from '../styles/globals';
@@ -251,17 +250,16 @@ export default class Event extends Component{
 
         {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
         <CommentHeader
-          isToggled={this.state.showComments}
-          event={event}
           {...this.props}
+          event={event}
+          newComment={this.state.newComment}
+          isToggled={this.state.showComments}
+          toggleComments={()=> this.setState({showComments: ! this.state.showComments})}
           openCommentForm={()=>{
             this.setState({showCommentForm: true})
             this.refs.input.focus();
           }}
-          newComment={this.state.newComment}
-          toggleComments={()=> {
-            this.setState({showComments: ! this.state.showComments});
-          }}/>
+        />
         <View style={styles.break}></View>
         <Text style={styles.h2}>Going</Text>
         <View style={styles.break}></View>
@@ -286,7 +284,7 @@ export default class Event extends Component{
                 <Text style={styles.h4}>{status}</Text>
               </View>
             </TouchableOpacity>
-          )
+          );
         })}
         </ScrollView>
         { this._renderCommentForm() }

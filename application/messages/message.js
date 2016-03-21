@@ -56,6 +56,7 @@ let styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     paddingVertical: 10,
+    backgroundColor: 'white',
   },
   icon: {
     marginTop: 10,

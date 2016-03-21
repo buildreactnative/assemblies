@@ -1,21 +1,18 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
-import {truncate} from 'underscore.string';
-import _ from 'underscore';
-import CommentReplies from './comment_replies';
-import {BASE_URL, DEV} from '../utilities/fixtures';
+import Icon             from 'react-native-vector-icons/Ionicons';
+import moment           from 'moment';
+import {truncate}       from 'underscore.string';
+import _                from 'underscore';
+import CommentReplies   from './comment_replies';
+import Message          from '../messages/message';
+import Colors           from '../styles/colors';
+import {BASE_URL, DEV}  from '../utilities/fixtures';
 
 import React, {
-  ScrollView,
   Component,
   StyleSheet,
   Text,
   TextInput,
-  ListView,
-  TouchableHighlight,
   View,
-  TabBarIOS,
   Image,
   TouchableOpacity,
   Dimensions,
@@ -26,17 +23,18 @@ import React, {
 
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
-class Comment extends React.Component{
+export default class Comment extends Component{
   constructor(props){
     super(props);
     this.state = {
-      isReply: false,
-      message: '',
-      comment: props.comment,
-      showReplies: false,
+      isReply     : false,
+      message     : '',
+      comment     : props.comment,
+      showReplies : false,
     }
   }
   _renderReplyForm(){
+    let {comment} = this.props;
     return (
       <View style={styles.inputBox}>
         <TextInput
@@ -91,9 +89,7 @@ class Comment extends React.Component{
       </View>
     )
   }
-  render(){
-    let {comment} = this.props;
-    // if (DEV) {console.log('COMMENT', comment);}
+  _renderComment(){
     return (
       <View style={styles.messageBox}>
         <View style={styles.messageContainer}>
@@ -152,16 +148,70 @@ class Comment extends React.Component{
         </View>
         {this.state.showReplies ? <CommentReplies replies={comment.replies}/> : null}
       </View>
+    );
+  }
+  render(){
+    let {comment} = this.props;
+    let message = {
+      createdAt: comment.timestamp,
+      text: comment.text
+    };
+    let user = _.find(this.props.groupUsers, (u) => `${u.firstName} ${u.lastName}` == comment.name);
+    return (
+      <View>
+        <Message message={message} user={user} {...this.props}/>
+        <View style={styles.iconContainer}>
+          <TouchableOpacity style={styles.iconBox}>
+            <Icon name='ios-heart' color={Colors.bodyTextLight} size={25}/>
+            <Text style={styles.iconText}>{_.keys(comment.likes).length}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconBox}>
+            <Icon name='reply' color={Colors.bodyTextLight} size={25}/>
+            <Text style={styles.iconText}>{comment.replies.length}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconBox}>
+            <Icon name='edit' color={Colors.bodyTextLight} size={20}/>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <View style={styles.border}/>
+        </View>
+      </View>
     )
   }
 }
 
-let styles = {
+let styles = StyleSheet.create({
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    alignItems: 'center',
+  },
+  iconBox: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  iconText: {
+    paddingHorizontal: 5,
+    fontSize: 12,
+    color: Colors.bodyTextLight,
+    fontWeight: '300',
+  },
   sentText:{
     fontSize: 14,
     padding: 10,
     marginRight: 15,
     fontWeight: '300',
+  },
+  border: {
+    height: 0,
+    marginTop: 4,
+    borderBottomWidth: 1,
+    width: deviceWidth * 0.95,
+    borderBottomColor: Colors.inactive,
   },
   commentsBox: {
     backgroundColor: 'f2f2f2',
@@ -452,6 +502,4 @@ let styles = {
   memberInfo: {
     paddingLeft: 30,
   },
-}
-
-module.exports = Comment;
+});

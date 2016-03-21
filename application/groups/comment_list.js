@@ -1,22 +1,15 @@
-import Colors from '../styles/colors';
-import Icon from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
-import Comment from './comment';
-import {truncate} from 'underscore.string';
-import _ from 'underscore';
+import _              from 'underscore';
+import Icon           from 'react-native-vector-icons/Ionicons';
+import moment         from 'moment';
+import {truncate}     from 'underscore.string';
+import Comment        from './comment';
+import Colors         from '../styles/colors';
 
 import React, {
-  ScrollView,
   Component,
   StyleSheet,
   Text,
-  TextInput,
-  ListView,
-  TouchableHighlight,
   View,
-  TabBarIOS,
-  Image,
-  TouchableOpacity,
   Dimensions,
   NativeModules,
   InteractionManager,
@@ -26,19 +19,10 @@ import React, {
 const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
 
 class CommentList extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      dataSource: new ListView.DataSource({
-        rowHasChanged: (r1, r2) => r1 != r2
-      })
-      .cloneWithRows(props.comments)
-    }
-  }
   _renderRow(comment, idx){
     return (
-      <Comment comment={comment} key={idx} {...this.props} />
-    )
+      <Comment {...this.props} comment={comment} key={idx} {...this.props} />
+    );
   }
   render(){
     return (
@@ -59,7 +43,7 @@ let styles = {
     fontWeight: '300',
   },
   commentsBox: {
-    backgroundColor: 'f2f2f2',
+    backgroundColor: 'white',
   },
   commentDataText: {
     fontSize: 14,
