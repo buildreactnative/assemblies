@@ -167,6 +167,7 @@ export default class Comment extends Component{
   _writeReply(){
     let {comment} = this.props;
     if (DEV) {console.log('WRITE REPLY', comment);}
+    this.props.writeReply(comment);
   }
   render(){
     let {comment} = this.props;

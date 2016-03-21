@@ -46,6 +46,8 @@ export default class Event extends Component{
       showComments      : false,
       showMap           : false,
       ready             : false,
+      isReply           : false,
+      replyComment      : null,
     }
   }
   componentDidMount(){
@@ -154,6 +156,55 @@ export default class Event extends Component{
       if (DEV) {console.log('ERR:', err);}
     }).done();
   }
+  _addComment(){
+    let {currentUser} = this.props;
+    let {message, event} = this.state;
+    this.refs.input.blur();
+    let {comments} = event;
+    let comment = {
+      authorId    : currentUser.id,
+      avatarUrl   : currentUser.avatarUrl,
+      name        : `${currentUser.firstName} ${currentUser.lastName}`,
+      timestamp   : new Date().valueOf(),
+      text        : message,
+      replies     : [],
+      likes       : {},
+    };
+    if (DEV) {console.log('COMMENT', comment);}
+    let url = `${BASE_URL}/events/${this.props.event.id}`;
+    fetch(url, {
+      method    : "PUT",
+      headers   : HEADERS,
+      body      : JSON.stringify({comments: comments.concat(comment)})
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('DATA', data);}
+      event.comments = comments.concat(comment);
+      this.props.changeEvent(data);
+      this._createNotification(data);
+      this.setState({message: '', newComment: true}, () => {
+        this.setState({newComment: false})
+      });
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
+  }
+  _addReply(){
+    let {isReply, replyComment, message} = this.state;
+    let {event, currentUser} = this.props;
+    this.refs.input.blur();
+    let reply = {
+      avatarUrl   : currentUser.avatarUrl,
+      authorId    : currentUser.id,
+      name        : `${currentUser.firstName} ${currentUser.lastName}`,
+      timestamp   : new Date().valueOf(),
+      text        : message,
+    };
+    replyComment.replies.push(reply);
+    this._changeComment(replyComment);
+  }
   _renderCommentForm(){
     if (! this.state.showCommentForm) {
       return <View/>
@@ -165,7 +216,7 @@ export default class Event extends Component{
           value={this.state.message}
           placeholder='Say something...'
           placeholderTextColor={Colors.bodyTextLight}
-          onBlur={()=> this.setState({showCommentForm: false})}
+          onBlur={()=> this.setState({showCommentForm: false, isReply: false, replyComment: null})}
           onChange={(e) => {this.setState({message: e.nativeEvent.text}); }}
           style={styles.input}
           />
@@ -173,42 +224,14 @@ export default class Event extends Component{
           style={this.state.message ? styles.buttonActive : styles.buttonInactive}
           underlayColor={Colors.brandPrimaryDark}
           onPress={()=>{
-            let {currentUser} = this.props;
-            let {message, event} = this.state;
-            this.refs.input.blur();
-            let {comments} = event;
-            let comment = {
-              authorId    : currentUser.id,
-              avatarUrl   : currentUser.avatarUrl,
-              name        : `${currentUser.firstName} ${currentUser.lastName}`,
-              timestamp   : new Date().valueOf(),
-              text        : message,
-              replies     : [],
-              likes       : {},
-            };
-            if (DEV) {console.log('COMMENT', comment);}
-            let url = `${BASE_URL}/events/${this.props.event.id}`;
-            fetch(url, {
-              method    : "PUT",
-              headers   : HEADERS,
-              body      : JSON.stringify({comments: comments.concat(comment)})
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              if (DEV) {console.log('DATA', data);}
-              event.comments = comments.concat(comment);
-              this.props.changeEvent(data);
-              this._createNotification(data);
-              this.setState({message: '', newComment: true}, () => {
-                this.setState({newComment: false})
-              });
-            })
-            .catch((err) => {
-              if (DEV) {console.log('ERR:', err);}
-            }).done();
+            if (this.state.isReply) {
+              this._addReply();
+            } else {
+              this._addComment();
+            }
           }}
         >
-          <Text style={styles.submitButtonText}>Comment</Text>
+          <Text style={styles.submitButtonText}>{this.state.isReply ? 'Reply' : 'Comment'}</Text>
         </TouchableOpacity>
       </View>
     )
@@ -269,6 +292,10 @@ export default class Event extends Component{
 
         {! this.state.going || this.state.signedUp ? this._renderJoin() : null}
         <CommentHeader
+          writeReply={(comment) => {
+            this.setState({showCommentForm: true, isReply: true, replyComment: comment})
+            this.refs.input.focus();
+          }}
           changeComment={this._changeComment.bind(this)}
           {...this.props}
           event={event}
