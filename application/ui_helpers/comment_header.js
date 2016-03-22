@@ -38,7 +38,7 @@ export default class CommentHeader extends React.Component{
     };
   }
   componentWillReceiveProps(nextProps){
-    if (!! nextProps.newComment && ! this.props.newComment){
+    if (!! nextProps.newComment && ! this.props.newComment && ! this.props.isToggled){
       this._toggle();
     }
   }

@@ -216,7 +216,14 @@ export default class Event extends Component{
           value={this.state.message}
           placeholder='Say something...'
           placeholderTextColor={Colors.bodyTextLight}
-          onBlur={()=> this.setState({showCommentForm: false, isReply: false, replyComment: null})}
+          onBlur={()=> {
+            this.setState({
+              showCommentForm   : false,
+              isReply           : false,
+              replyComment      : null,
+              message           : ''
+            });
+          }}
           onChange={(e) => {this.setState({message: e.nativeEvent.text}); }}
           style={styles.input}
           />
