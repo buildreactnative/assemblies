@@ -34,12 +34,21 @@ export default class Comment extends Component{
       minHeight   : 0,
       maxHeight   : 40,
       showReplies : false,
+      newComment  : false,
     }
   }
-  componentWillReceiveProps(nextProps){
-    if (nextProps.comment.replies.length > this.props.comment.replies.length) {
-      this.setState({showReplies: true});
+  shouldComponentUpdate(nextProps, nextState){
+    console.log('NEXT', nextProps, nextState);
+    if (nextState.maxHeight > this.state.maxHeight && this.state.newComment){
+      this.state.animation.setValue(this.state.maxHeight);
+      Animated.spring(
+        this.state.animation, {
+          toValue: nextState.maxHeight
+        }
+      ).start();
+      this.props.addHeight(nextState.maxHeight - this.state.maxHeight);
     }
+    return true;
   }
 
   _likeComment(){
@@ -72,6 +81,7 @@ export default class Comment extends Component{
   _writeReply(){
     let {comment} = this.props;
     if (DEV) {console.log('WRITE REPLY', comment);}
+    this.setState({showReplies: true, newComment: true});
     this.props.writeReply(comment);
   }
   _renderReplies(){
