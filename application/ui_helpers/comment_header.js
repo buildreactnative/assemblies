@@ -76,7 +76,7 @@ export default class CommentHeader extends React.Component{
     this.state.animation.setValue(initialValue);
     Animated.spring(
       this.state.animation, {
-        toValue: finalValue
+        toValue: finalValue,
       }
     ).start();
   }
@@ -87,7 +87,7 @@ export default class CommentHeader extends React.Component{
     this.state.animation.setValue(initialValue);
     Animated.spring(
       this.state.animation, {
-        toValue: finalValue
+        toValue: finalValue,
       }
     ).start();
   }

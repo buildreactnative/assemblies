@@ -30,12 +30,15 @@ export default class Comment extends Component{
     this.state = {
       isReply     : false,
       animation   : new Animated.Value(0),
-      message     : '',
-      comment     : props.comment,
       measured    : false,
       minHeight   : 0,
       maxHeight   : 40,
       showReplies : false,
+    }
+  }
+  componentWillReceiveProps(nextProps){
+    if (nextProps.comment.replies.length > this.props.comment.replies.length) {
+      this.setState({showReplies: true});
     }
   }
 
