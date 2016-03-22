@@ -197,8 +197,8 @@ export default class Group extends Component{
   _renderEvents(){
     let {currentUser, group, navigator} = this.props;
     if (DEV) {console.log('EVENTS GROUP', this._events());}
-    let filteredEvents = this._events();
-    // let filteredEvents = _.filter(this._events(), (e) => e.start >= new Date().valueOf());
+    // let filteredEvents = this._events();
+    let filteredEvents = _.filter(this._events(), (e) => e.start >= new Date().valueOf());
     if (! filteredEvents.length) {
       return this._renderNoEvents();
     }
