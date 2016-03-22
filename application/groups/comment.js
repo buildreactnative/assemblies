@@ -81,7 +81,7 @@ export default class Comment extends Component{
   _writeReply(){
     let {comment} = this.props;
     if (DEV) {console.log('WRITE REPLY', comment);}
-    this.setState({showReplies: true, newComment: true});
+    this.setState({newComment: true});
     this.props.writeReply(comment);
   }
   _renderReplies(){
