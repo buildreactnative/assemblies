@@ -142,13 +142,15 @@ export default class Register extends Component{
                 this.setState({
                   locationError: '',
                   location: _.extend({}, details.geometry.location, {
-                    formatted_address: details.formatted_address,
-                    city: details.address_components[0].long_name,
-                    state: details.address_components[2].short_name,
+                    city: _.find(details.address_components, (c) => c.types[0] == 'locality'),
+                    state: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_1'),
+                    county: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_2'),
+                    formattedAddress: details.formatted_address,
                   })
                 }, ()=> this._testErrors());
                 this.refs.emailField.focus();
                 this._animateProgress();
+                console.log('LOCATION', this.state.location);
               }}
               getDefaultValue={() => {return '';}}
               query={{
