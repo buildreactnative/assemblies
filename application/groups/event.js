@@ -10,6 +10,7 @@ import Summary        from '../ui_helpers/summary';
 import Address        from '../ui_helpers/address';
 import EventDate      from '../ui_helpers/event_date';
 import CommentHeader  from '../ui_helpers/comment_header';
+import MemberHeader   from '../ui_helpers/member_header';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';
 
@@ -44,6 +45,7 @@ export default class Event extends Component{
       newComment        : false,
       showCommentForm   : false,
       showComments      : false,
+      showGoing         : false,
       showMap           : false,
       ready             : false,
       isReply           : false,
@@ -315,31 +317,33 @@ export default class Event extends Component{
           }}
         />
         <View style={styles.break}></View>
-        <Text style={styles.h2}>Going</Text>
-        <View style={styles.break}></View>
-        {this.state.members.map((member, idx) => {
-          if (DEV) {console.log('MEMBER', member)}
-          let isOwner = group ? group.members[member.id].owner : false;
-          let isAdmin = group ? group.members[member.id].admin : false;
-          let status = isOwner ? 'owner' : isAdmin ? 'admin' : 'member'
-          return (
-            <TouchableOpacity
-              onPress={()=>{
-                this.props.navigator.push({
-                  name: 'Profile',
-                  user: member,
-                })
-              }}
-              key={idx}
-              style={styles.memberContainer}>
-              <Image source={{uri: member.avatarUrl}} style={styles.avatar}/>
-              <View style={styles.memberInfo}>
-                <Text style={styles.h5}>{member.firstName} {member.lastName}</Text>
-                <Text style={styles.h4}>{status}</Text>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+        <View style={styles.goingContainer}>
+          <Text style={styles.h2}>Going</Text>
+          <View style={styles.break}></View>
+          {this.state.members.map((member, idx) => {
+            if (DEV) {console.log('MEMBER', member)}
+            let isOwner = group ? group.members[member.id].owner : false;
+            let isAdmin = group ? group.members[member.id].admin : false;
+            let status = isOwner ? 'owner' : isAdmin ? 'admin' : 'member'
+            return (
+              <TouchableOpacity
+                onPress={()=>{
+                  this.props.navigator.push({
+                    name: 'Profile',
+                    user: member,
+                  })
+                }}
+                key={idx}
+                style={styles.memberContainer}>
+                <Image source={{uri: member.avatarUrl}} style={styles.avatar}/>
+                <View style={styles.memberInfo}>
+                  <Text style={styles.h5}>{member.firstName} {member.lastName}</Text>
+                  <Text style={styles.h4}>{status}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
         </ScrollView>
         { this._renderCommentForm() }
         <KeyboardSpacer />
@@ -475,13 +479,12 @@ let styles = StyleSheet.create({
     height: 1,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
-    marginHorizontal: 15,
     marginVertical: 5,
   },
   h2: {
-    fontSize: 22,
-    fontWeight: '300',
-    paddingHorizontal: 20,
+    fontSize: 20,
+    fontWeight: '400',
+    paddingHorizontal: 10,
     paddingVertical: 5,
   },
   eventContainer: {
@@ -523,9 +526,11 @@ let styles = StyleSheet.create({
     fontWeight: '500',
   },
   goingContainer: {
-    flex: 0.8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: 'white',
+    marginHorizontal: 10,
+    overflow: 'hidden',
+    marginBottom: 50,
+    paddingHorizontal: 10,
   },
   goingText: {
     fontSize: 17,
