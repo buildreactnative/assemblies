@@ -16,6 +16,7 @@ import React, {
   Image,
   TouchableOpacity,
   Dimensions,
+  Animated,
   NativeModules,
   InteractionManager,
   ActivityIndicatorIOS,
@@ -28,127 +29,25 @@ export default class Comment extends Component{
     super(props);
     this.state = {
       isReply     : false,
+      animation   : new Animated.Value(),
       message     : '',
       comment     : props.comment,
       showReplies : false,
+      measured    : false,
+      minHeight   : 0,
     }
   }
-  _renderReplyForm(){
-    let {comment} = this.props;
-    return (
-      <View style={styles.inputBox}>
-        <TextInput
-          ref="input"
-          value={this.state.message}
-          placeholder='Say something...'
-          onChange={(e) => {this.setState({message: e.nativeEvent.text}); }}
-          style={styles.input}
-          />
-        <TouchableOpacity
-          style={this.state.message ? styles.buttonActive : styles.buttonInactive}
-          underlayColor={Colors.brandPrimaryDark}
-          onPress={()=>{
-            if (DEV) {console.log('SUBMIT REPLY');}
-            let {currentUser, event} = this.props;
-            let {message, comment} = this.state;
-            this.setState({message: ''});
-            let foundComments = _.reject(event.comments, (c) => {
-              return (
-                c.timestamp == comment.timestamp &&
-                c.text      == comment.text      &&
-                c.name      == comment.name
-              )
-            })
-            let reply = {
-              avatarUrl: currentUser.avatarUrl,
-              name: `${currentUser.firstName} ${currentUser.lastName}`,
-              timestamp: new Date().valueOf(),
-              text: message,
-            };
-
-            comment.replies.push(reply)
-            foundComments.push(comment);
-
-            fetch(`${BASE_URL}/events/${this.props.event.id}`, {
-              method: "PUT",
-              headers: {
-                'Accept':'application/json',
-                'Content-Type':'application/json',
-              },
-              body: JSON.stringify({comments: foundComments})
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              if (DEV) {console.log('DATA', data);}
-              this.setState({comment: comment, isReply: false})
-            })
-          }}
-        >
-          <Text style={Globals.submitButtonText}>Reply</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  }
-  _renderComment(){
-    return (
-      <View style={styles.messageBox}>
-        <View style={styles.messageContainer}>
-          <Image style={styles.profile} source={{uri: comment.avatarUrl}}/>
-          <View style={styles.messageTextContainer}>
-            <View style={styles.fromContainer}>
-              <Text style={styles.fromText}>{comment.name}</Text>
-              <Text style={styles.sentText}>{moment(comment.timestamp).fromNow()}</Text>
-            </View>
-            <Text style={styles.messageText}>{comment.text}</Text>
-            <View style={styles.fromContainer}>
-              <TouchableOpacity onPress={()=>this.setState({showReplies: ! this.state.showReplies})}>
-                <Text style={styles.commentDataText}>{comment.replies.length} replies</Text>
-              </TouchableOpacity>
-              <Text style={styles.commentDataText}>{Object.keys(comment.likes).length} likes</Text>
-            </View>
-          </View>
-        </View>
-        {this.state.isReply ? this._renderReplyForm() : null  }
-        <View style={styles.reactionContainer}>
-          <TouchableOpacity style={styles.reactionBox} onPress={()=>{
-            if (DEV) {console.log('LIKE');}
-            let {currentUser, event} = this.props;
-            let {message, comment} = this.state;
-            this.setState({message: ''});
-            let foundComments = _.reject(event.comments, (c) => {
-              return (
-                c.timestamp == comment.timestamp &&
-                c.text      == comment.text      &&
-                c.name      == comment.name
-              )
-            })
-            comment.likes[currentUser.id] = true;
-            foundComments.push(comment);
-            fetch(`${BASE_URL}/events/${this.props.event.id}`, {
-              method: "PUT",
-              headers: {
-                'Accept':'application/json',
-                'Content-Type':'application/json',
-              },
-              body: JSON.stringify({comments: foundComments})
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              if (DEV) {console.log('DATA', data);}
-              this.setState({comment: comment})
-            })
-          }}>
-            <Icon name="thumbsup" color="#999" size={30}/>
-            <Text style={styles.reactionText}> Like</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.reactionBox} onPress={()=>this.setState({isReply: !this.state.isReply})}>
-            <Icon name="android-chat" color="#999" size={30}/>
-            <Text style={styles.reactionText}> Reply</Text>
-          </TouchableOpacity>
-        </View>
-        {this.state.showReplies ? <CommentReplies replies={comment.replies}/> : null}
-      </View>
-    );
+  _toggle(){
+    let initialValue = this.props.showReplies ? this.state.maxHeight : this.state.minHeight;
+    let finalValue = this.props.showReplies ? this.state.minHeight : this.state.maxHeight;
+    this.state.animation.setValue(initialValue);
+    if (this.props.comment.replies.length){
+      Animated.spring(
+        this.state.animation, {
+          toValue: finalValue
+        }
+      ).start();
+    }
   }
   _likeComment(){
     let {comment} = this.props;
@@ -162,12 +61,57 @@ export default class Comment extends Component{
   }
   _toggleReplies(){
     let {comment} = this.props;
+    this.setState({showReplies: ! this.state.showReplies});
     if (DEV) {console.log('TOGGLE REPLIES', comment);}
   }
   _writeReply(){
     let {comment} = this.props;
     if (DEV) {console.log('WRITE REPLY', comment);}
     this.props.writeReply(comment);
+  }
+  _renderReplies(){
+    let {comment} = this.props;
+    return (
+      <Animated.View style={{height: this.state.animation}}>
+        {comment.replies.map((reply, idx) => {
+          let message, user;
+          message = {
+            createdAt: reply.timestamp,
+            text: reply.text
+          };
+          user = _.find(this.props.groupUsers, (u) => `${u.firstName} ${u.lastName}` == reply.name);
+          return (
+            <Message message={message} user={user} {...this.props}/>
+          )
+        })}
+      </Animated.View>
+    );
+  }
+  _setMaxHeight(event){
+    if (!! event.nativeEvent && event.nativeEvent.layout.height > this.state.maxHeight){
+      this.setState({
+        maxHeight : event.nativeEvent.layout.height,
+        measured  : true,
+      });
+    }
+  }
+  _renderHidden(){
+    let {comment} = this.props;
+    return (
+      <View style={{opacity: 1, position: 'absolute'}} onLayout={this._setMaxHeight.bind(this)}>
+        {comment.replies.map((reply, idx) => {
+          let message, user;
+          message = {
+            createdAt: reply.timestamp,
+            text: reply.text
+          };
+          user = _.find(this.props.groupUsers, (u) => `${u.firstName} ${u.lastName}` == reply.name);
+          return (
+            <Message message={message} user={user} {...this.props}/>
+          )
+        })}
+      </View>
+    );
   }
   render(){
     let {comment} = this.props;
@@ -198,6 +142,7 @@ export default class Comment extends Component{
             <Icon name='edit' color={Colors.bodyTextLight} size={20}/>
           </TouchableOpacity>
         </View>
+        {this.state.showReplies ? this._renderReplies() : this._renderHidden()}
         <View>
           <View style={styles.border}/>
         </View>
