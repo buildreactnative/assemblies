@@ -29,26 +29,16 @@ export default class Comment extends Component{
     super(props);
     this.state = {
       isReply     : false,
-      animation   : new Animated.Value(),
+      animation   : new Animated.Value(0),
       message     : '',
       comment     : props.comment,
-      showReplies : false,
       measured    : false,
       minHeight   : 0,
+      maxHeight   : 40,
+      showReplies : false,
     }
   }
-  _toggle(){
-    let initialValue = this.props.showReplies ? this.state.maxHeight : this.state.minHeight;
-    let finalValue = this.props.showReplies ? this.state.minHeight : this.state.maxHeight;
-    this.state.animation.setValue(initialValue);
-    if (this.props.comment.replies.length){
-      Animated.spring(
-        this.state.animation, {
-          toValue: finalValue
-        }
-      ).start();
-    }
-  }
+
   _likeComment(){
     let {comment} = this.props;
     if (DEV) {console.log('LIKE COMMENT', comment);}
@@ -60,9 +50,21 @@ export default class Comment extends Component{
     this.props.changeComment(comment);
   }
   _toggleReplies(){
-    let {comment} = this.props;
+    let initialValue = this.state.showReplies ? this.state.maxHeight : this.state.minHeight;
+    let finalValue = this.state.showReplies ? this.state.minHeight : this.state.maxHeight;
+    this.state.animation.setValue(initialValue);
+    Animated.spring(
+      this.state.animation, {
+        toValue: finalValue
+      }
+    ).start();
     this.setState({showReplies: ! this.state.showReplies});
-    if (DEV) {console.log('TOGGLE REPLIES', comment);}
+
+    if (initialValue < finalValue){
+      this.props.addHeight(this.state.maxHeight);
+    } else {
+      this.props.reduceHeight(this.state.maxHeight);
+    }
   }
   _writeReply(){
     let {comment} = this.props;
@@ -72,7 +74,7 @@ export default class Comment extends Component{
   _renderReplies(){
     let {comment} = this.props;
     return (
-      <Animated.View style={{height: this.state.animation}}>
+      <View style={{paddingLeft: 30}}>
         {comment.replies.map((reply, idx) => {
           let message, user;
           message = {
@@ -81,11 +83,16 @@ export default class Comment extends Component{
           };
           user = _.find(this.props.groupUsers, (u) => `${u.firstName} ${u.lastName}` == reply.name);
           return (
-            <Message message={message} user={user} {...this.props}/>
+            <Message key={idx} message={message} user={user} {...this.props}/>
           )
         })}
-      </Animated.View>
+      </View>
     );
+  }
+  _renderEmptyReplies(){
+    return (
+      <View></View>
+    )
   }
   _setMaxHeight(event){
     if (!! event.nativeEvent && event.nativeEvent.layout.height > this.state.maxHeight){
@@ -95,6 +102,7 @@ export default class Comment extends Component{
       });
     }
   }
+
   _renderHidden(){
     let {comment} = this.props;
     return (
@@ -107,7 +115,7 @@ export default class Comment extends Component{
           };
           user = _.find(this.props.groupUsers, (u) => `${u.firstName} ${u.lastName}` == reply.name);
           return (
-            <Message message={message} user={user} {...this.props}/>
+            <Message key={idx} message={message} user={user} {...this.props}/>
           )
         })}
       </View>
@@ -142,7 +150,10 @@ export default class Comment extends Component{
             <Icon name='edit' color={Colors.bodyTextLight} size={20}/>
           </TouchableOpacity>
         </View>
-        {this.state.showReplies ? this._renderReplies() : this._renderHidden()}
+        <Animated.View style={{height: this.state.animation}}>
+          {this.state.showReplies ? this._renderReplies() : this._renderEmptyReplies()}
+        </Animated.View>
+        {this._renderHidden()}
         <View>
           <View style={styles.border}/>
         </View>

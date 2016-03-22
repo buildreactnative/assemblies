@@ -69,6 +69,28 @@ export default class CommentHeader extends React.Component{
       ).start();
     }
   }
+  _addHeight(int){
+    let initialValue = this.state.maxHeight;
+    let finalValue = initialValue + int;
+    this.setState({maxHeight: finalValue})
+    this.state.animation.setValue(initialValue);
+    Animated.spring(
+      this.state.animation, {
+        toValue: finalValue
+      }
+    ).start();
+  }
+  _reduceHeight(int){
+    let initialValue = this.state.maxHeight;
+    let finalValue = initialValue - int;
+    this.setState({maxHeight: finalValue})
+    this.state.animation.setValue(initialValue);
+    Animated.spring(
+      this.state.animation, {
+        toValue: finalValue
+      }
+    ).start();
+  }
   _renderExpanded(){
     let {event} = this.props;
     if (! event.comments.length){
@@ -96,6 +118,8 @@ export default class CommentHeader extends React.Component{
           </TouchableOpacity>
         </View>
         <CommentList
+          addHeight={this._addHeight.bind(this)}
+          reduceHeight={this._reduceHeight.bind(this)}
           comments={_.sortBy(event.comments, (c) => -c.timestamp)}
           {...this.props}
         />
@@ -114,7 +138,10 @@ export default class CommentHeader extends React.Component{
             <Text style={styles.h2}>Comments {this.props.isToggled ? <Icon name="arrow-down-b"/> : <Icon name="arrow-up-b"/>}</Text>
           </TouchableOpacity>
         </View>
-        <CommentList comments={_.sortBy(event.comments, (c) => -c.timestamp)} {...this.props}/>
+        <CommentList
+          comments={_.sortBy(event.comments, (c) => -c.timestamp)}
+          {...this.props}
+        />
       </View>
     )
   }
