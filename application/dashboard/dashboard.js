@@ -88,7 +88,12 @@ export default class Dashboard extends Component {
     d.setHours(0);
     // let fakeArr = ['abcdefg'];
     let groupIds = currentUser.groupIds;
-    let url = `${BASE_URL}/events?{"$and": [{"groupId": {"$in": ${JSON.stringify(groupIds)}}}, {"start" : {"$gte": ${JSON.stringify(d.valueOf())}}}]}`;
+    let params = {'$and': [
+      { 'groupId' : { '$in': groupIds } },
+      { 'start' : {'$gte': d.valueOf() } },
+      { 'location.state' : currentUser.location.state }
+    ]}
+    let url = `${BASE_URL}/events?${JSON.stringify(params)}`;
     fetch(url, {
       method: "GET",
       headers: HEADERS,
