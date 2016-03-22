@@ -150,7 +150,7 @@ export default class Register extends Component{
                 }, ()=> this._testErrors());
                 this.refs.emailField.focus();
                 this._animateProgress();
-                console.log('LOCATION', this.state.location);
+                // console.log('LOCATION', this.state.location);
               }}
               getDefaultValue={() => {return '';}}
               query={{

@@ -38,7 +38,6 @@ export default class Comment extends Component{
     }
   }
   shouldComponentUpdate(nextProps, nextState){
-    console.log('NEXT', nextProps, nextState);
     if (nextState.maxHeight > this.state.maxHeight && this.state.newComment){
       this.state.animation.setValue(this.state.maxHeight);
       Animated.spring(
@@ -94,7 +93,11 @@ export default class Comment extends Component{
             createdAt: reply.timestamp,
             text: reply.text
           };
-          user = _.find(this.props.groupUsers, (u) => `${u.firstName} ${u.lastName}` == reply.name);
+          if (DEV) {console.log('GROUP USERS', this.props.groupUsers, reply);}
+          user = _.find(this.props.groupUsers, (u) => {
+            return (`${u.firstName} ${u.lastName}` == reply.name) ||
+                    (u.id == reply.authorId);
+          });
           return (
             <Message key={idx} message={message} user={user} {...this.props}/>
           )
@@ -126,7 +129,11 @@ export default class Comment extends Component{
             createdAt: reply.timestamp,
             text: reply.text
           };
-          user = _.find(this.props.groupUsers, (u) => `${u.firstName} ${u.lastName}` == reply.name);
+          user = _.find(this.props.groupUsers, (u) => {
+            return  (`${u.firstName} ${u.lastName}` == reply.name) ||
+                    (u.id == reply.authorId);
+          });
+          if (DEV) {console.log('GROUP USERS', this.props.groupUsers, reply)}
           return (
             <Message key={idx} message={message} user={user} {...this.props}/>
           )

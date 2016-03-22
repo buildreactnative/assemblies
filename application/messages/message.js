@@ -3,6 +3,7 @@ import React from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import moment from 'moment';
 import NavigationBar from 'react-native-navbar';
+import {DEV} from '../utilities/fixtures';
 import _ from 'underscore';
 
 let {
@@ -19,27 +20,32 @@ let {
   Navigator,
 } = React;
 
+const DEFAULT_AVATAR = 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343ec7ed8542179d6c78fa7f87c01f81da016.20/_/images/icons/profilepics/default.png';
+
 class Message extends React.Component{
   render(){
     let {message, user} = this.props;
+    if (DEV) {console.log('MESSAGE PROPS', message, user);}
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={()=>{
-          this.props.navigator.push({
-            name      : 'Profile',
-            user      : this.props.user,
-            username  : `${this.props.user.firstName} ${this.props.user.lastName}`,
-            avatar    : this.props.user.avatarUrl,
-          })
+          if (this.props.user) {
+            this.props.navigator.push({
+              name      : 'Profile',
+              user      : user,
+              username  : user ? `${user.firstName} ${user.lastName}` : '',
+              avatar    : user ? user.avatarUrl : DEFAULT_AVATAR,
+            });
+          }
         }}>
           <Image
             style={styles.icon}
-            source={{uri: user.avatarUrl}}
+            source={{uri: user ? user.avatarUrl : DEFAULT_AVATAR}}
           />
         </TouchableOpacity>
         <View style={styles.messageBox}>
           <View style={styles.row}>
-            <Text style={styles.author}>{`${user.firstName} ${user.lastName}`}</Text>
+            <Text style={styles.author}>{user ? `${user.firstName} ${user.lastName}` : message.senderName}</Text>
             <Text style={styles.sent}>{moment(new Date(parseInt(message.createdAt))).fromNow()}</Text>
           </View>
           <View style={styles.messageView}>
