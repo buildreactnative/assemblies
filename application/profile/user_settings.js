@@ -132,7 +132,7 @@ class UserSettings extends React.Component{
                 }, ()=> this._testErrors());
                 this.refs.firstNameField.focus();
               }}
-              getDefaultValue={() => {return this.state.location.city;}}
+              getDefaultValue={() => {return this.state.location.city.long_name;}}
               query={{
                 key: 'AIzaSyC40fZge0C6WnKBE-39gkM4-Ze2mXCMLVc',
                 language: 'en', // language of the results
