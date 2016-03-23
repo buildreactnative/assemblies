@@ -91,7 +91,7 @@ export default class Dashboard extends Component {
     let params = {'$and': [
       { 'groupId' : { '$in': groupIds } },
       { 'start' : {'$gte': d.valueOf() } },
-      { 'location.state' : currentUser.location.state }
+      { 'location.state.long_name' : currentUser.location.state.long_name }
     ]}
     let url = `${BASE_URL}/events?${JSON.stringify(params)}`;
     fetch(url, {

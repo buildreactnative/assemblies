@@ -107,7 +107,7 @@ class Profile extends React.Component{
             <Image source={{uri: user.avatarUrl}} style={styles.avatar}/>
           </View>
           <Text style={styles.username}>{user.firstName} {user.lastName}</Text>
-          <Text style={styles.location}>{user.location.city}, {user.location.state}</Text>
+          <Text style={styles.location}>{user.location.city.long_name}, {user.location.state.long_name}</Text>
           {user.id != currentUser.id ? this._renderNewMessage() : this._renderNoMessages()}
           <View style={styles.break}></View>
           <Text style={styles.technologies}>Technologies</Text>

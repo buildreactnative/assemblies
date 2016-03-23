@@ -43,7 +43,7 @@ class UserProfile extends React.Component{
             </TouchableOpacity>
             <View style={styles.topProfileInfo}>
               <Text style={styles.name}>{currentUser.firstName} {currentUser.lastName}</Text>
-              <Text style={styles.location}>{currentUser.location.city}, {currentUser.location.state}</Text>
+              <Text style={styles.location}>{currentUser.location.city.long_name}, {currentUser.location.state.short_name}</Text>
             </View>
           </View>
           <TouchableOpacity
