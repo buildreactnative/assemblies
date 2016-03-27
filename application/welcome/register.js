@@ -61,8 +61,10 @@ export default class Register extends Component{
       </TouchableOpacity>
     )
   }
-  focusLocation(){
-    this.refs.scrollView.scrollTo(100);
+  focusInput(h){
+    if (this.refs.scrollView){
+      this.refs.scrollView.scrollTo(h)
+    }
   }
   inputFocused(refName) {
     setTimeout(() => {
@@ -91,6 +93,27 @@ export default class Register extends Component{
     }
     this.setState({progress: newProgress});
   }
+  _renderErrors(){
+    return (
+      <View>
+        <View style={{paddingBottom: 10}}>
+          <ErrorMessage error={this.state.emailError}/>
+        </View>
+        <View style={styles.pb}>
+          <ErrorMessage error={this.state.passwordError}/>
+        </View>
+        <View style={styles.pb}>
+          <ErrorMessage error={this.state.firstNameError}/>
+        </View>
+        <View style={styles.pb}>
+          <ErrorMessage error={this.state.lastNameError}/>
+        </View>
+        <View style={styles.pb}>
+          <ErrorMessage error={this.state.locationError}/>
+        </View>
+      </View>
+    )
+  }
   render(){
     let titleConfig = {title: 'Create Account', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
@@ -118,23 +141,20 @@ export default class Register extends Component{
           <TouchableOpacity onPress={()=>{
             this.props.navigator.push({
               name: 'Login'
-            });
-          }}>
+            })}}>
             <Text style={styles.h5}>
               Already have an account? <Text style={styles.technologyList}>Login</Text>
             </Text>
           </TouchableOpacity>
           <Text style={styles.h4}>{"* Where are you looking for assemblies?"}</Text>
-          <View style={styles.pb}>
-            <ErrorMessage error={this.state.locationError}/>
-          </View>
+
           <View ref="location" style={{flex: 1,}}>
             <GooglePlacesAutocomplete
               styles={autocompleteStyles}
               placeholder='Your city'
               minLength={2} // minimum length of text to search
               autoFocus={false}
-              onFocus={()=>this.focusLocation()}
+              onFocus={()=>this.focusInput(100)}
               fetchDetails={true}
               onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
                 if (DEV) {console.log(data);}
@@ -162,17 +182,13 @@ export default class Register extends Component{
               currentLocationLabel="Current location"
               nearbyPlacesAPI='GooglePlacesSearch'
               GoogleReverseGeocodingQuery={{}}
-              GooglePlacesSearchQuery={{
-                rankby: 'distance',
-              }}
+              GooglePlacesSearchQuery={{rankby: 'distance',}}
               filterReverseGeocodingByTypes={['street_address']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
               predefinedPlaces={[]}>
             </GooglePlacesAutocomplete>
           </View>
           <Text style={styles.h4}>* Email</Text>
-          <View style={{paddingBottom: 10}}>
-            <ErrorMessage error={this.state.emailError}/>
-          </View>
+
           <View ref="email" style={styles.formField}>
             <TextInput
               ref="emailField"
@@ -181,17 +197,18 @@ export default class Register extends Component{
                 this.refs.passwordField.focus();
                 this._animateProgress();
               }}
-              onFocus={this.inputFocused.bind(this, 'email')}
+              onFocus={() => this.focusInput(200)}
               onChangeText={(text)=> this.setState({email: text, emailError: ''}, ()=>this._testErrors())}
               keyboardType="email-address"
               autoCapitalize="none"
               maxLength={144}
-              placeholderTextColor='#bbb' style={styles.input} placeholder="Your email address"/>
+              placeholderTextColor='#bbb'
+              style={styles.input}
+              placeholder="Your email address"
+            />
           </View>
           <Text style={styles.h4}>* Password</Text>
-          <View style={styles.pb}>
-            <ErrorMessage error={this.state.passwordError}/>
-          </View>
+
           <View style={styles.formField} ref="password">
             <TextInput
               ref="passwordField"
@@ -200,7 +217,7 @@ export default class Register extends Component{
                 this.refs.firstNameField.focus();
                 this._animateProgress();
               }}
-              onFocus={this.inputFocused.bind(this, "password")}
+              onFocus={() => this.focusInput(300)}
               onChangeText={(text)=> this.setState({password: text, passwordError: ''}, ()=> this._testErrors())}
               secureTextEntry={true}
               autoCapitalize="none"
@@ -211,9 +228,6 @@ export default class Register extends Component{
             />
           </View>
           <Text style={styles.h4}>* First Name</Text>
-          <View style={styles.pb}>
-            <ErrorMessage error={this.state.firstNameError}/>
-          </View>
           <View style={styles.formField} ref="firstName">
             <TextInput
               ref="firstNameField"
@@ -222,7 +236,7 @@ export default class Register extends Component{
                 this.refs.lastNameField.focus();
                 this._animateProgress();
               }}
-              onFocus={this.inputFocused.bind(this, "firstName")}
+              onFocus={() => this.focusInput(400)}
               maxLength={20}
               onChangeText={(text) => {
                 this.setState({
@@ -236,16 +250,13 @@ export default class Register extends Component{
             />
           </View>
           <Text style={styles.h4}>* Last name</Text>
-          <View style={styles.pb}>
-            <ErrorMessage error={this.state.lastNameError}/>
-          </View>
           <View style={styles.formField} ref="lastName">
             <TextInput
               returnKeyType="next"
               maxLength={20}
               ref="lastNameField"
               onSubmitEditing={()=>{this._animateProgress();}}
-              onFocus={this.inputFocused.bind(this, 'lastName')}
+              onFocus={() => this.focusInput(500)}
               onChangeText={(text) => {
                 this.setState({lastName: text, lastNameError: ''},
                   this._testErrors.bind(this)
@@ -256,7 +267,7 @@ export default class Register extends Component{
               placeholder="Your last name"
             />
           </View>
-          <ErrorMessage error={this.state.formError}/>
+          {this._renderErrors()}
         </ScrollView>
         <TouchableOpacity style={Globals.submitButton} onPress={()=>{
           let {emailError, passwordError, firstNameError, lastNameError, locationError, formError} = this.state;
