@@ -41,6 +41,11 @@ export default class Login extends Component{
       )
     }, 50);
   }
+  focusInput(h){
+    if (this.refs.scrollView){
+      this.refs.scrollView.scrollTo(h);
+    }
+  }
   _renderBackButton(){
     return (
       <TouchableOpacity style={Globals.backButton} onPress={()=>{
@@ -115,7 +120,6 @@ export default class Login extends Component{
               ref="email"
               autoFocus={true}
               returnKeyType="next"
-              onFocus={this.inputFocused.bind(this, "email")}
               onSubmitEditing={()=>{
                 this.refs.passwordField.focus();
               }}
@@ -131,7 +135,7 @@ export default class Login extends Component{
             <TextInput
               ref="passwordField"
               returnKeyType="next"
-              onFocus={this.inputFocused.bind(this, "password")}
+              onFocus={() => this.focusInput(160)}
               onChangeText={(text)=> this.setState({password: text})}
               secureTextEntry={true}
               autoCapitalize="none"

@@ -236,7 +236,7 @@ export default class Register extends Component{
                 this.refs.lastNameField.focus();
                 this._animateProgress();
               }}
-              onFocus={() => this.focusInput(400)}
+              onFocus={() => this.focusInput(390)}
               maxLength={20}
               onChangeText={(text) => {
                 this.setState({
@@ -256,7 +256,7 @@ export default class Register extends Component{
               maxLength={20}
               ref="lastNameField"
               onSubmitEditing={()=>{this._animateProgress();}}
-              onFocus={() => this.focusInput(500)}
+              onFocus={() => this.focusInput(480)}
               onChangeText={(text) => {
                 this.setState({lastName: text, lastNameError: ''},
                   this._testErrors.bind(this)
