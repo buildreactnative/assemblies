@@ -242,7 +242,7 @@ export default class MessagesView extends Component{
             } else if (route.name == 'Event') {
               return (
                 <Event
-                  changEvent={this.changeEvent.bind(this)}
+                  changeEvent={this.changeEvent.bind(this)}
                   deleteComment={this.deleteComment.bind(this)}
                   {...route}
                   {...this.props}

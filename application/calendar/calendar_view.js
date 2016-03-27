@@ -162,7 +162,7 @@ export default class CalendarView extends Component{
                 <Event
                   {...route}
                   {...this.props}
-                  changEvent={this.changeEvent.bind(this)}
+                  changeEvent={this.changeEvent.bind(this)}
                   deleteComment={this.deleteComment.bind(this)}
                   navigator={navigator}
                 />
