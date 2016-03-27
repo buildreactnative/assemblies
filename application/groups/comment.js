@@ -178,10 +178,6 @@ export default class Comment extends Component{
             <Icon name='trash-b' color={Colors.bodyTextLight} size={20}/>
           </TouchableOpacity>
         </View>
-        {/*<Animated.View style={{height: this.state.animation}}>
-          {this.state.showReplies ? this._renderReplies() : this._renderEmptyReplies()}
-        </Animated.View>
-        {this._renderHidden()}*/}
         <View>
           <View style={styles.border}/>
         </View>
@@ -224,10 +220,6 @@ export default class Comment extends Component{
             <Icon name='edit' color={Colors.bodyTextLight} size={20}/>
           </TouchableOpacity>
         </View>
-        {/*<Animated.View style={{height: this.state.animation}}>
-          {this.state.showReplies ? this._renderReplies() : this._renderEmptyReplies()}
-        </Animated.View>
-        {this._renderHidden()}*/}
         <View>
           <View style={styles.border}/>
         </View>
