@@ -140,7 +140,7 @@ class UserSettings extends React.Component{
               placeholder='Your city'
               minLength={2} // minimum length of text to search
               autoFocus={false}
-              onFocus={()=> this.focusInput(50)}
+              onFocus={()=> this.focusInput(70)}
               fetchDetails={true}
               onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
                 if (DEV) {console.log(data);}
@@ -182,7 +182,7 @@ class UserSettings extends React.Component{
               onSubmitEditing={()=>{
                 this.refs.lastNameField.focus();
               }}
-              onFocus={() => this.focusInput(120)}
+              onFocus={() => this.focusInput(150)}
               maxLength={20}
               onChangeText={(text)=> this.setState({firstName: text, firstNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
@@ -201,7 +201,7 @@ class UserSettings extends React.Component{
                 this.refs.summary.focus();
               }}
               ref="lastNameField"
-              onFocus={() => this.focusInput(200)}
+              onFocus={() => this.focusInput(240)}
               onChangeText={(text) => this.setState({lastName: text, lastNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
               style={styles.input}
@@ -217,7 +217,7 @@ class UserSettings extends React.Component{
             blurOnSubmit={true}
             clearButtonMode='always'
             returnKeyType="next"
-            onFocus={() => this.focusInput(280)}
+            onFocus={() => this.focusInput(320)}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
             multiline={true}
