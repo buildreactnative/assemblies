@@ -45,7 +45,7 @@ export default class CommentHeader extends React.Component{
       this._toggle();
     }
     if (nextProps.event.comments != this.props.event.comments){
-      console.log('CHANGE COMMENTS LENGTH');
+      // if (DEV) {console.log('CHANGE COMMENTS LENGTH');}
     }
   }
   _toggle(){
