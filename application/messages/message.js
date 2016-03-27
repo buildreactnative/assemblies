@@ -29,7 +29,7 @@ class Message extends React.Component{
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={()=>{
-          if (this.props.user) {
+          if (this.props.user && ! this.props.isComment) {
             this.props.navigator.push({
               name      : 'Profile',
               user      : user,

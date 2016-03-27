@@ -93,13 +93,14 @@ export default class Comment extends Component{
             createdAt: reply.timestamp,
             text: reply.text
           };
+          user = {
+            avatarUrl: reply.avatarUrl,
+            firstName: reply.name.split(' ')[0],
+            lastname: reply.name.split(' ')[1],
+          }
           if (DEV) {console.log('GROUP USERS', this.props.groupUsers, reply);}
-          user = _.find(this.props.groupUsers, (u) => {
-            return (`${u.firstName} ${u.lastName}` == reply.name) ||
-                    (u.id == reply.authorId);
-          });
           return (
-            <Message key={idx} message={message} user={user} {...this.props}/>
+            <Message isComment={true} key={idx} message={message} user={user} {...this.props}/>
           )
         })}
       </View>
@@ -129,13 +130,14 @@ export default class Comment extends Component{
             createdAt: reply.timestamp,
             text: reply.text
           };
-          user = _.find(this.props.groupUsers, (u) => {
-            return  (`${u.firstName} ${u.lastName}` == reply.name) ||
-                    (u.id == reply.authorId);
-          });
+          user = {
+            avatarUrl: reply.avatarUrl,
+            firstName: reply.name.split(' ')[0],
+            lastname: reply.name.split(' ')[1],
+          }
           if (DEV) {console.log('GROUP USERS', this.props.groupUsers, reply)}
           return (
-            <Message key={idx} message={message} user={user} {...this.props}/>
+            <Message isComment={true} key={idx} message={message} user={user} {...this.props}/>
           )
         })}
       </View>
@@ -147,10 +149,14 @@ export default class Comment extends Component{
       createdAt: comment.timestamp,
       text: comment.text
     };
-    let user = _.find(this.props.groupUsers, (u) => `${u.firstName} ${u.lastName}` == comment.name);
+    user = {
+      avatarUrl: comment.avatarUrl,
+      firstName: comment.name.split(' ')[0],
+      lastname: comment.name.split(' ')[1],
+    };
     return (
       <View>
-        <Message message={message} user={user} {...this.props}/>
+        <Message message={message} user={user} isComment={true} {...this.props}/>
         <View style={styles.iconContainer}>
           <TouchableOpacity
             onPress={this._likeComment.bind(this)}
