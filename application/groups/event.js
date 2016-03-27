@@ -127,36 +127,37 @@ export default class Event extends Component{
     )
   }
   _createNotification(data){
-    let {currentUser, event} = this.props;
-    let url = `${BASE_URL}/notifications`;
-    let userIds = _.reject(Object.keys(event.attending), (id) => id == currentUser.id);
-    let relatedUserIds = {};
-    userIds.forEach((id) => {
-      relatedUserIds[id] = {seen: false};
-    });
-    relatedUserIds[currentUser.id] = {seen: true};
-    let notification = {
-      type            : 'comment',
-      relatedUserIds  : relatedUserIds,
-      userIdString    : userIds.sort().join(':'),
-      message         : `New comment in ${event.name}`,
-      timestamp       : new Date().valueOf(),
-      eventId         : event.id,
-      groupId         : event.groupId,
-      seen            : false,
-    };
-    fetch(url, {
-      method: "POST",
-      headers: HEADERS,
-      body: JSON.stringify(notification)
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('NOTIFICATION', data);}
-    })
-    .catch((err) => {
-      if (DEV) {console.log('ERR:', err);}
-    }).done();
+    // TODO: debug feature for new notification
+    // let {currentUser, event} = this.props;
+    // let url = `${BASE_URL}/notifications`;
+    // let userIds = _.reject(Object.keys(event.attending), (id) => id == currentUser.id);
+    // let relatedUserIds = {};
+    // userIds.forEach((id) => {
+    //   relatedUserIds[id] = {seen: false};
+    // });
+    // relatedUserIds[currentUser.id] = {seen: true};
+    // let notification = {
+    //   type            : 'comment',
+    //   relatedUserIds  : relatedUserIds,
+    //   userIdString    : userIds.sort().join(':'),
+    //   message         : `New comment in ${event.name}`,
+    //   timestamp       : new Date().valueOf(),
+    //   eventId         : event.id,
+    //   groupId         : event.groupId,
+    //   seen            : false,
+    // };
+    // fetch(url, {
+    //   method: "POST",
+    //   headers: HEADERS,
+    //   body: JSON.stringify(notification)
+    // })
+    // .then((response) => response.json())
+    // .then((data) => {
+    //   if (DEV) {console.log('NOTIFICATION', data);}
+    // })
+    // .catch((err) => {
+    //   if (DEV) {console.log('ERR:', err);}
+    // }).done();
   }
   _addComment(){
     let {currentUser} = this.props;

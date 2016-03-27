@@ -86,41 +86,42 @@ export default class CreateEventConfirm extends Component{
     }
   }
   _createNotification(event){
-    let {currentUser, group} = this.props;
-    let url = `${BASE_URL}/notifications`;
-    let relatedUserIds = {};
-    _.keys(group.members).forEach((m) => {
-      relatedUserIds[m] = {seen: false}
-    });
-    relatedUserIds[currentUser.id] = {seen: true};
-    let notification = {
-      type            : 'event',
-      relatedUserIds  : relatedUserIds,
-      userIdString    : _.reject(_.keys(group.members), (m) => m == currentUser.id).join(':'),
-      message         : `New event in ${group.name}`,
-      timestamp       : new Date().valueOf(),
-      eventId         : event.id,
-      groupId         : group.id,
-    };
-    if (DEV) {console.log('NOTIFICATION PARAMS', notification);}
-    fetch(url, {
-      method    : 'POST',
-      headers   : HEADERS,
-      body      : JSON.stringify(notification)
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (DEV) {console.log('NOTIFICATION', data);}
-      group.events.push(event.id)
-      this.props.addEvent(event, group);
-      this.props.navigator.push({
-        name: 'Group',
-        group: group,
-      })
-    })
-    .catch((err) => {
-      if (DEV) {console.log('ERR: ', err)}
-    }).done();
+    // TODO: needs to be debugged
+    // let {currentUser, group} = this.props;
+    // let url = `${BASE_URL}/notifications`;
+    // let relatedUserIds = {};
+    // _.keys(group.members).forEach((m) => {
+    //   relatedUserIds[m] = {seen: false}
+    // });
+    // relatedUserIds[currentUser.id] = {seen: true};
+    // let notification = {
+    //   type            : 'event',
+    //   relatedUserIds  : relatedUserIds,
+    //   userIdString    : _.reject(_.keys(group.members), (m) => m == currentUser.id).join(':'),
+    //   message         : `New event in ${group.name}`,
+    //   timestamp       : new Date().valueOf(),
+    //   eventId         : event.id,
+    //   groupId         : group.id,
+    // };
+    // if (DEV) {console.log('NOTIFICATION PARAMS', notification);}
+    // fetch(url, {
+    //   method    : 'POST',
+    //   headers   : HEADERS,
+    //   body      : JSON.stringify(notification)
+    // })
+    // .then((response) => response.json())
+    // .then((data) => {
+    //   if (DEV) {console.log('NOTIFICATION', data);}
+    //   group.events.push(event.id)
+    //   this.props.addEvent(event, group);
+    //   this.props.navigator.push({
+    //     name: 'Group',
+    //     group: group,
+    //   })
+    // })
+    // .catch((err) => {
+    //   if (DEV) {console.log('ERR: ', err)}
+    // }).done();
   }
 
   _renderBackButton(){
