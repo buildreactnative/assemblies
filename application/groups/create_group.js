@@ -47,6 +47,11 @@ export default class CreateGroup extends React.Component{
       );
     }, 50);
   }
+  focusInput(h){
+    if (this.refs.scrollView){
+      this.refs.scrollView.scrollTo(h);
+    }
+  }
   _technologies(tech){
     this.setState({
       technologies: this.state.technologies.concat(tech)
@@ -95,7 +100,7 @@ export default class CreateGroup extends React.Component{
               onSubmitEditing={()=>{
                 this.refs.location.triggerFocus();
               }}
-              onFocus={this.inputFocused.bind(this, 'name')}
+              onFocus={() => this.focusInput(40)}
               onChangeText={(text)=> this.setState({name: text})}
               placeholderTextColor='#bbb'
               style={styles.input}
@@ -108,7 +113,7 @@ export default class CreateGroup extends React.Component{
             placeholder='Your city'
             minLength={2} // minimum length of text to search
             autoFocus={false}
-            onFocus={this.inputFocused.bind(this, "location")}
+            onFocus={() => this.focusInput(120)}
             ref="location"
             fetchDetails={true}
             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
@@ -145,7 +150,7 @@ export default class CreateGroup extends React.Component{
             returnKeyType="next"
             blurOnSubmit={true}
             clearButtonMode='always'
-            onFocus={this.inputFocused.bind(this, 'summary')}
+            onFocus={() => this.focusInput(250)}
             onChangeText={(text)=> this.setState({summary: text})}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
