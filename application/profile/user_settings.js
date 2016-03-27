@@ -51,6 +51,11 @@ class UserSettings extends React.Component{
       );
     }, 50);
   }
+  focusInput(h){
+    if (this.refs.scrollView){
+      this.refs.scrollView.scrollTo(h);
+    }
+  }
   _renderBackButton(){
     return (
       <TouchableOpacity style={Globals.backButton} onPress={()=>{
@@ -94,6 +99,24 @@ class UserSettings extends React.Component{
   focusLocation(){
     this.refs.scrollView.scrollTo(80);
   }
+  _renderErrors(){
+    return (
+      <View>
+        <View style={{paddingBottom: 10}}>
+          <ErrorMessage error={this.state.locationError}/>
+        </View>
+        <View style={{paddingBottom: 10}}>
+          <ErrorMessage error={this.state.firstNameError}/>
+        </View>
+        <View style={{paddingBottom: 10}}>
+          <ErrorMessage error={this.state.lastNameError}/>
+        </View>
+        <View style={{paddingBottom: 10}}>
+          <ErrorMessage error={this.state.summaryError}/>
+        </View>
+      </View>
+    )
+  }
   render(){
     let titleConfig = {title: 'Profile Settings', tintColor: 'white'}
     let leftButtonConfig = this._renderBackButton();
@@ -110,16 +133,14 @@ class UserSettings extends React.Component{
           ref="scrollView"
         >
           <Text style={styles.h4}>{"Where are you looking for assemblies?"}</Text>
-          <View style={{paddingBottom: 10}}>
-            <ErrorMessage error={this.state.locationError}/>
-          </View>
+
           <View ref="location" style={{flex: 1,}}>
             <GooglePlacesAutocomplete
               styles={autocompleteStyles}
               placeholder='Your city'
               minLength={2} // minimum length of text to search
               autoFocus={false}
-              onFocus={()=>this.focusLocation()}
+              onFocus={()=> this.focusInput(50)}
               fetchDetails={true}
               onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
                 if (DEV) {console.log(data);}
@@ -127,7 +148,10 @@ class UserSettings extends React.Component{
                 this.setState({
                   locationError: '',
                   location: _.extend({}, details.geometry.location, {
-                    formatted_address: details.formatted_address,
+                    city: _.find(details.address_components, (c) => c.types[0] == 'locality'),
+                    state: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_1'),
+                    county: _.find(details.address_components, (c) => c.types[0] == 'administrative_area_level_2'),
+                    formattedAddress: details.formatted_address,
                   })
                 }, ()=> this._testErrors());
                 this.refs.firstNameField.focus();
@@ -150,9 +174,7 @@ class UserSettings extends React.Component{
             />
           </View>
           <Text style={styles.h4}>First Name</Text>
-          <View style={{paddingBottom: 10}}>
-            <ErrorMessage error={this.state.firstNameError}/>
-          </View>
+
           <View style={styles.formField} ref="firstName">
             <TextInput
               ref="firstNameField"
@@ -160,7 +182,7 @@ class UserSettings extends React.Component{
               onSubmitEditing={()=>{
                 this.refs.lastNameField.focus();
               }}
-              onFocus={this.inputFocused.bind(this, "firstName")}
+              onFocus={() => this.focusInput(120)}
               maxLength={20}
               onChangeText={(text)=> this.setState({firstName: text, firstNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
@@ -170,9 +192,7 @@ class UserSettings extends React.Component{
             />
           </View>
           <Text style={styles.h4}>Last name</Text>
-          <View style={{paddingBottom: 10}}>
-            <ErrorMessage error={this.state.lastNameError}/>
-          </View>
+
           <View style={styles.formField} ref="lastName">
             <TextInput
               returnKeyType="next"
@@ -181,7 +201,7 @@ class UserSettings extends React.Component{
                 this.refs.summary.focus();
               }}
               ref="lastNameField"
-              onFocus={this.inputFocused.bind(this, 'lastName')}
+              onFocus={() => this.focusInput(200)}
               onChangeText={(text) => this.setState({lastName: text, lastNameError: ''}, ()=> this._testErrors())}
               placeholderTextColor='#bbb'
               style={styles.input}
@@ -190,23 +210,21 @@ class UserSettings extends React.Component{
             />
           </View>
           <Text style={styles.h4}>{"Tell us a little about yourself"}</Text>
-          <View style={{paddingBottom: 10}}>
-            <ErrorMessage error={this.state.summaryError}/>
-          </View>
+
           <TextInput
             ref="summary"
             maxLength={200}
             blurOnSubmit={true}
             clearButtonMode='always'
             returnKeyType="next"
-            onFocus={this.inputFocused.bind(this, "summary")}
+            onFocus={() => this.focusInput(280)}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
             multiline={true}
             onChangeText={(text)=> this.setState({summary: text})}
             value={this.state.summary}
             placeholder="Short personal summary..."/>
-          <ErrorMessage error={this.state.formError}/>
+          {this._renderErrors()}
         </ScrollView>
         <TouchableOpacity style={[Globals.submitButton, {marginBottom: 50}]} onPress={()=>{
           let user = {
