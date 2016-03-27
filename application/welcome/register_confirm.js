@@ -187,7 +187,8 @@ export default class RegisterConfirm extends Component{
               this.props.updateUser(data);
               this.setState({sendingData: false});
               this.props.navigator.push({
-                name: 'Dashboard'
+                name: 'Dashboard',
+                currentUser: data
               });
             })
             .catch((error) => {
@@ -216,10 +217,12 @@ export default class RegisterConfirm extends Component{
   }
   _sendingData(){
     return (
-      <Text style={Globals.submitButtonText}>
+      <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicatorIOS style={{marginRight: 4,}}/>
-        Create Account
-      </Text>
+        <Text style={Globals.submitButtonText}>
+          Create Account
+        </Text>
+      </View>
     )
   }
   render(){

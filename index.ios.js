@@ -128,9 +128,13 @@ class assembly extends Component {
                 return <Welcome navigator={navigator} />
                 break;
               case 'Dashboard':
+                if (! this.state.currentUser){
+                  return this._loading()
+                }
                 return (
                   <Dashboard
                     {...this.state}
+                    {...route}
                     navigator={navigator}
                     updateUser={this.updateUser.bind(this)}
                   />
