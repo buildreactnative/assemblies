@@ -14,10 +14,16 @@
 
 @implementation AppDelegate
 
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Keys" ofType:@"plist"];
+  NSDictionary *configuration = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
+  NSString *segmentKey = configuration[@"SEGMENT_API_KEY"];
+  
+  
   [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-  SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey:@"APP_KEY_HERE"];
+  SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey: segmentKey];
 
     [SEGAnalytics setupWithConfiguration:config];
   NSURL *jsCodeLocation;

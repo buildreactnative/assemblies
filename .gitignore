@@ -4,6 +4,7 @@
 
 # Xcode
 ios/Keys.plist
+ios/assembly/Keys.plist
 #
 build/
 *.pbxuser
