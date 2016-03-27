@@ -57,6 +57,11 @@ export default class RegisterConfirm extends Component{
       )
     }, 50)
   }
+  focusInput(h){
+    if (this.refs.scrollView){
+      this.refs.scrollView.scrollTo(h);
+    }
+  }
   _animateProgress(){
     let {progress} = this.state;
     let newProgress = progress + 0.2;
@@ -271,7 +276,7 @@ export default class RegisterConfirm extends Component{
             onSubmitEditing={()=>{
               this.setState({progress: 0.67})
             }}
-            onFocus={this.inputFocused.bind(this, "summary")}
+            onFocus={() => this.focusInput(180)}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
             multiline={true}
