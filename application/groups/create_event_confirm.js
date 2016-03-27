@@ -336,7 +336,13 @@ export default class CreateEventConfirm extends Component{
             .then((response) => response.json())
             .then((data) => {
               if (DEV) {console.log('EVENT CREATION DATA', data);}
-              this._createNotification(data);
+              // this._createNotification(data);
+              group.events.push(data.id)
+              this.props.addEvent(data, group);
+              this.props.navigator.push({
+                name: 'Group',
+                group: group,
+              })
             })
             .catch((err) => {
               if (DEV) {console.log('ERR: ', err)}

@@ -150,7 +150,7 @@ export default class CreateGroup extends React.Component{
             returnKeyType="next"
             blurOnSubmit={true}
             clearButtonMode='always'
-            onFocus={() => this.focusInput(250)}
+            onFocus={() => this.focusInput(230)}
             onChangeText={(text)=> this.setState({summary: text})}
             placeholderTextColor='#bbb'
             style={styles.largeInput}
