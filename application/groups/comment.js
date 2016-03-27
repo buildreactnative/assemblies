@@ -31,8 +31,8 @@ export default class Comment extends Component{
       isReply     : false,
       animation   : new Animated.Value(0),
       measured    : false,
-      minHeight   : 0,
-      maxHeight   : 40,
+      minHeight   : 51,
+      maxHeight   : 51,
       showReplies : false,
       newComment  : false,
     }
@@ -100,12 +100,25 @@ export default class Comment extends Component{
     )
   }
   _setMaxHeight(event){
-    if (!! event.nativeEvent && event.nativeEvent.layout.height > this.state.maxHeight){
+    if (DEV) {console.log('SET MAX COMMENT HEIGHT', event.nativeEvent.layout);}
+    if (!! event.nativeEvent){
       this.setState({
-        maxHeight : event.nativeEvent.layout.height,
+        maxHeight : event.nativeEvent.layout.y,
         measured  : true,
       });
     }
+    if (this.props.measured) {
+      this.props.addHeight(event.nativeEvent.layout.y, this.props.comment.timestamp);
+    }
+  }
+  _setMinHeight(event){
+    if (DEV) {console.log('SET MIN COMMENT HEIGHT', event.nativeEvent.layout);}
+    if (!! event.nativeEvent){
+      this.setState({
+        minHeight : event.nativeEvent.layout.height,
+      })
+    }
+    this.props.addHeight(event.nativeEvent.layout.height);
   }
 
   _renderHidden(){
@@ -133,11 +146,13 @@ export default class Comment extends Component{
   }
   _deleteComment(){
     let {comment, event} = this.props;
+    let h = this.state.minHeight;
     this.props.deleteComment(comment, event);
+    this.props.reduceHeight(h);
   }
   _userComment(comment, message, user){
     return (
-      <View>
+      <View onLayout={this._setMinHeight.bind(this)}>
         <Message message={message} user={user} isComment={true} {...this.props}/>
         <View style={styles.iconContainer}>
           <TouchableOpacity
@@ -163,10 +178,10 @@ export default class Comment extends Component{
             <Icon name='trash-b' color={Colors.bodyTextLight} size={20}/>
           </TouchableOpacity>
         </View>
-        <Animated.View style={{height: this.state.animation}}>
+        {/*<Animated.View style={{height: this.state.animation}}>
           {this.state.showReplies ? this._renderReplies() : this._renderEmptyReplies()}
         </Animated.View>
-        {this._renderHidden()}
+        {this._renderHidden()}*/}
         <View>
           <View style={styles.border}/>
         </View>
@@ -188,7 +203,7 @@ export default class Comment extends Component{
       return this._userComment(comment, message, user)
     }
     return (
-      <View>
+      <View onLayout={this._setMinHeight.bind(this)} >
         <Message message={message} user={user} isComment={true} {...this.props}/>
         <View style={styles.iconContainer}>
           <TouchableOpacity
@@ -209,10 +224,10 @@ export default class Comment extends Component{
             <Icon name='edit' color={Colors.bodyTextLight} size={20}/>
           </TouchableOpacity>
         </View>
-        <Animated.View style={{height: this.state.animation}}>
+        {/*<Animated.View style={{height: this.state.animation}}>
           {this.state.showReplies ? this._renderReplies() : this._renderEmptyReplies()}
         </Animated.View>
-        {this._renderHidden()}
+        {this._renderHidden()}*/}
         <View>
           <View style={styles.border}/>
         </View>
