@@ -156,19 +156,19 @@ export default class Comment extends Component{
         <Message message={message} user={user} isComment={true} {...this.props}/>
         <View style={styles.iconContainer}>
           <TouchableOpacity
-            onPress={this._likeComment.bind(this)}
+            onPress={(this._likeComment.bind(this))}
             style={styles.iconBox}>
             <Icon name='ios-heart' color={Colors.bodyTextLight} size={25}/>
             <Text style={styles.iconText}>{_.filter(_.keys(comment.likes), (k) => comment.likes[k] == true).length}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={this._toggleReplies.bind(this)}
+            onPress={() => {}}
             style={styles.iconBox}>
             <Icon name='reply' color={Colors.bodyTextLight} size={25}/>
             <Text style={styles.iconText}>{comment.replies.length}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={this._writeReply.bind(this)}
+            onPress={() => {}}
             style={styles.iconBox}>
             <Icon name='edit' color={Colors.bodyTextLight} size={20}/>
           </TouchableOpacity>
@@ -213,13 +213,13 @@ export default class Comment extends Component{
             <Text style={styles.iconText}>{_.filter(_.keys(comment.likes), (k) => comment.likes[k] == true).length}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={this._toggleReplies.bind(this)}
+            onPress={() => {}}
             style={styles.iconBox}>
             <Icon name='reply' color={Colors.bodyTextLight} size={25}/>
             <Text style={styles.iconText}>{comment.replies.length}</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={this._writeReply.bind(this)}
+            onPress={() => {}}
             style={styles.iconBox}>
             <Icon name='edit' color={Colors.bodyTextLight} size={20}/>
           </TouchableOpacity>
