@@ -186,7 +186,7 @@ export default class Event extends Component{
       event.comments = comments.concat(comment);
       this.props.changeEvent(data);
       // this._createNotification(data);
-      this.setState({message: '', newComment: true});
+      this.setState({message: '', newComment: true, showComments: true});
     })
     .catch((err) => {
       if (DEV) {console.log('ERR:', err);}
@@ -320,7 +320,7 @@ export default class Event extends Component{
           <Text style={styles.h2}>Going</Text>
           <View style={styles.break}></View>
           {this.state.members.map((member, idx) => {
-            if (DEV) {console.log('MEMBER', member)}
+            // if (DEV) {console.log('MEMBER', member)}
             let isOwner = group ? group.members[member.id].owner : false;
             let isAdmin = group ? group.members[member.id].admin : false;
             let status = isOwner ? 'owner' : isAdmin ? 'admin' : 'member'
