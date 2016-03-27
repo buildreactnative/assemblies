@@ -122,14 +122,56 @@ export default class Comment extends Component{
             avatarUrl: reply.avatarUrl,
             firstName: reply.name.split(' ')[0],
             lastName: reply.name.split(' ')[1],
-          }
-          if (DEV) {console.log('GROUP USERS', this.props.groupUsers, reply)}
+          };
+          // if (DEV) {console.log('GROUP USERS', this.props.groupUsers, reply)}
           return (
             <Message isComment={true} key={idx} message={message} user={user} {...this.props}/>
           )
         })}
       </View>
     );
+  }
+  _deleteComment(){
+    let {comment, event} = this.props;
+    this.props.deleteComment(comment, event);
+  }
+  _userComment(comment, message, user){
+    return (
+      <View>
+        <Message message={message} user={user} isComment={true} {...this.props}/>
+        <View style={styles.iconContainer}>
+          <TouchableOpacity
+            onPress={this._likeComment.bind(this)}
+            style={styles.iconBox}>
+            <Icon name='ios-heart' color={Colors.bodyTextLight} size={25}/>
+            <Text style={styles.iconText}>{_.filter(_.keys(comment.likes), (k) => comment.likes[k] == true).length}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this._toggleReplies.bind(this)}
+            style={styles.iconBox}>
+            <Icon name='reply' color={Colors.bodyTextLight} size={25}/>
+            <Text style={styles.iconText}>{comment.replies.length}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this._writeReply.bind(this)}
+            style={styles.iconBox}>
+            <Icon name='edit' color={Colors.bodyTextLight} size={20}/>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={this._deleteComment.bind(this)}
+            style={styles.iconBox}>
+            <Icon name='trash-b' color={Colors.bodyTextLight} size={20}/>
+          </TouchableOpacity>
+        </View>
+        <Animated.View style={{height: this.state.animation}}>
+          {this.state.showReplies ? this._renderReplies() : this._renderEmptyReplies()}
+        </Animated.View>
+        {this._renderHidden()}
+        <View>
+          <View style={styles.border}/>
+        </View>
+      </View>
+    )
   }
   render(){
     let {comment} = this.props;
@@ -142,6 +184,9 @@ export default class Comment extends Component{
       firstName: comment.name.split(' ')[0],
       lastName: comment.name.split(' ')[1],
     };
+    if (comment.authorId == this.props.currentUser.id) {
+      return this._userComment(comment, message, user)
+    }
     return (
       <View>
         <Message message={message} user={user} isComment={true} {...this.props}/>

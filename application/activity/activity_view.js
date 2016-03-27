@@ -96,6 +96,36 @@ export default class ActivityView extends Component{
     });
     this.props.updateUser(currentUser);
   }
+  deleteComment(comment, event){
+    let eventIdx = _.findIndex(this.props.events, (e) => e.id == event.id);
+    let newEvents = this.props.events;
+    let newAllEvents = this.props.allEvents;
+    let commentIdx = _.findIndex(event.comments, (c) => c.authorId == comment.authorId && c.timestamp == comment.timestamp);
+    let newComments = [...event.comments.splice(0, commentIdx), ...event.comments.splice(commentIdx+1)];
+    let allEventsIdx = _.findIndex(this.props.allEvents, (e) => e.id == event.id);
+    let url = `${BASE_URL}/events/${event.id}`;
+    fetch(url, {
+      method: 'PUT',
+      headers: HEADERS,
+      body: JSON.stringify({comments: newComments})
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (DEV) {console.log('DATA', data);}
+    })
+    .catch((err) => {
+      if (DEV) {console.log('ERR:', err);}
+    }).done();
+    if (eventIdx != -1) {
+      event.comments = newComments;
+      newEvents = [...this.props.events.splice(0, eventIdx), event, ...this.props.events.splice(eventIdx+1)];
+    }
+    if (allEventsIdx != -1){
+      event.comments = newComments;
+      newAllEvents = [...this.props.allEvents.splice(0, allEventsIdx), event, ...this.props.events.splice(eventIdx+1)];
+    }
+    this.props.sendData({events: newEvents, allEvents: newAllEvents});
+  }
   changeEvent(event){
     let idx = _.findIndex(this.props.events, (e) => e.id == event.id);
     let allEventsIdx = _.findIndex(this.props.allEvents, (e) => e.id == event.id);
@@ -112,6 +142,7 @@ export default class ActivityView extends Component{
       allEvents   : newAllEvents,
     });
   }
+
   render(){
     let {tab,} = this.state;
     let tabContent = tab == 'upcoming' ? <UpcomingAssemblies {...this.props} {...this.state}/> : <NotificationsHolder {...this.state}/>
@@ -179,7 +210,15 @@ export default class ActivityView extends Component{
               let group = !! event ? _.find(groups, (g) => g.id == event.groupId) : null;
               if (DEV) {console.log('EVENT NOW', event, group, route.notification, this.state);}
               return (
-                <Event event={event} group={group} {...route} {...this.props} navigator={navigator} />
+                <Event
+                  event={event}
+                  group={group}
+                  {...route}
+                  {...this.props}
+                  changEvent={this.changeEvent.bind(this)}
+                  deleteComment={this.deleteComment.bind(this)}
+                  navigator={navigator}
+                  />
               )
             } else if (route.name == 'Event'){
               return (
@@ -188,6 +227,7 @@ export default class ActivityView extends Component{
                   {...this.props}
                   {...this.state}
                   changeEvent={this.changeEvent.bind(this)}
+                  deleteComment={this.deleteComment.bind(this)}
                   navigator={navigator}
                 />
               );
