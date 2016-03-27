@@ -92,12 +92,16 @@ export default class GroupView extends Component{
   changeEvent(event){
     let idx = _.findIndex(this.props.events, (e) => e.id == event.id);
     let allEventsIdx = _.findIndex(this.props.allEvents, (e) => e.id == event.id);
-    let newAllEvents = this.props.allEvents;
+    let newAllEvents = this.props.allEvents,
+        newEvents    = this.props.events;
     if (allEventsIdx != -1){
       newAllEvents = [...this.props.allEvents.slice(0, allEventsIdx), event, ...this.props.allEvents.slice(allEventsIdx+1)];
     }
+    if (idx != -1) {
+      newEvents = [...this.props.events.slice(0, idx), event, ...this.props.events.slice(idx+1)]
+    }
     this.props.sendData({
-      events      : [...this.props.events.slice(0, idx), event, ...this.props.events.slice(idx+1)],
+      events      : newEvents,
       allEvents   : newAllEvents,
     });
   }

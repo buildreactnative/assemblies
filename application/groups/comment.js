@@ -37,18 +37,6 @@ export default class Comment extends Component{
       newComment  : false,
     }
   }
-  shouldComponentUpdate(nextProps, nextState){
-    if (nextState.maxHeight > this.state.maxHeight && this.state.newComment){
-      this.state.animation.setValue(this.state.maxHeight);
-      Animated.spring(
-        this.state.animation, {
-          toValue: nextState.maxHeight
-        }
-      ).start();
-      this.props.addHeight(nextState.maxHeight - this.state.maxHeight);
-    }
-    return true;
-  }
 
   _likeComment(){
     let {comment} = this.props;
@@ -96,7 +84,7 @@ export default class Comment extends Component{
           user = {
             avatarUrl: reply.avatarUrl,
             firstName: reply.name.split(' ')[0],
-            lastname: reply.name.split(' ')[1],
+            lastName: reply.name.split(' ')[1],
           }
           if (DEV) {console.log('GROUP USERS', this.props.groupUsers, reply);}
           return (
@@ -133,7 +121,7 @@ export default class Comment extends Component{
           user = {
             avatarUrl: reply.avatarUrl,
             firstName: reply.name.split(' ')[0],
-            lastname: reply.name.split(' ')[1],
+            lastName: reply.name.split(' ')[1],
           }
           if (DEV) {console.log('GROUP USERS', this.props.groupUsers, reply)}
           return (
@@ -152,7 +140,7 @@ export default class Comment extends Component{
     user = {
       avatarUrl: comment.avatarUrl,
       firstName: comment.name.split(' ')[0],
-      lastname: comment.name.split(' ')[1],
+      lastName: comment.name.split(' ')[1],
     };
     return (
       <View>

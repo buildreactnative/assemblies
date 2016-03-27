@@ -25,7 +25,7 @@ const DEFAULT_AVATAR = 'https://confluence.slac.stanford.edu/s/en_GB/5996/4a6343
 class Message extends React.Component{
   render(){
     let {message, user} = this.props;
-    if (DEV) {console.log('MESSAGE PROPS', message, user);}
+    // if (DEV) {console.log('MESSAGE PROPS', message, user);}
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={()=>{

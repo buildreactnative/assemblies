@@ -185,10 +185,8 @@ export default class Event extends Component{
       if (DEV) {console.log('DATA', data);}
       event.comments = comments.concat(comment);
       this.props.changeEvent(data);
-      this._createNotification(data);
-      this.setState({message: '', newComment: true}, () => {
-        this.setState({newComment: false})
-      });
+      // this._createNotification(data);
+      this.setState({message: '', newComment: true});
     })
     .catch((err) => {
       if (DEV) {console.log('ERR:', err);}

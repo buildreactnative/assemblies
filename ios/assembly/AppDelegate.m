@@ -17,7 +17,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-  SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey:@"LPt1hu87m5Z6raDD5CNCQpIoDMVOctnm"];
+  SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey:@"APP_KEY_HERE"];
 
     [SEGAnalytics setupWithConfiguration:config];
   NSURL *jsCodeLocation;

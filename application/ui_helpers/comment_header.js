@@ -37,12 +37,13 @@ export default class CommentHeader extends React.Component{
       maxHeight: 50,
     };
   }
-  componentWillReceiveProps(nextProps){
-    if (!! nextProps.newComment && ! this.props.newComment && ! this.props.isToggled){
-      this._toggle();
-    }
-  }
+  // componentWillReceiveProps(nextProps){
+  //   if (!! nextProps.newComment && ! this.props.newComment && ! this.props.isToggled){
+  //     this._toggle();
+  //   }
+  // }
   _setMaxHeight(event){
+    if (DEV) {console.log('SET MAX HEIGHT', event.nativeEvent.layout);}
     if (!! event.nativeEvent && event.nativeEvent.layout.height > this.state.maxHeight){
       this.setState({
         maxHeight: event.nativeEvent.layout.height,
