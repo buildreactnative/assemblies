@@ -41,6 +41,7 @@ export default class CommentHeader extends React.Component{
   componentWillReceiveProps(nextProps){
     if (DEV) {console.log('NEXT PROPS COMMENT HEADER', this.props.event.comments, nextProps.event.comments);}
     if (nextProps.isToggled != this.props.isToggled){
+      if (DEV) {console.log('TOGGLE NOW')}
       this._toggle();
     }
     if (nextProps.event.comments != this.props.event.comments){
@@ -66,6 +67,13 @@ export default class CommentHeader extends React.Component{
     let finalValue = initialValue + int;
     if (DEV) {console.log('ADD HEIGHT', finalValue);}
     this.setState({maxHeight: this.state.maxHeight + int});
+    if (this.props.isToggled){
+      Animated.spring(
+        this.state.animation, {
+          toValue: finalValue,
+        }
+      ).start();
+    }
   }
   _reduceHeight(int){
     if (DEV) {console.log('REDUCE HEIGHT', int);}
