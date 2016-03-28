@@ -9,9 +9,11 @@
 
 ## Screenshots
 
-![screenshot](./screenshots/assemblies-a.png =200x)
-![screenshot](./screenshots/assemblies-b.png =200x)
-![screenshot](./screenshots/assemblies-c.png =200x)
+<div style="display: flex; justify-content: center; align-items: center;">
+  <img src="./screenshots/assemblies-a.png" style="width: 200px;"></img>
+  <img src="./screenshots/assemblies-b.png" style="width: 200px;"></img>
+  <img src="./screenshots/assemblies-c.png" style="width: 200px;"></img>
+</div>
 
 ## Contributing
 
