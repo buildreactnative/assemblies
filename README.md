@@ -24,6 +24,7 @@
   - `cd build-react-native`
   - `npm install`
   - `open ios/assembly.xcworkspace`
+  - before running, you must add a `Keys.plist` file to replace the one that is ignored by Git. To do this, in Xcode, open `file` => `new` => `file...` => choose `Resource` and `Property List` => name it `Keys.plist` and include the key `SEGMENT_API_KEY`. You can give it any value to avoid errors
   - choose which simulator you would like to use and hit the `run` button in Xcode
 
 ## Things to test and improve
