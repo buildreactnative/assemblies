@@ -9,9 +9,9 @@
 
 ## Screenshots
 
-![screenshot](./screenshots/assemblies-a.png)
-![screenshot](./screenshots/assemblies-b.png)
-![screenshot](./screenshots/assemblies-c.png)
+![screenshot](./screenshots/assemblies-a.png =200px)
+![screenshot](./screenshots/assemblies-b.png =200px)
+![screenshot](./screenshots/assemblies-c.png =200px)
 
 ## Contributing
 
