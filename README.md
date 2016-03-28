@@ -24,7 +24,11 @@
   - `cd build-react-native`
   - `npm install`
   - `open ios/assembly.xcworkspace`
-  - before running, you must add a `Keys.plist` file to replace the one that is ignored by Git. To do this, in Xcode, open `file` => `new` => `file...` => choose `Resource` and `Property List` => name it `Keys.plist` and include the key `SEGMENT_API_KEY`. You can give it any value to avoid errors
+  - open up `AppDelegate.m`, and comment out or erase the following lines -  
+    `NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Keys"  ofType:@"plist"];
+    initWithContentsOfFile:plistPath];
+    NSString *segmentKey = configuration[@"SEGMENT_API_KEY"];`
+  - change the line - `SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey: segmentKey];` to be `SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey: @"API_KEY"];`
   - choose which simulator you would like to use and hit the `run` button in Xcode
 
 ## Things to test and improve

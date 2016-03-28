@@ -17,13 +17,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Keys" ofType:@"plist"];
-  NSDictionary *configuration = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
-  NSString *segmentKey = configuration[@"SEGMENT_API_KEY"];
+//  NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Keys" ofType:@"plist"];
+//  NSDictionary *configuration = [[NSDictionary alloc] initWithContentsOfFile:plistPath];
+//  NSString *segmentKey = configuration[@"SEGMENT_API_KEY"];
   
   
   [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-  SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey: segmentKey];
+  SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey: @"API_KEY"];
 
     [SEGAnalytics setupWithConfiguration:config];
   NSURL *jsCodeLocation;
