@@ -1,5 +1,5 @@
 import Icon                       from 'react-native-vector-icons/Ionicons';
-import NavigationBar              from 'react-native-navbar';
+import NavigationBar              from '../third_party/react-native-navbar/index';
 import Progress                   from 'react-native-progress';
 import _                          from 'underscore';
 import Colors                     from '../styles/colors';

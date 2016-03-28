@@ -1,6 +1,6 @@
 import Colors               from '../styles/colors';
 import Icon                 from 'react-native-vector-icons/Ionicons';
-import NavigationBar        from 'react-native-navbar';
+import NavigationBar        from '../third_party/react-native-navbar/index';
 import Groups               from '../groups/groups';
 import Group                from '../groups/group';
 import CreateGroup          from '../groups/create_group';

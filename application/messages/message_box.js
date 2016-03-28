@@ -5,7 +5,7 @@ import moment                 from 'moment';
 import InvertibleScrollView   from 'react-native-invertible-scroll-view';
 import Message                from './message';
 import {messageFixtures}      from '../fixtures/messages';
-import NavigationBar          from 'react-native-navbar';
+import NavigationBar          from '../third_party/react-native-navbar/index';
 import _                      from 'underscore';
 import KeyboardSpacer         from 'react-native-keyboard-spacer';
 import {BASE_URL, DEV, HEADERS} from '../utilities/fixtures';

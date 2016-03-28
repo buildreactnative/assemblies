@@ -2,7 +2,7 @@ import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import _ from 'underscore';
-import NavigationBar from 'react-native-navbar';
+import NavigationBar from '../third_party/react-native-navbar/index';
 import GroupBox from '../groups/group_box';
 import {BASE_URL, DEV} from '../utilities/fixtures';
 

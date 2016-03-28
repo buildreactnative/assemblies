@@ -1,5 +1,5 @@
 import _                from 'underscore';
-import NavigationBar    from 'react-native-navbar';
+import NavigationBar    from '../third_party/react-native-navbar/index';
 import Icon             from 'react-native-vector-icons/Ionicons';
 import moment           from 'moment';
 import CalendarSection  from './calendar_section';

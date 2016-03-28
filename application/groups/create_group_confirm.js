@@ -1,6 +1,6 @@
 import _                from 'underscore';
 import Icon             from 'react-native-vector-icons/Ionicons';
-import NavigationBar    from 'react-native-navbar';
+import NavigationBar    from '../third_party/react-native-navbar/index';
 import Colors           from '../styles/colors';
 import Globals          from '../styles/globals';
 import COLOR_FIXTURES   from '../styles/color_fixtures';

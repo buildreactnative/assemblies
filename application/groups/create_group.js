@@ -1,6 +1,6 @@
 import _                from 'underscore';
 import Icon             from 'react-native-vector-icons/Ionicons';
-import NavigationBar    from 'react-native-navbar';
+import NavigationBar    from '../third_party/react-native-navbar/index';
 import Colors           from '../styles/colors';
 import Globals          from '../styles/globals';
 import ErrorMessage     from '../ui_helpers/error_message';

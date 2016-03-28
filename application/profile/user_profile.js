@@ -1,6 +1,6 @@
 import Colors from '../styles/colors';
 import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
+import NavigationBar from '../third_party/react-native-navbar/index';
 import {profileFixture} from '../fixtures/users';
 
 import React, {

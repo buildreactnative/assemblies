@@ -1,6 +1,6 @@
 import _                  from 'underscore';
 import Icon               from 'react-native-vector-icons/Ionicons';
-import NavigationBar      from 'react-native-navbar';
+import NavigationBar      from '../third_party/react-native-navbar/index';
 import GroupBox           from './group_box';
 import SuggestedGroupBox  from './suggested_group_box';
 import AddGroupBox        from './add_group_box';

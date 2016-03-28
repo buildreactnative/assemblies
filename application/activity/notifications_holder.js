@@ -63,12 +63,12 @@ export default class NotificationsHolder extends Component{
   _renderNoNotifications(){
     if (! this.props.fetchedNotifications) {
       return (
-        <View style={{height: 100}}>
+        <View style={{flex: 1,}}>
         </View>
       );
     }
     return (
-      <View style={{height: 100}}>
+      <View style={{height: deviceHeight / 3 }}>
         <NoMessages
           text='You do not have any notifications at this time.'
           textStyle={{fontSize: 14, fontStyle: 'italic'}}
@@ -177,7 +177,9 @@ let styles = StyleSheet.create({
     paddingHorizontal: 15,
     color: Colors.bodyText,
   },
-  notificationsHolder:{},
+  notificationsHolder:{
+    flex: 1,
+  },
   break: {
     borderWidth: 1,
     borderColor: '#ddd',
