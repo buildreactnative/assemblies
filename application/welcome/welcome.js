@@ -22,7 +22,7 @@ class Welcome extends Component {
         </View>
         <View style={styles.content}>
           <Image style={styles.logo} source={require('../assets/images/logo.png')} />
-          <Text style={styles.title}>assembly</Text>
+          <Text style={styles.title}>assemblies</Text>
           <Text style={styles.subTitle}>Where Developers Connect</Text>
         </View>
         <TouchableOpacity style={styles.registerButton}
