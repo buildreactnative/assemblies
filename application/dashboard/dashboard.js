@@ -147,20 +147,21 @@ export default class Dashboard extends Component {
     }
     return (
       <TabBarIOS>
+
         <Icon.TabBarItem
-          title="Messages"
-          selected={this.state.selectedTab == 'Messages'}
-          iconName="android-chat"
-          selectedIconName="android-chat"
+          title="Activity"
+          selected={this.state.selectedTab == 'Activity'}
+          iconName="clipboard"
+          selectedIconName="clipboard"
           onPress={()=>{
             this.setState({
-              selectedTab: 'Messages'
+              selectedTab: 'Activity'
             })
           }}
           >
-          <MessagesView
-            {...this.state}
+          <ActivityView
             {...this.props}
+            {...this.state}
             sendData={this._sendData.bind(this)}
           />
         </Icon.TabBarItem>
@@ -199,19 +200,19 @@ export default class Dashboard extends Component {
           />
         </Icon.TabBarItem>
         <Icon.TabBarItem
-          title="Activity"
-          selected={this.state.selectedTab == 'Activity'}
-          iconName="clipboard"
-          selectedIconName="clipboard"
+          title="Messages"
+          selected={this.state.selectedTab == 'Messages'}
+          iconName="android-chat"
+          selectedIconName="android-chat"
           onPress={()=>{
             this.setState({
-              selectedTab: 'Activity'
+              selectedTab: 'Messages'
             })
           }}
           >
-          <ActivityView
-            {...this.props}
+          <MessagesView
             {...this.state}
+            {...this.props}
             sendData={this._sendData.bind(this)}
           />
         </Icon.TabBarItem>
