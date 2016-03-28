@@ -1,7 +1,7 @@
-const BASE_URL = 'http://162.243.209.229:5000'; // comment out to run locally
-// const BASE_URL = 'http://localhost:2403';
+// const BASE_URL = 'http://162.243.209.229:5000'; // comment out to run locally
+const BASE_URL = 'http://localhost:2403';
 
-const DEV = false;
+const DEV = true;
 
 const TIMES_RANGE = [
   '12:00 am',

@@ -4,7 +4,7 @@
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "736h",
-      "filename" : "launch-screen-3.png",
+      "filename" : "launch-screen-4.png",
       "minimum-system-version" : "8.0",
       "orientation" : "portrait",
       "scale" : "3x"
@@ -21,7 +21,7 @@
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "667h",
-      "filename" : "launch-screen-4.png",
+      "filename" : "launch-screen-3.png",
       "minimum-system-version" : "8.0",
       "orientation" : "portrait",
       "scale" : "2x"
@@ -46,14 +46,14 @@
     {
       "orientation" : "portrait",
       "idiom" : "iphone",
-      "filename" : "launch-screen-6.png",
+      "filename" : "launch-screen-7.png",
       "extent" : "full-screen",
       "scale" : "1x"
     },
     {
       "orientation" : "portrait",
       "idiom" : "iphone",
-      "filename" : "launch-screen-7.png",
+      "filename" : "launch-screen-6.png",
       "extent" : "full-screen",
       "scale" : "2x"
     },

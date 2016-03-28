@@ -56,7 +56,7 @@
                                                       moduleName:@"assembly"
                                                initialProperties:nil
                                                    launchOptions:launchOptions];
-  UIImage *image = [UIImage imageNamed: @"LaunchImage"];
+  UIImage *image = [UIImage imageNamed: @"LaunchScreen"];
   if (image){
     UIImageView *launchView = [[UIImageView alloc] initWithImage: image];
     launchView.contentMode = UIViewContentModeBottom;
