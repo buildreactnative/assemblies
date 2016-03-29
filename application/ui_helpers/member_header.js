@@ -37,7 +37,7 @@ export default class MemberHeader extends React.Component{
     };
   }
   _setMaxHeight(event){
-    if (!! event.nativeEvent && event.nativeEvent.layout.height > this.state.maxHeight){
+    if (!! (event.nativeEvent && event.nativeEvent.layout.height > this.state.maxHeight)){
       this.setState({
         maxHeight: event.nativeEvent.layout.height,
         measured: true,
