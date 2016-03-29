@@ -24,11 +24,7 @@
   - `cd build-react-native`
   - `npm install`
   - `open ios/assembly.xcworkspace`
-  - open up `AppDelegate.m`, and comment out or erase the following lines -  
-    `NSString *plistPath = [[NSBundle mainBundle] pathForResource:@"Keys"  ofType:@"plist"];
-    initWithContentsOfFile:plistPath];
-    NSString *segmentKey = configuration[@"SEGMENT_API_KEY"];`
-  - change the line - `SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey: segmentKey];` to be `SEGAnalyticsConfiguration *config = [SEGAnalyticsConfiguration configurationWithWriteKey: @"API_KEY"];`
+  - before you run the app, you have to create a file `Keys.plist` - this is what the main file `AppDelegate.m` uses to load analytics. Without the file Xcode will throw an error if you try to run. So in the main `assembly` folder, click `file` > `new` > `File...` > then select `Resource` => `Property List`, and title it `Keys.plist`. In the file, add a key `SEGMENT_API_KEY` and give it the value of any string. Make sure that `Keys.plist` doesn't get commited to git (you can place this file in a `.gitignore` file)
   - choose which simulator you would like to use and hit the `run` button in Xcode
 
 ## Things to test and improve
