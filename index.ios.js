@@ -49,7 +49,7 @@ class assembly extends Component {
         if (DEV) {console.log('USER PARAMS', userParams);}
         let parsedUser = JSON.parse(userParams);
         if (DEV) {console.log('USER PARAMS', parsedUser);}
-        if (!! parsedUser && parsedUser.username && parsedUser.password){
+        if (!! (parsedUser && parsedUser.username && parsedUser.password)){
           let errors = null;
           if (DEV) {console.log("LOGIN", `${BASE_URL}/users/login`)}
           fetch(`${BASE_URL}/users/login`, {

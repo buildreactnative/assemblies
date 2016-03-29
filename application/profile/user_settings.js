@@ -88,10 +88,10 @@ class UserSettings extends React.Component{
   }
   _testErrors(){
     let {location, summary, firstName, lastName} = this.state;
-    if (!! location &&
-        summary != '' &&
-        firstName != '' &&
-        lastName != ''
+    if (!! (location &&
+            summary != '' &&
+            firstName != '' &&
+            lastName != '')
     ) {
       this.setState({formError: ''})
     }

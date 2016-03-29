@@ -76,11 +76,11 @@ export default class Register extends Component{
   }
   _testErrors(){
     let {location, email, password, firstName, lastName} = this.state;
-    if (!! location &&
-        email != '' &&
-        password != '' &&
-        firstName != '' &&
-        lastName != ''
+    if (!! (location &&
+            email != '' &&
+            password != '' &&
+            firstName != '' &&
+            lastName != '')
     ) {
       this.setState({formError: ''})
     }
