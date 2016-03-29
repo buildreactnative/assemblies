@@ -90,7 +90,7 @@ class assembly extends Component {
         }
       } else {
         if (DEV) {console.log('COULD NOT FIND USER');}
-        this.setState({foundUser: true})
+        this.setState({foundUser: false})
       }
     } catch (error) {
       if (DEV) {console.log('ERR: ', error)}
