@@ -21,7 +21,7 @@
 
 - Here are the steps to running the app locally on your machine.
   - Make sure you're running at least node version 4.0.0 - you can check your node version by running ```node -v``` in your terminal
-  - `git clone http://github.com/tgoldenberg/build-react-native`
+  - `git clone https://github.com/buildreactnative/assemblies`
   - `cd build-react-native`
   - `npm install`
   - `open ios/assembly.xcworkspace`
