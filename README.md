@@ -5,7 +5,7 @@
 ---
 
 - Assemblies is an open-source mobile app built with `React Native` which developers can use to connect through 'assemblies' in their area.
-- The app is the basis for a tutorial on `React Native` at [www.buildreactnative.com](www.buildreactnative.com) though the actual app will contain features that are not covered in the tutorial.
+- The app is the basis for a tutorial on `React Native` at [www.buildreactnative.com](http://www.buildreactnative.com) though the actual app will contain features that are not covered in the tutorial.
 
 ## Screenshots
 
