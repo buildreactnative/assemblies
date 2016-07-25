@@ -11,6 +11,13 @@ import Dashboard from './application/components/Dashboard';
 import { globals } from './application/styles';
 
 class assembliesTutorial extends Component {
+  constructor(){
+    super();
+    this.updateUser = this.updateUser.bind(this);
+    this.state = {
+      user: null
+    }
+  }
   render() {
     return (
       <Navigator
@@ -32,7 +39,11 @@ class assembliesTutorial extends Component {
             );
             case 'Login':
               return (
-                <Login navigator={navigator}/>
+                <Login
+                  navigator={navigator}
+                  user={this.state.user}
+                  updateUser={this.updateUser}
+                />
             );
           }
         }}
