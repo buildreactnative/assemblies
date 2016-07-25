@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { globals } from '../styles';
+import { globals } from '../../styles';
 
 const BackButton = ({ handlePress }) => (
   <TouchableOpacity onPress={handlePress} style={globals.pa1}>

@@ -5,6 +5,8 @@ import {
 } from 'react-native';
 
 import Landing from './application/components/Landing';
+import Register from './application/components/accounts/Register';
+import Login from './application/components/accounts/Login';
 import Dashboard from './application/components/Dashboard';
 import { globals } from './application/styles';
 
@@ -23,6 +25,14 @@ class assembliesTutorial extends Component {
             case 'Dashboard':
               return (
                 <Dashboard navigator={navigator}/>
+            );
+            case 'Register':
+              return (
+                <Register navigator={navigator}/>
+            );
+            case 'Login':
+              return (
+                <Login navigator={navigator}/>
             );
           }
         }}
