@@ -108,11 +108,11 @@ export const FakeConversations = FakeUsers.map((user, idx) => ({
 }));
 
 export const FakeNotifications = [
-  {time: randomDate().valueOf(), message: 'new message from Kanye', type: 'Message', seen: false,},
-  {time: randomDate().valueOf(), message: 'comment in React Native NYC', type: 'Event', seen: false,},
-  {time: randomDate().valueOf(), message: 'new members in React Native NYC', type: 'Group', seen: false,},
-  {time: randomDate().valueOf(), message: 'new message from Nick', type: 'Message', seen: false,},
-  {time: randomDate().valueOf(), message: 'new event in JavaScript', type: 'Event', seen: false,},
+  {createdAt: randomDate().valueOf(), message: 'new message from Kanye', type: 'Message', seen: false,},
+  {createdAt: randomDate().valueOf(), message: 'comment in React Native NYC', type: 'Event', seen: false,},
+  {createdAt: randomDate().valueOf(), message: 'new members in React Native NYC', type: 'Group', seen: false,},
+  {createdAt: randomDate().valueOf(), message: 'new message from Nick', type: 'Message', seen: false,},
+  {createdAt: randomDate().valueOf(), message: 'new event in JavaScript', type: 'Event', seen: false,},
 ]
 
 

@@ -8,6 +8,7 @@ import { find } from 'underscore';
 import Colors from '../../styles/colors';
 import { FakeConversations, FakeUsers, currentUser } from '../../fixtures';
 import { globals, messagesStyles } from '../../styles';
+import { rowHasChanged } from '../../utilities';
 
 const styles = messagesStyles;
 
@@ -42,10 +43,7 @@ class Conversations extends Component{
   }
   dataSource(){
     return (
-      new ListView.DataSource({
-        rowHasChanged: (r1,r2) => r1 != r2
-      })
-      .cloneWithRows(FakeConversations)
+      new ListView.DataSource({ rowHasChanged: rowHasChanged }).cloneWithRows(FakeConversations)
     );
   }
   render() {
