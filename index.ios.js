@@ -13,15 +13,23 @@ import { globals } from './application/styles';
 class assembliesTutorial extends Component {
   constructor(){
     super();
+    this.logout = this.logout.bind(this);
     this.updateUser = this.updateUser.bind(this);
     this.state = {
       user: null
     }
   }
+  logout(){
+    this.nav.push({ name: 'Landing' })
+  }
+  updateUser(user){
+    this.setState({ user });
+  }
   render() {
     return (
       <Navigator
         style={globals.flex}
+        ref={(el) => this.nav = el }
         initialRoute={{ name: 'Landing' }}
         renderScene={(route, navigator) => {
           switch(route.name){
@@ -31,7 +39,11 @@ class assembliesTutorial extends Component {
             );
             case 'Dashboard':
               return (
-                <Dashboard navigator={navigator}/>
+                <Dashboard
+                  navigator={navigator}
+                  logout={this.logout}
+                  user={this.state.user}
+                />
             );
             case 'Register':
               return (
@@ -41,7 +53,6 @@ class assembliesTutorial extends Component {
               return (
                 <Login
                   navigator={navigator}
-                  user={this.state.user}
                   updateUser={this.updateUser}
                 />
             );
