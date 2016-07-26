@@ -1,6 +1,6 @@
 import NavigationBar from 'react-native-navbar';
 import React, { Component } from 'react';
-import { Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import { Text, View, ScrollView, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
 import { extend } from 'underscore';
 
 import Colors from '../../styles/colors';
@@ -48,6 +48,7 @@ class Login extends Component{
     }
   }
   fetchUserInfo(sid){
+    AsyncStorage.setItem('sid', sid);
     fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) })
     .then(response => response.json())
     .then(user => this.updateUserInfo(user))

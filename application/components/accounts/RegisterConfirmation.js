@@ -3,14 +3,7 @@ import ImagePicker from 'react-native-image-picker';
 import NavigationBar from 'react-native-navbar';
 import Dropdown, { Select, Option, OptionList } from 'react-native-selectme';
 import React, { Component } from 'react';
-import {
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-  Dimensions
-} from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View, Dimensions, AsyncStorage } from 'react-native';
 import { uniq, extend } from 'underscore';
 
 import BackButton from '../shared/BackButton';
@@ -86,6 +79,7 @@ class RegisterConfirm extends Component{
     .done();
   }
   getUserInfo(sid){ /* use session id to retreive user information and store session id in local storage */
+    AsyncStorage.setItem('sid', sid);
     fetch(`${API}/users/me`, { headers: extend(Headers, { 'Set-Cookie': `sid=${sid}`}) })
     .then(response => response.json())
     .then(user => {
