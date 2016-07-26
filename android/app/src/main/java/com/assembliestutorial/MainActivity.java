@@ -1,6 +1,8 @@
 package com.assembliestutorial;
 
 import com.facebook.react.ReactActivity;
+import com.imagepicker.ImagePickerPackage;
+import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 
 public class MainActivity extends ReactActivity {

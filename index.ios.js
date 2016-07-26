@@ -6,6 +6,7 @@ import {
 
 import Landing from './application/components/Landing';
 import Register from './application/components/accounts/Register';
+import RegisterConfirmation from './application/components/accounts/RegisterConfirmation';
 import Login from './application/components/accounts/Login';
 import Dashboard from './application/components/Dashboard';
 import { globals } from './application/styles';
@@ -48,6 +49,14 @@ class assembliesTutorial extends Component {
             case 'Register':
               return (
                 <Register navigator={navigator}/>
+            );
+            case 'RegisterConfirmation':
+              return (
+                <RegisterConfirmation
+                  {...route}
+                  updateUser={this.updateUser}
+                  navigator={navigator}
+                />
             );
             case 'Login':
               return (
