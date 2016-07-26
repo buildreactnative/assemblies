@@ -1,66 +1,82 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, ListView } from 'react-native';
-import moment from 'moment';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import { find } from 'underscore';
+import { Navigator } from 'react-native';
+import { flatten, uniq } from 'underscore';
 
-import Colors from '../../styles/colors';
-import { FakeConversations, FakeUsers, currentUser } from '../../fixtures';
-import { globals, messagesStyles } from '../../styles';
-import { rowHasChanged } from '../../utilities';
+import Conversation from './Conversation';
+import Conversations from './Conversations';
+import { DEV, API } from '../../config';
+import { globals } from '../../styles';
 
-const styles = messagesStyles;
-
-class Conversations extends Component{
+class MessagesView extends Component{
   constructor(){
     super();
-    this._renderRow = this._renderRow.bind(this);
-    this.dataSource = this.dataSource.bind(this);
+    this.state = {
+      conversations : [],
+      ready         : false,
+      users         : [],
+    };
+  }
+  componentDidMount(){
+    this._loadConversations();
+  }
+  _loadConversations(){
+    let { currentUser } = this.props;
+    let query = {
+      $or: [
+        { user1Id: currentUser.id },
+        { user2Id: currentUser.id }
+      ],
+      $limit: 10, $sort: { lastMessageDate: -1 }
+    };
+    fetch(`${API}/conversations?${JSON.stringify(query)}`)
+    .then(response => response.json())
+    .then(conversations => this._loadUsers(conversations))
+    .catch(err => this.ready(err))
+    .done();
+  }
+  _loadUsers(conversations){
+    let userIds = uniq(flatten(conversations.map(c => [c.user1Id, c.user2Id])));
+    let query = { id: { $in: userIds }};
+    fetch(`${API}/users?${JSON.stringify(query)}`)
+    .then(response => response.json())
+    .then(users => this.setState({ conversations, users, ready: true }))
+    .catch(err => this.ready(err))
+    .done();
+  }
+  ready(err){
+    console.log('ERR', err);
+    this.setState({ ready: true });
   }
 
-  _renderRow(conversation){
-    let otherUserID = find([conversation.user1Id, conversation.user2Id], (id) => id !== currentUser.id);
-    let user = find(FakeUsers, ({ id }) => id === otherUserID);
+  render(){
     return (
-      <TouchableOpacity style={globals.flexContainer}>
-        <View style={globals.flexRow}>
-          <Image style={globals.avatar} source={{uri: user.avatar}}/>
-          <View style={globals.flex}>
-            <View style={globals.textContainer}>
-              <Text style={styles.h5}>{user.firstName} {user.lastName}</Text>
-              <Text style={styles.h6}>{moment(conversation.lastMessageDate).fromNow()}</Text>
-            </View>
-            <Text style={styles.h4}>{conversation.lastMessageText.substring(0, 40)}...</Text>
-          </View>
-          <View style={styles.arrowContainer}>
-            <Icon size={30} name="ios-arrow-forward" color={Colors.bodyTextLight}/>
-          </View>
-        </View>
-        <View style={styles.divider}/>
-      </TouchableOpacity>
+      <Navigator
+        style={globals.flex}
+        initialRoute={{ name: 'Conversations' }}
+        renderScene={(route, navigator) => {
+          switch(route.name){
+            case 'Conversations':
+              return (
+                <Conversations
+                  {...this.props}
+                  {...this.state}
+                  navigator={navigator}
+                />
+            );
+            case 'Conversation':
+              return (
+                <Conversation
+                  {...this.props}
+                  {...this.state}
+                  {...route}
+                  navigator={navigator}
+                />
+            );
+          }
+        }}
+      />
     )
   }
-  dataSource(){
-    return (
-      new ListView.DataSource({ rowHasChanged: rowHasChanged }).cloneWithRows(FakeConversations)
-    );
-  }
-  render() {
-    return (
-      <View style={globals.flexContainer}>
-        <NavigationBar
-          title={{ title: 'Messages', tintColor: 'white' }}
-          tintColor={Colors.brandPrimary}
-        />
-        <ListView
-          dataSource={this.dataSource()}
-          contentInset={{ bottom: 49 }}
-          renderRow={this._renderRow}
-        />
-      </View>
-    );
-  }
-};
+}
 
-export default Conversations;
+export default MessagesView;

@@ -33,7 +33,7 @@ class Dashboard extends Component{
           iconName='ios-pulse'
           onPress={() => this.setState({ selectedTab: 'Activity' })}
         >
-          <ActivityView />
+          <ActivityView currentUser={user}/>
         </TabBarItemIOS>
         <TabBarItemIOS
           title='Messages'
@@ -41,7 +41,7 @@ class Dashboard extends Component{
           iconName='ios-chatboxes'
           onPress={() => this.setState({ selectedTab: 'Messages' })}
         >
-          <MessagesView />
+          <MessagesView currentUser={user}/>
         </TabBarItemIOS>
         <TabBarItemIOS
           title='Profile'
