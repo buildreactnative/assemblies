@@ -12,6 +12,8 @@
     "react-native-config": "0.0.7",
     "react-native-google-places-autocomplete": "https://github.com/tgoldenberg/react-native-google-places-autocomplete/tarball/master",
     "react-native-image-picker": "^0.21.2",
+    "react-native-invertible-scroll-view": "^1.0.0",
+    "react-native-keyboard-spacer": "^0.3.0",
     "react-native-navbar": "^1.5.0",
     "react-native-selectme": "^1.2.0",
     "react-native-vector-icons": "^2.0.3",
