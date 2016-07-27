@@ -4,6 +4,8 @@ import { find, isEqual } from 'underscore';
 
 import Groups from './Groups';
 import Group from './Group';
+import CreateEvent from './CreateEvent';
+import CreateEventConfirmation from './CreateEventConfirmation';
 import CreateGroup from './CreateGroup';
 import CreateGroupConfirmation from './CreateGroupConfirmation';
 import Headers from '../../fixtures';
@@ -142,6 +144,24 @@ class GroupsView extends Component{
                   addUserToGroup={this.addUserToGroup}
                   navigator={navigator}
                   unsubscribeFromGroup={this.unsubscribeFromGroup}
+                />
+            );
+            case 'CreateEvent':
+              return (
+                <CreateEvent
+                  {...this.props}
+                  {...this.state}
+                  {...route}
+                  navigator={navigator}
+                />
+            );
+            case 'CreateEventConfirmation':
+              return (
+                <CreateEventConfirmation
+                  {...this.props}
+                  {...this.state}
+                  {...route}
+                  navigator={navigator}
                 />
             );
           }
