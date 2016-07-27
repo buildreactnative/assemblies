@@ -61,7 +61,7 @@ class Conversations extends Component{
           tintColor={Colors.brandPrimary}
         />
         <ListView
-          enableEmptySectionHeaders={true}
+          enableEmptySections={true}
           dataSource={this.dataSource()}
           contentInset={{ bottom: 49 }}
           renderRow={this._renderRow}

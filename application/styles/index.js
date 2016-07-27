@@ -68,8 +68,9 @@ export const groupsStyles = StyleSheet.create({
     fontWeight: '300',
   },
   boxContainer: {
-    flexDirection: 'row',
+    alignItems: 'center',
     flexWrap: 'wrap',
+    flexDirection: 'row',
     justifyContent: 'center',
   },
   groupImage: {

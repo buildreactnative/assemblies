@@ -12,16 +12,11 @@ import Register from './application/components/accounts/Register';
 import RegisterConfirmation from './application/components/accounts/RegisterConfirmation';
 import Login from './application/components/accounts/Login';
 import Dashboard from './application/components/Dashboard';
+import Loading from './application/components/shared/Loading';
 import { Headers } from './application/fixtures';
 import { extend } from 'underscore';
 import { API, DEV } from './application/config';
 import { globals } from './application/styles';
-
-const Loading = () => (
-  <View style={globals.flexCenter}>
-    <ActivityIndicator size='large'/>
-  </View>
-);
 
 class assembliesTutorial extends Component {
   constructor(){

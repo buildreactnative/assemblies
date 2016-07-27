@@ -5,6 +5,8 @@ import { TabBarItemIOS } from 'react-native-vector-icons/Ionicons';
 import ActivityView from './activity/ActivityView';
 import MessagesView from './messages/MessagesView';
 import ProfileView from './profile/ProfileView';
+import GroupsView from './groups/GroupsView';
+import CalendarView from './calendar/CalendarView';
 import { Headers } from '../fixtures';
 import { API, DEV } from '../config';
 
@@ -34,6 +36,22 @@ class Dashboard extends Component{
           onPress={() => this.setState({ selectedTab: 'Activity' })}
         >
           <ActivityView currentUser={user}/>
+        </TabBarItemIOS>
+        <TabBarItemIOS
+          title='Groups'
+          selected={ this.state.selectedTab == 'Groups' }
+          iconName='ios-people'
+          onPress={() => this.setState({ selectedTab: 'Groups' })}
+        >
+          <GroupsView currentUser={user}/>
+        </TabBarItemIOS>
+        <TabBarItemIOS
+          title='Calendar'
+          selected={ this.state.selectedTab == 'Calendar' }
+          iconName='ios-calendar'
+          onPress={() => this.setState({ selectedTab: 'Calendar' })}
+        >
+          <CalendarView currentUser={user}/>
         </TabBarItemIOS>
         <TabBarItemIOS
           title='Messages'
