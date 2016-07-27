@@ -29,7 +29,7 @@ class CreateGroup extends Component{
   handleSubmit(){
     let { name, location, summary, description } = this.state;
     this.props.navigator.push({
-      name        : 'CreateGroupConfirm',
+      name        : 'CreateGroupConfirmation',
       groupName   : name,
       description,
       location,
@@ -65,7 +65,7 @@ class CreateGroup extends Component{
           <GooglePlacesAutocomplete
             styles={autocompleteStyles}
             placeholder='Your city'
-            minLength={2} 
+            minLength={2}
             autoFocus={false}
             fetchDetails={true}
             onPress={this.handlePress}

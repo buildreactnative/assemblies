@@ -3,6 +3,7 @@ import { Navigator } from 'react-native';
 import { find, isEqual } from 'underscore';
 
 import Groups from './Groups';
+import Group from './Group';
 import CreateGroup from './CreateGroup';
 import CreateGroupConfirmation from './CreateGroupConfirmation';
 import Headers from '../../fixtures';
@@ -12,6 +13,7 @@ import { globals } from '../../styles';
 class GroupsView extends Component{
   constructor(){
     super();
+    this.addGroup = this.addGroup.bind(this);
     this.state = {
       groups            : [],
       ready             : false,
@@ -50,6 +52,13 @@ class GroupsView extends Component{
   ready(err){
     this.setState({ ready: true })
   }
+  addGroup(group){
+    this.setState({
+      groups: [
+        ...this.state.groups, group
+      ]
+    })
+  }
   render(){
     return (
       <Navigator
@@ -77,6 +86,16 @@ class GroupsView extends Component{
             case 'CreateGroupConfirmation':
               return (
                 <CreateGroupConfirmation
+                  {...this.props}
+                  {...this.state}
+                  {...route}
+                  addGroup={this.addGroup}
+                  navigator={navigator}
+                />
+            );
+            case 'Group':
+              return (
+                <Group
                   {...this.props}
                   {...this.state}
                   {...route}

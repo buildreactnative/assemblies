@@ -1,5 +1,18 @@
 import { flatten } from 'underscore';
 
+export const SolidColors = [
+  'red',
+  'deepPurple',
+  'indigo',
+  'teal',
+  'orange',
+  'blueGrey',
+  'purple',
+  'green',
+];
+
+export const BackgroundImage = 'https://s3-us-west-2.amazonaws.com/assembliesapp/welcome%402x.png';
+
 export const Headers = {
   'Content-Type': 'application/json'
 };
