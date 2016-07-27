@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import { find } from 'underscore';
 
+import Loading from '../shared/Loading';
 import Colors from '../../styles/colors';
 import { globals, messagesStyles } from '../../styles';
 import { rowHasChanged } from '../../utilities';
@@ -54,6 +55,7 @@ class Conversations extends Component{
     );
   }
   render() {
+    if (! this.props.ready) { return <Loading/> }
     return (
       <View style={globals.flexContainer}>
         <NavigationBar

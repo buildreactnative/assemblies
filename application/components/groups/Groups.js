@@ -107,13 +107,13 @@ class Groups extends Component{
     this.visitGroup = this.visitGroup.bind(this);
   }
   visitGroup(group){
-    // this.props.navigator.push({
-    //   name: 'Group',
-    //   group
-    // })
+    this.props.navigator.push({
+      name: 'Group',
+      group
+    })
   }
   visitCreateGroup(){
-    // this.props.navigator.push({ name: 'CreateGroup' })
+    this.props.navigator.push({ name: 'CreateGroup' })
   }
   render(){
     let { groups, suggestedGroups, ready, navigator } = this.props;
