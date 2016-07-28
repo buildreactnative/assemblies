@@ -10,6 +10,7 @@
     "react": "15.2.1",
     "react-native": "0.30.0",
     "react-native-config": "0.0.7",
+    "react-native-swipeout": "dancormier/react-native-swipeout#829b7c01ba969cd70509944bc210289b759d48a6",
     "react-native-google-places-autocomplete": "https://github.com/tgoldenberg/react-native-google-places-autocomplete/tarball/master",
     "react-native-image-picker": "^0.21.2",
     "react-native-invertible-scroll-view": "^1.0.0",
