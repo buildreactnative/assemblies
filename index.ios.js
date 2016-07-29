@@ -77,6 +77,7 @@ class assembliesTutorial extends Component {
             case 'Dashboard':
               return (
                 <Dashboard
+                  updateUser={this.updateUser}
                   navigator={navigator}
                   logout={this.logout}
                   user={this.state.user}

@@ -537,13 +537,13 @@ export const formStyles = StyleSheet.create({
   },
   textContainer: {
     paddingHorizontal: 10,
+    paddingTop: 10,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: deviceWidth
+    width: deviceWidth,
   },
   technology: {
     marginHorizontal: 4,
-    marginVertical: 8,
   },
   groupImageContainer: {
     height: 200,

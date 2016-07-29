@@ -67,7 +67,7 @@ class Dashboard extends Component{
           iconName='ios-person'
           onPress={() => this.setState({ selectedTab: 'Profile' })}
         >
-          <ProfileView currentUser={user} logout={this.logout}/>
+          <ProfileView currentUser={user} logout={this.logout} {...this.props}/>
         </TabBarItemIOS>
       </TabBarIOS>
     )
