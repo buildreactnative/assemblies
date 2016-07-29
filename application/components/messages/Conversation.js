@@ -110,7 +110,7 @@ class Conversation extends Component{
             value={this.state.message}
             placeholder='Say something...'
             placeholderTextColor={Colors.bodyTextLight}
-            onChangeText={(msg) => this.setState({ message })}
+            onChangeText={(message) => this.setState({ message })}
             style={styles.input}
           />
           <TouchableOpacity

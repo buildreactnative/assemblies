@@ -5,6 +5,7 @@ import { find, isEqual } from 'underscore';
 import Groups from './Groups';
 import Group from './Group';
 import CreateEvent from './CreateEvent';
+import Event from './Event';
 import CreateEventConfirmation from './CreateEventConfirmation';
 import CreateGroup from './CreateGroup';
 import CreateGroupConfirmation from './CreateGroupConfirmation';
@@ -160,6 +161,14 @@ class GroupsView extends Component{
                 <CreateEventConfirmation
                   {...this.props}
                   {...this.state}
+                  {...route}
+                  navigator={navigator}
+                />
+            );
+            case 'Event':
+              return (
+                <Event
+                  {...this.props}
                   {...route}
                   navigator={navigator}
                 />
