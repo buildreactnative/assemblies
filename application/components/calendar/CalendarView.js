@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 
 import Calendar from './Calendar';
+import Profile from '../profile/Profile';
+import Conversation from '../messages/Conversation';
 import Event from '../groups/Event';
 import { API, DEV } from '../../config';
 import { extend } from 'underscore';
@@ -73,6 +75,22 @@ class CalendarView extends Component{
                   {...this.props}
                   {...route}
                   {...this.state}
+                  navigator={navigator}
+                />
+            );
+            case 'Conversation':
+              return (
+                <Conversation
+                  {...this.props}
+                  {...route}
+                  navigator={navigator}
+                />
+            );
+            case 'Profile':
+              return (
+                <Profile
+                  {...this.props}
+                  {...route}
                   navigator={navigator}
                 />
             );

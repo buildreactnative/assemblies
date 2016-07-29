@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { find, isEqual } from 'underscore';
 
+import Conversation from '../messages/Conversation';
 import Groups from './Groups';
 import Group from './Group';
+import Profile from '../profile/Profile';
 import CreateEvent from './CreateEvent';
 import Event from './Event';
 import CreateEventConfirmation from './CreateEventConfirmation';
@@ -168,6 +170,22 @@ class GroupsView extends Component{
             case 'Event':
               return (
                 <Event
+                  {...this.props}
+                  {...route}
+                  navigator={navigator}
+                />
+            );
+            case 'Profile':
+              return (
+                <Profile
+                  {...this.props}
+                  {...route}
+                  navigator={navigator}
+                />
+            );
+            case 'Conversation':
+              return (
+                <Conversation
                   {...this.props}
                   {...route}
                   navigator={navigator}

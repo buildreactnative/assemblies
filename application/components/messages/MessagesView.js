@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Navigator } from 'react-native';
 import { flatten, uniq } from 'underscore';
 
+import Profile from '../profile/Profile';
 import Conversation from './Conversation';
 import Conversations from './Conversations';
 import { DEV, API } from '../../config';
@@ -68,6 +69,14 @@ class MessagesView extends Component{
                 <Conversation
                   {...this.props}
                   {...this.state}
+                  {...route}
+                  navigator={navigator}
+                />
+            );
+            case 'Profile':
+              return (
+                <Profile
+                  {...this.props}
                   {...route}
                   navigator={navigator}
                 />
