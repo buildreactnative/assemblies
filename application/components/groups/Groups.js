@@ -37,7 +37,7 @@ export const EmptyGroupBox = () => (
 
 const EmptyGroupBoxes = ({ handlePress }) => (
   <View style={styles.boxContainer}>
-    <View style={styles.groupsContainer}>
+    <View style={globals.flexRow}>
       <AddGroupBox handlePress={handlePress}/>
       <EmptyGroupBox />
     </View>

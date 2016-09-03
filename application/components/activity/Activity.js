@@ -70,6 +70,7 @@ class Activity extends Component{
     });
   }
   visitEvent(){
+    if (!this.props.nextEvents.length) { return; }
     let event = this.props.nextEvents[0];
     this.props.navigator.push({
       name: 'Event',
@@ -90,6 +91,7 @@ class Activity extends Component{
     }
   }
   render() {
+    console.log('PROPS', this.props.nextEvents);
     let upcomingEvent = this.props.nextEvents.length ? this.props.nextEvents[0] : null;
     return (
       <View style={globals.flexContainer}>

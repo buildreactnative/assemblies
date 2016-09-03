@@ -13,7 +13,7 @@ const styles = calendarStyles;
 const EmptyList = ({ ready }) => {
   if (! ready ) { return <Loading /> }
   return (
-    <View style={[globals.textContainer, globals.ph1]}>
+    <View style={[globals.textContainer, calendarStyles.emptyText]}>
       <Text style={styles.h2}>
         No events scheduled. Explore groups in the groups tab or create your own to start an event.
       </Text>

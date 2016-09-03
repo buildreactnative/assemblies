@@ -265,6 +265,10 @@ export const calendarStyles = StyleSheet.create({
     fontWeight: '300',
     paddingHorizontal: 5,
   },
+  emptyText: {
+    padding: 20, 
+    flexDirection: 'column'
+  },
   textContainer: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -39,8 +39,8 @@ class ActivityView extends Component{
     let dateQuery = { end: { $gt: new Date().valueOf() }};
     let query = {
       $or: [
-        extend(dateQuery, { going: { $elemMatch: { $eq: this.props.currentUser.id }}}),
-        extend(dateQuery, { 'location.city.long_name': this.props.currentUser.location.city.long_name })
+        extend({}, dateQuery, { going: { $elemMatch: { $eq: this.props.currentUser.id }}}),
+        extend({}, dateQuery, { 'location.city.long_name': this.props.currentUser.location.city.long_name })
       ],
       $limit: 1,
       $sort: { createdAt: 1 }
@@ -48,7 +48,7 @@ class ActivityView extends Component{
     fetch(`${API}/events?${JSON.stringify(query)}`)
     .then(response => response.json())
     .then(nextEvents => this.setState({ nextEvents }))
-    .catch(err => {})
+    .catch(err => {console.log('ERR', err)})
     .done();
   }
   render(){
