@@ -27,7 +27,7 @@
   - `open ios/assembly.xcworkspace`
   - before you run the app, you have to create a file `Keys.plist` - this is what the main file `AppDelegate.m` uses to load analytics. Without the file, Xcode will throw an error if you try to run. So in the main `assembly` folder, click `file` > `new` > `File...` > then select `Resource` => `Property List`, and title it `Keys.plist`. In the file, add a key `SEGMENT_API_KEY` and give it the value of any string. Make sure that `Keys.plist` doesn't get committed to git (you can place this file in a `.gitignore` file).
   - Install react-native-cli `npm install -g react-native-cli`. Its recommended to be installed globally.
-  - `cd iod` and `pod install`
+  - `cd ios` and `pod install`
   - choose which simulator you would like to use and hit the `run` button in Xcode
 
 ## Things to test and improve
