@@ -61,8 +61,8 @@ class ActivityView extends Component{
             case 'Activity':
               return (
                 <Activity
-                  {...this.props}
                   {...route}
+                  {...this.props}
                   {...this.state}
                   navigator={navigator}
                 />

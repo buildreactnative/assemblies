@@ -36,7 +36,7 @@ const ActivityMap = ({ event, ready }) => {
 };
 
 const Notification = ({ notification, handlePress }) => (
-  <TouchableOpacity style={[globals.flexRow, globals.ph1]} onPress={() => handlePress(notification)}>
+  <TouchableOpacity style={[globals.flexRow, globals.ph1, { minHeight: 60 }]} onPress={() => handlePress(notification)}>
     <View style={globals.flex}>
       <View style={globals.flexRow}>
         <View style={styles.circle}/>
@@ -99,7 +99,7 @@ class Activity extends Component{
           title={{ title: 'Activity', tintColor: 'white' }}
           tintColor={Colors.brandPrimary}
         />
-        <ScrollView>
+        <ScrollView style={{ flex: 1 }}>
           <TouchableOpacity onPress={this.visitEvent}>
             <View style={[globals.flexRow, globals.mb1]}>
               <Text style={styles.h4}>Next Assembly: </Text>

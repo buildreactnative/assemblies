@@ -84,7 +84,9 @@ class Profile extends React.Component{
           </View>
           <Text style={[globals.h4, globals.centerText]}>{user.firstName} {user.lastName}</Text>
           <Text style={[globals.h5, globals.centerText]}>
-            {user.location.city.long_name}, {user.location.state.long_name}
+            {user && user.location && user.location.city ? user.location.city.long_name : ''},
+            {" "}
+            {user && user.location && user.location.state ? user.location.state.long_name : ''}
           </Text>
           <TouchableOpacity style={[globals.row, globals.mv2]} onPress={this.sendMessage}>
             <Icon name="ios-chatboxes" size={40} style={globals.mr1} color={Colors.brandPrimary}/>

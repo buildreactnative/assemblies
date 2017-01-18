@@ -39,8 +39,7 @@ export const profileStyles = StyleSheet.create({
     marginVertical: 10,
   },
   logoutButton: {
-    position: 'absolute',
-    left: 30,
+    marginLeft: 30,
   },
   logoutText: {
     paddingTop: 15,
@@ -76,7 +75,7 @@ export const groupsStyles = StyleSheet.create({
   groupImage: {
     height: (deviceWidth / 2) - 25,
     width: (deviceWidth / 2) - 25,
-    opacity: 0.8,
+    opacity: 0.85,
     margin: 5,
   },
   groupBackground: {
@@ -89,6 +88,8 @@ export const groupsStyles = StyleSheet.create({
   groupText: {
     color: 'white',
     fontSize: 20,
+    left: 10,
+    top: 10,
     position: 'absolute',
     fontWeight: '500',
   },
@@ -183,7 +184,7 @@ export const messagesStyles = StyleSheet.create({
     top: 0,
     right: 0,
     left: 0,
-    height: 50,
+    height: 80,
   },
   inputBox: {
     marginBottom: 50,
@@ -266,7 +267,7 @@ export const calendarStyles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   emptyText: {
-    padding: 20, 
+    padding: 20,
     flexDirection: 'column'
   },
   textContainer: {

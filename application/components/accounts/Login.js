@@ -35,8 +35,14 @@ class Login extends Component{
       })
     })
     .then(response => response.json())
-    .then(data => this.loginStatus(data))
-    .catch(err => this.connectionError())
+    .then(data => {
+      if (DEV) { console.log('DATA', data); }
+      this.loginStatus(data)
+    })
+    .catch(err => {
+      if (DEV) { console.log('ERR', err); }
+      this.connectionError()
+    })
     .done();
   }
   loginStatus(response){
