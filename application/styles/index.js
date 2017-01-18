@@ -141,6 +141,7 @@ export const groupsStyles = StyleSheet.create({
   },
   infoContainer: {
     marginHorizontal: 10,
+    flex: 1,
     paddingVertical: 5,
   }
 });

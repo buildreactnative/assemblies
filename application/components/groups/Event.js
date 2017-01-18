@@ -3,7 +3,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import NavigationBar from 'react-native-navbar';
 import React, { Component } from 'react';
 import { find, uniq } from 'underscore';
-import { View, Text, ScrollView, Image, MapView, TouchableOpacity } from 'react-native';
+import Loading from '../shared/Loading';
+import { View, Text, ScrollView, Image, MapView, TouchableOpacity, InteractionManager } from 'react-native';
 
 import Colors from '../../styles/colors';
 import BackButton from '../shared/BackButton';
@@ -38,7 +39,7 @@ const EventMap = ({ location, going, ready }) => {
       longitudeDelta  : 0.01
     }
   return (
-    <View style={globals.inactive}>
+    <View style={[globals.inactive, { flex: 1}]}>
       <MapView
         style={globals.map}
         region={mapRegion}
@@ -78,7 +79,10 @@ class Event extends Component{
     .done();
   }
   componentDidMount(){
-    this._loadUsers();
+    InteractionManager.runAfterInteractions(() => {
+      this._loadUsers();
+      this.setState({ ready: true })
+    });
   }
   joinEvent(){
     let { event, currentUser, updateEvents } = this.props;
@@ -108,10 +112,18 @@ class Event extends Component{
   render(){
     let { event, group, currentUser, navigator } = this.props;
     let { ready, eventMembers } = this.state;
+    console.log('PROPS', this.props, this.state);
     let hasJoined = event.going.indexOf(currentUser.id) !== -1;
     let justJoined = this.state.eventMembers.map(m => m.id).indexOf(currentUser.id) !== -1;
+    if (!ready) {
+      return (
+        <View style={globals.flexContainer}>
+          <Loading />
+        </View>
+      );
+    }
     return (
-      <View style={styles.flexContainer}>
+      <View style={globals.flexContainer}>
         <NavigationBar
           title={{title: event.name, tintColor: 'white'}}
           tintColor={Colors.brandPrimary}
